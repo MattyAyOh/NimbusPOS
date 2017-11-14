@@ -1,0 +1,12 @@
+<div class = 'nested-fields'>
+  <div class = 'field'>
+    <%= f.label :extra_id %><br/>
+    <%= f.select :extra_id, Extra.pluck(:name, :id) %>
+  </div>
+
+  <div class = 'field'>
+    <%= f.label :quantity %><br/>
+    <%= f.number_field :quantity %>
+  </div>
+  <%= link_to_remove_association "remove order extra", f %>
+</div>

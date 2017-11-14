@@ -1,0 +1,24 @@
+<%= form_for [@service, @order] do |f| %>
+  <div class = 'field'>
+    <%= f.label :start_time %><br/>
+    <%= f.text_field :start_time %>
+  </div>
+  <div class = 'field'>
+    <%= f.label :end_time %><br/>
+    <%= f.text_field :end_time %><br/>
+  </div>
+  <h1>Extras</h1>
+  <% @extras.each do |extra| %>
+    <div id = 'order-extras'>
+      <%= f.fields_for :order_extras do |oe| %>
+        <%= render 'order_extra_fields', f: oe %>
+      <% end %>
+      <div class = 'links'>
+        <%= link_to_add_association 'add order extra', f, :order_extras %>
+      </div>
+    </div>
+  <% end %>
+
+
+  <%= f.submit %>
+<% end %>

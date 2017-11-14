@@ -1,4 +1,4 @@
-# NimbusPOS
+
 Custom POS System for Nimbus
 
 One webpage, split into two parts
