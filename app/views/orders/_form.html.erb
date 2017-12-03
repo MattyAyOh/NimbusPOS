@@ -1,0 +1,28 @@
+<%= form_for [@service, @order] do |f| %>
+  <div class = 'field'>
+    <%= f.label :start_time %><br/>
+    <%= f.time_field :start_time %>
+  </div>
+  <button type="button" onclick="this.form.order_start_time.value = moment().format('HH:mm')">Start</button>
+
+  <div class = 'field'>
+    <%= f.label :end_time %><br/>
+    <%= f.time_field :end_time %><br/>
+  </div>
+  <button type="button" onclick="this.form.order_end_time.value = moment().format('HH:mm')">End</button>
+
+  <h1>Extras</h1>
+  <div id = 'order-extras'>
+    <%= f.fields_for :order_extras do |oe| %>
+      <%= render 'order_extra_fields', f: oe %>
+    <% end %>
+  </div>
+
+  <br/>
+
+  <div class = 'field'>
+    Previous Charge <%= f.number_field :previous_cost, :step => 0.01 %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

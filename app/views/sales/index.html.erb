@@ -1,0 +1,18 @@
+<h1>All Sales</h1>
+
+<ul>
+<% @sales.each do |sale| %>
+  <li>
+      Sale ID: <%= sale.id %>
+    <ul>
+      <li>Service: <%= Service.find(sale.service_id).name %></li>
+      <li>Time Spent: <%= sale.time_spent %> hours</li>
+      <li>Order ID: <%= link_to sale.order_id, service_order_path(Service.find(sale.service_id), Order.find(sale.order_id)) %></li>
+      <li>Date: <%= sale.date %></li>
+      <li>Weekday: <%= sale.weekday %></li>
+      <li>Cash Handled: <%= number_to_currency sale.cash_handled %></li>
+      <li>Total Bill: <%= sale.total_bill %></li>
+    </ul>
+  </li>
+<% end %>
+</ul>

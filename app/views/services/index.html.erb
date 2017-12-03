@@ -1,0 +1,11 @@
+<h1>All Services</h1>
+<ul>
+<% @services.each do |service| %>
+  <% if service.open? %>
+    <li><%= link_to service.name, new_service_order_path(service) %></li> 
+  <% else %>
+    <li><%= link_to service.name, edit_service_order_path(service, service.orders.last) %></li>
+  <% end %>
+  - <%= service.status %>
+<% end %>
+<ul>

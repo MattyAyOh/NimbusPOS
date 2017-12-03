@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Karaoke</title>
+    <%= csrf_meta_tags %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+  </head>
+
+  <body>
+    <% flash.each do |type, message| %>
+        <%= content_tag :div, sanitize(message), class: type %>
+      <% end %>
+      <%= link_to "Home", "/" %>
+    <%= yield %>
+  </body>
+</html>

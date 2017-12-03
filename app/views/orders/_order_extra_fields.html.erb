@@ -1,0 +1,10 @@
+<div class = 'nested-fields'>
+  <div class = 'field'>
+    <%= f.hidden_field :extra_id %>
+  </div>
+
+  <div class = 'field'>
+    <%= f.label :quantity, "Quantity of #{f.object.extra_id ? Extra.find(f.object.extra_id).name : 'Something'}" %>
+    <%= f.number_field :quantity %>
+  </div>
+</div>
