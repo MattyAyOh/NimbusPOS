@@ -9,8 +9,6 @@ end
 gem 'acts_as_list'
 gem 'bootstrap', '~> 4.0.0.beta2.1'
 gem 'cocoon'
-gem 'coffee-rails', '~> 4.2'
-gem 'jbuilder', '~> 2.5'
 gem 'momentjs-rails'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.7'
