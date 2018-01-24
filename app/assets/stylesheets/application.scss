@@ -1,8 +1,3 @@
-@import "bootstrap";
-
-$enable-shadows: true;
-$enable-gradients: true;
-
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -18,6 +13,11 @@ $enable-gradients: true;
  *= require_tree .
  *= require_self
  */
+
+@import "bootstrap";
+
+$enable-shadows: true;
+$enable-gradients: true;
 
 .main-container {
   padding-top: 1rem;
