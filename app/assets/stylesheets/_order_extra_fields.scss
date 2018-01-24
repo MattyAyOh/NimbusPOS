@@ -2,9 +2,18 @@
   border: 1px solid gray;
   padding: 0.5rem;
   margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   .actions {
     position: relative;
+  }
+
+  .img-thumbnail {
+    width: auto;
+    max-height: 8rem;
+    margin-bottom: 0.5rem;
   }
 
   .one-third {
