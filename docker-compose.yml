@@ -1,0 +1,20 @@
+version: "2.1"
+
+services:
+  web:
+    build: .
+    command: rails s -b 0.0.0.0
+    links:
+      - db
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db/karaoke_development
+
+  db:
+    image: postgres
+    expose:
+      - 5432
