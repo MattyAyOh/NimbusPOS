@@ -31,6 +31,7 @@ Set up the database:
 ```
 ./bin/docker-compose run --rm web rake db:create
 ./bin/docker-compose run --rm web rake db:migrate
+./bin/docker-compose run --rm web rake db:seed
 ```
 
 Start the server:
