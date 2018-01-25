@@ -66,3 +66,25 @@ Stop the server, wipe the database:
 ```
 ./bin/docker-compose down
 ```
+
+## Deploy
+
+This app is hosted at https://nimbuspos.herokuapp.com.
+
+Connect to an existing Heroku app:
+
+```
+git remote add heroku git@heroku.com:nimbuspos.git
+```
+
+or create a new Heroku app:
+
+```
+./bin/new_heroku_app my_new_heroku_app
+```
+
+Deploy with:
+
+```
+./bin/deploy
+```

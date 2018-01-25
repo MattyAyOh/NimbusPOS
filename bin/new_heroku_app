@@ -1,0 +1,11 @@
+#!/bin/sh
+
+heroku auth:whoami || heroku login
+heroku apps:create $1
+heroku addons:create heroku-postgresql:hobby-dev
+heroku container:login
+heroku container:push web
+
+heroku run rake db:create
+heroku run rake db:migrate
+heroku run rake db:seed
