@@ -7,14 +7,10 @@ git_source(:github) do |repo_name|
 end
 
 gem 'acts_as_list'
-gem 'bootstrap', '~> 4.0.0.beta2.1'
-gem 'cocoon'
-gem 'momentjs-rails'
 gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.7'
 gem 'rails', '~> 5.1.4'
 gem 'react-rails'
-gem 'sass-rails', '~> 5.0'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'uglifier', '>= 1.3.0'
 gem 'webpacker'
