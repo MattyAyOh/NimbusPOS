@@ -1,97 +1,54 @@
 import React from "react"
 import styled from "styled-components"
+import moment from "moment"
 
 const blue = "#4a90e2"
+
+const service_directory = {
+  mahjong: "🀄️",
+  pool: "🎱",
+  ktv: "🎤",
+}
 
 class Lobby extends React.Component {
   render () {
     return (
       <Layout>
-        <Service>
-          <Emoji> 🀄️ </Emoji>
+        { Object.keys(service_directory).map((service_name) => (
+          <Service key={service_name}>
+            <Emoji>{ service_directory[service_name] }</Emoji>
 
-          <Tables>
-            <Time>8:00</Time>
-            <Number>1</Number>
-            <Price>$14.00</Price>
+            <Tables>
+              {this.props.services[service_name].map((table) => (
+                <Table key={table.position}>
+                  <Time>
+                    {table.current_order &&
+                      moment(table.current_order.start_time).format('LT')}
+                  </Time>
 
-            <Time></Time>
-            <Number>2</Number>
-            <Price></Price>
+                  <Number>{table.position}</Number>
 
-            <Time></Time>
-            <Number>3</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>4</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>5</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>6</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>7</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>8</Number>
-            <Price></Price>
-          </Tables>
-        </Service>
-
-        <Service>
-          <Emoji> 🎱 </Emoji>
-
-          <Tables>
-            <Time></Time>
-            <Number>1</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>2</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>3</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>4</Number>
-            <Price></Price>
-          </Tables>
-        </Service>
-
-        <Service>
-          <Emoji> 🎤 </Emoji>
-
-          <Tables>
-            <Time></Time>
-            <Number>1</Number>
-            <Price></Price>
-
-            <Time></Time>
-            <Number>2</Number>
-            <Price></Price>
-
-            <Time>7:30</Time>
-            <Number>3</Number>
-            <Price>$19</Price>
-
-            <Time></Time>
-            <Number>4</Number>
-            <Price></Price>
-          </Tables>
-        </Service>
+                  <Price>
+                    {table.current_order &&
+                      "$" + toTwoDecimals(table.current_order.accumulated_cost)}
+                  </Price>
+                </Table>
+              ))}
+            </Tables>
+          </Service>
+        ))}
       </Layout>
     );
   }
 }
+
+const toTwoDecimals = (number) => (
+  parseFloat(
+    Math.round(
+      number * 100
+    ) / 100
+  ).toFixed(2)
+)
 
 const Layout = styled.div`
   display: grid;
@@ -109,10 +66,6 @@ const Service = styled.div`
 
 const Tables = styled.div`
   margin-top: 2rem;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-column-gap: 0.5rem;
-  align-items: center;
 `
 
 const Time = styled.span`
@@ -132,6 +85,13 @@ const Number = styled.span`
 
 const Price = styled.span`
   text-align: left;
+`
+
+const Table = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-column-gap: 0.5rem;
+  align-items: center;
 `
 
 export default Lobby
