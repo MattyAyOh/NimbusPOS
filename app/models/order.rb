@@ -1,23 +1,40 @@
 class Order < ApplicationRecord
   belongs_to :service
   has_one :sale
+
   has_many :snack_order_extras,
     -> { joins(:extra).where('extras.extra_type' => 'snack').group('order_extras.id') },
     class_name: 'OrderExtra',
     inverse_of: :order
+
   has_many :drink_order_extras,
     -> { joins(:extra).where('extras.extra_type' => 'drink').group('order_extras.id') },
     class_name: 'OrderExtra',
     inverse_of: :order
+
   has_many :extras, through: :order_extras
+
   accepts_nested_attributes_for :snack_order_extras, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :drink_order_extras, reject_if: :all_blank, allow_destroy: true
+
   enum status: ["open", "closed"]
 
   before_save :offset_day_of_end_time, if: :end_time_changed?
 
+  def as_json
+    {
+      start_time: start_time,
+      end_time: end_time,
+      accumulated_cost: total_service_cost,
+    }
+  end
+
   def order_extras
     snack_order_extras | drink_order_extras
+  end
+
+  def end_time
+    super || Time.current
   end
 
   def time_difference

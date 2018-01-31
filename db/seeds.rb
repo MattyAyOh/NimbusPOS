@@ -9,24 +9,24 @@ Extra.destroy_all
 Service.destroy_all
 
 # List out the available services
-Service.create!(name: "Mahjong 1", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 2", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 3", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 4", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 5", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 6", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 7", service_type: "mahjong", hourly_rate: 20.00)
-Service.create!(name: "Mahjong 8", service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 1, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 2, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 3, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 4, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 5, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 6, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 7, service_type: "mahjong", hourly_rate: 20.00)
+Service.create!(name: "Mahjong", position: 8, service_type: "mahjong", hourly_rate: 20.00)
 
-Service.create!(name: "Pool 1", service_type: "ktv", hourly_rate: 30.00)
-Service.create!(name: "Pool 2", service_type: "ktv", hourly_rate: 30.00)
-Service.create!(name: "Pool 3", service_type: "ktv", hourly_rate: 30.00)
-Service.create!(name: "Pool 4", service_type: "ktv", hourly_rate: 30.00)
+Service.create!(name: "Pool", position: 1, service_type: "pool", hourly_rate: 30.00)
+Service.create!(name: "Pool", position: 2, service_type: "pool", hourly_rate: 30.00)
+Service.create!(name: "Pool", position: 3, service_type: "pool", hourly_rate: 30.00)
+Service.create!(name: "Pool", position: 4, service_type: "pool", hourly_rate: 30.00)
 
-Service.create!(name: "KTV 1", service_type: "pool", hourly_rate: 10.00)
-Service.create!(name: "KTV 2", service_type: "pool", hourly_rate: 10.00)
-Service.create!(name: "KTV 3", service_type: "pool", hourly_rate: 10.00)
-Service.create!(name: "KTV 4", service_type: "pool", hourly_rate: 10.00)
+Service.create!(name: "KTV", position: 1, service_type: "ktv", hourly_rate: 10.00)
+Service.create!(name: "KTV", position: 2, service_type: "ktv", hourly_rate: 10.00)
+Service.create!(name: "KTV", position: 3, service_type: "ktv", hourly_rate: 10.00)
+Service.create!(name: "KTV", position: 4, service_type: "ktv", hourly_rate: 10.00)
 
 # List out the available "extras"
 Extra.create!(name: "Instant Ramen", extra_type: "snack", price: 5.00)
@@ -55,3 +55,6 @@ Extra.create!(name: "Milki", extra_type: "drink", price: 2.00)
 Extra.create!(name: "Lemon Box", extra_type: "drink", price: 2.00)
 Extra.create!(name: "Bottled Water", extra_type: "drink", price: 1.00)
 Extra.create!(name: "Hot Tea", extra_type: "drink", price: 1.00)
+
+# Create an example order
+Service.first.orders.create!(start_time: 1.hour.ago)
