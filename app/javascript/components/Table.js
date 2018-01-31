@@ -3,7 +3,7 @@ import styled from "styled-components"
 import moment from "moment"
 
 const blue = "#4a90e2"
-
+const grey = "#afb5bd"
 
 const Table = (table) => (
   <Layout>
@@ -12,7 +12,7 @@ const Table = (table) => (
         moment(table.current_order.start_time).format('LT')}
     </Time>
 
-    <Number>{table.position}</Number>
+    <Number active={table.current_order}><span>{table.position}</span></Number>
 
     <Price>
       {table.current_order &&
@@ -23,27 +23,31 @@ const Table = (table) => (
 
 const Layout = styled.div`
   display: grid;
+
   grid-template-columns: 1fr auto 1fr;
   grid-column-gap: 0.5rem;
   align-items: center;
 `
 
 const Time = styled.span`
+  color: ${grey};
   text-align: right;
 `
 
-const Number = styled.span`
-  text-align: center;
-  display: block;
-  background-color: ${blue};
-  color: white;
+const Number = styled.div`
+  align-items: center;
+  background-color: ${({active}) => active ? grey : blue};
   border: 1px solid white;
+  color: white;
+  display: grid;
   font-size: 2rem;
   height: 3rem;
+  text-align: center;
   width: 3rem;
 `
 
 const Price = styled.span`
+  color: ${grey};
   text-align: left;
 `
 
