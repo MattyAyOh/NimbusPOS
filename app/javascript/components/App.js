@@ -1,5 +1,6 @@
 import React from "react"
-import styled from "styled-components"
+
+import AppContainer from "./assemble/AppContainer"
 
 import Header from "./Header"
 import Lobby from "./Lobby"
@@ -32,19 +33,13 @@ class App extends React.Component {
 
   render () {
     return (
-      <Page>
+      <AppContainer>
         <Header/>
 
         { this.state.loaded && <Lobby services={this.state.services}/> }
-      </Page>
+      </AppContainer>
     );
   }
 }
-
-const Page = styled.div`
-  display: grid;
-  grid-row-gap: 2rem;
-  margin: 0px 20rem;
-`
 
 export default App
