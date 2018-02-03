@@ -1,6 +1,7 @@
 import React from "react"
 
 import AppContainer from "./assemble/AppContainer"
+import Loading from "./assemble/Loading"
 
 import Header from "./Header"
 import Lobby from "./Lobby"
@@ -10,10 +11,7 @@ class App extends React.Component {
     super()
 
     this.timer = null
-
-    this.state = {
-      loaded: false,
-    }
+    this.state = { loaded: false }
   }
 
   componentDidMount() {
@@ -33,10 +31,13 @@ class App extends React.Component {
 
   render () {
     return (
-      <AppContainer>
+      <AppContainer layout={Layout}>
         <Header/>
 
-        { this.state.loaded && <Lobby services={this.state.services}/> }
+        { this.state.loaded
+          ? <Lobby services={this.state.services}/>
+          : <Loading/>
+        }
       </AppContainer>
     );
   }
