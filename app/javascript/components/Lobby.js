@@ -10,7 +10,7 @@ const service_directory = {
 }
 
 const Lobby = (props) => (
-  <Layout>
+  <Layout position={props.position}>
     { Object.keys(service_directory).map((service_name) => (
       <Service key={service_name}>
         <Emoji>{ service_directory[service_name] }</Emoji>
@@ -26,6 +26,7 @@ const Lobby = (props) => (
 )
 
 const Layout = styled.div`
+  ${(p) => p.position};
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 `

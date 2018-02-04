@@ -39,14 +39,14 @@ class App extends React.Component {
         <Header/>
 
         { this.state.loaded
-          ? <Lobby services={this.state.services}/>
-          : <Loading/>
+          ? <Lobby services={this.state.services} position={Layout.area(2, 1)} />
+          : <Loading position={Layout.area(2, 1)} />
         }
 
         <Element
           path="/table/:id"
           component={Order}
-          position={Layout.row("2")}
+          position={Layout.area(2, 1)}
           transition={SlideFromBottom}
         />
       </AppContainer>
