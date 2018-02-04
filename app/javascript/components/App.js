@@ -1,6 +1,6 @@
 import React from "react"
 
-import AppContainer from "./assemble/AppContainer"
+import Application from "./assemble/Application"
 import Layout from "./assemble/layouts/SingleColumn"
 import SlideFromBottom from "./assemble/transitions/SlideFromBottom"
 import Element from "./assemble/Element"
@@ -35,7 +35,7 @@ class App extends React.Component {
 
   render () {
     return (
-      <AppContainer layout={Layout}>
+      <Application layout={Layout}>
         <Header/>
 
         { this.state.loaded
@@ -49,7 +49,7 @@ class App extends React.Component {
           position={Layout.area(2, 1)}
           transition={SlideFromBottom}
         />
-      </AppContainer>
+      </Application>
     );
   }
 }
