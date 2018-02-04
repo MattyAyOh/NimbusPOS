@@ -1,10 +1,14 @@
 import React from "react"
 
 import AppContainer from "./assemble/AppContainer"
+import Layout from "./assemble/layouts/SingleColumn"
+import SlideFromBottom from "./assemble/transitions/SlideFromBottom"
+import Element from "./assemble/Element"
 import Loading from "./assemble/Loading"
 
 import Header from "./Header"
 import Lobby from "./Lobby"
+import Order from "./Order"
 
 class App extends React.Component {
   constructor() {
@@ -38,6 +42,13 @@ class App extends React.Component {
           ? <Lobby services={this.state.services}/>
           : <Loading/>
         }
+
+        <Element
+          path="/table/:id"
+          component={Order}
+          position={Layout.row("2")}
+          transition={SlideFromBottom}
+        />
       </AppContainer>
     );
   }
