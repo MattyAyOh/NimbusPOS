@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
+import {Link} from "react-router-dom"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -12,7 +13,11 @@ const Table = (table) => (
         moment(table.current_order.start_time).format('LT')}
     </Time>
 
-    <Number active={table.current_order}><span>{table.position}</span></Number>
+    <Number active={table.current_order}>
+      <Link to={`/table/${table.service}/${table.position}`}>
+        {table.position}
+      </Link>
+    </Number>
 
     <Price>
       {table.current_order &&

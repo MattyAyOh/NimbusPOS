@@ -44,7 +44,7 @@ class App extends React.Component {
         }
 
         <Element
-          path="/table/:id"
+          path="/table/:service/:number"
           component={Order}
           position={Layout.area(2, 1)}
           transition={SlideFromBottom}
