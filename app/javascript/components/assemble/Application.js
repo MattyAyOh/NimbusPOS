@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 // TODO: use `this.props.layout` instead of hard-coding `layouts/SingleColumn`
 import Layout from "./layouts/SingleColumn"
 
-const AppContainer = ({ children }) => (
+const Application = ({ children }) => (
   <Router>
     <Layout>
       {children}
@@ -12,4 +12,4 @@ const AppContainer = ({ children }) => (
   </Router>
 )
 
-export default AppContainer
+export default Application
