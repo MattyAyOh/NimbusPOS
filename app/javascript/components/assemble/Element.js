@@ -1,9 +1,14 @@
 import React from "react"
+import styled from "styled-components"
 
-const Element = () => (
-  <div>
+const Element = (props) => (
+  <Layout position={props.position}>
     Element
-  </div>
+  </Layout>
 )
+
+const Layout = styled.div`
+  ${(p) => p.position};
+`
 
 export default Element
