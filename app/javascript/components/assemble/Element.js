@@ -6,14 +6,16 @@ import { Route } from "react-router"
  * A generic React component that can be customized with a variety of behaviors.
  *
  * Settings:
- * `position`: A position object provided by the parent layout
- * `path`: optional URL fragment at which to display the element
+ * `component`: A child component to display
+ * `path`: An optional URL fragment at which to display the element.
+ * `position`:
+ *     A position within the parent layout at which to display this element.
  */
 const Element = (props) => {
   const area = (
-    <Layout position={props.position}>
-      Element
-    </Layout>
+    <Canvas position={props.position}>
+      {React.createElement(props.component)}
+    </Canvas>
   )
 
   const element = props.path
@@ -23,7 +25,7 @@ const Element = (props) => {
   return element
 }
 
-const Layout = styled.div`
+const Canvas = styled.div`
   ${(p) => p.position};
   border: 1px solid #000;
   background-color: #fff;

@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import { Link } from "react-router-dom"
 
 class Order extends React.Component {
   constructor() {
@@ -32,7 +33,7 @@ class Order extends React.Component {
   render () {
     return (
       <div>
-      This is a table! It has order information!
+        <Link to="/">Close</Link>
       </div>
     );
   }
