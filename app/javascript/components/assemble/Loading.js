@@ -1,9 +1,14 @@
 import React from "react"
+import styled from "styled-components"
 
-const Loading = () => (
-  <div>
+const Loading = (props) => (
+  <Layout position={props.position}>
     Loading...
-  </div>
+  </Layout>
 )
+
+const Layout = styled.div`
+  ${(p) => p.position};
+`
 
 export default Loading
