@@ -3,7 +3,7 @@ import React from "react"
 import Application from "./assemble/Application"
 import Layout from "./assemble/layouts/SingleColumn"
 import SlideFromBottom from "./assemble/transitions/SlideFromBottom"
-import Element from "./assemble/Element"
+import Page from "./assemble/Page"
 import Loading from "./assemble/Loading"
 
 import Header from "./Header"
@@ -43,7 +43,7 @@ class App extends React.Component {
           : <Loading position={Layout.area(2, 1)} />
         }
 
-        <Element
+        <Page
           path="/table/:service/:number"
           component={Order}
           position={Layout.area(2, 1)}
