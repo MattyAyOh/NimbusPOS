@@ -7,4 +7,7 @@ const SingleColumnLayout = styled.div`
   margin: 0px 20rem;
 `
 
+SingleColumnLayout.row = (rowString) => (
+)
+
 export default SingleColumnLayout
