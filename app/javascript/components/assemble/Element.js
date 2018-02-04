@@ -25,6 +25,8 @@ const Element = (props) => {
 
 const Layout = styled.div`
   ${(p) => p.position};
+  border: 1px solid #000;
+  background-color: #fff;
 `
 
 export default Element
