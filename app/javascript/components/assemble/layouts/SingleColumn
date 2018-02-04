@@ -5,6 +5,7 @@ const SingleColumnLayout = styled.div`
   display: grid;
   grid-row-gap: 2rem;
   margin: 0px 20rem;
+  height: 100vh;
 `
 
 SingleColumnLayout.area = (row, column) => (
