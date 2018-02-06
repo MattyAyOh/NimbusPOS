@@ -7,4 +7,13 @@ class Extra < ApplicationRecord
     super ||
       "https://jpg.cool/#{name.downcase.gsub(" ", ".")}"
   end
+
+  def as_json
+    {
+      image_url: image_url,
+      name: name,
+      price: price,
+      extra_type: extra_type,
+    }
+  end
 end
