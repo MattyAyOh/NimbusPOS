@@ -14,7 +14,7 @@ import { Route } from "react-router"
 const Page = (props) => {
   const area = (
     <Canvas position={props.position}>
-      {React.createElement(props.component)}
+      {React.createElement(props.component, { state: props.state })}
     </Canvas>
   )
 

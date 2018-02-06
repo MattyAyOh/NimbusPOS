@@ -2,21 +2,25 @@ import React from "react"
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 
+import Loading from "./assemble/Loading"
+
 import TabView from "./TabView"
 import Extras from "./Extras"
 
 const Order = (props) => (
-  <Layout>
-    <CloseLink to="/">Close</CloseLink>
+  props.state
+  ? <Layout>
+      <CloseLink to="/">Close</CloseLink>
 
-    <TabView
+      <TabView
       tabs={{
-        snacks: () => <Extras {...props.snacks} />,
-        drinks: () => <Extras {...props.drinks} />,
+        snacks: () => <Extras {...props.extras} items={props.state.snacks} />,
+        drinks: () => <Extras {...props.extras} items={props.state.drinks} />,
         checkout: () => <div>Checkout!</div>,
       }}
-    />
-  </Layout>
+      />
+    </Layout>
+  : <Loading/>
 )
 
 const Layout = styled.div`
