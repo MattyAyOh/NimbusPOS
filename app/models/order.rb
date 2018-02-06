@@ -25,8 +25,7 @@ class Order < ApplicationRecord
     {
       start_time: start_time,
       end_time: end_time,
-      snacks: snack_order_extras.map(&:as_json),
-      drinks: drink_order_extras.map(&:as_json),
+      extras: order_extras.map(&:as_json),
       accumulated_cost: total_service_cost,
     }
   end

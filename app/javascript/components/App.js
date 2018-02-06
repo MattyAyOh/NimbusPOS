@@ -28,8 +28,8 @@ class App extends React.Component {
   }
 
   fetchState() {
-    fetch("/state").then((response) => response.json()).then((json) => {
-      this.setState({ loaded: true, services: json.services })
+    fetch("/state").then((response) => response.json()).then((app_state) => {
+      this.setState({ loaded: true, app: app_state })
     });
   }
 
@@ -39,7 +39,10 @@ class App extends React.Component {
         <Header/>
 
         { this.state.loaded
-          ? <Lobby services={this.state.services} position={Layout.area(2, 1)} />
+          ? <Lobby
+              position={Layout.area(2, 1)}
+              services={this.state.app.services}
+            />
           : <Loading position={Layout.area(2, 1)} />
         }
 
@@ -48,6 +51,7 @@ class App extends React.Component {
           component={Order}
           position={Layout.area(2, 1)}
           transition={SlideFromBottom}
+          state={this.state.app}
         />
       </Application>
     );
