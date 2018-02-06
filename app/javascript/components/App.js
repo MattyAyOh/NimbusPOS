@@ -29,7 +29,7 @@ class App extends React.Component {
 
   fetchState() {
     fetch("/state").then((response) => response.json()).then((json) => {
-      this.setState({ loaded: true, services: json })
+      this.setState({ loaded: true, services: json.services })
     });
   }
 
