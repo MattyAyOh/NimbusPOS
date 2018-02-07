@@ -48,10 +48,9 @@ class App extends React.Component {
 
         <Page
           path="/table/:service/:number"
-          component={Order}
+          component={(params) => <Order {...params} state={this.state.app}/>}
           position={Layout.area(2, 1)}
           transition={SlideFromBottom}
-          state={this.state.app}
         />
       </Application>
     );

@@ -3,14 +3,17 @@ import styled from "styled-components"
 
 import Extra from "./Extra"
 
-class Extras extends React.Component {
-  render = () => (
-    <div>
-      {this.props.items.map((item) => (
-        <Extra key={item.name} {...item} />
-      ))}
-    </div>
-  )
-}
+const Extras = (props) => (
+  <div>
+    {props.items.map((item) => (
+      <Extra
+        key={item.name}
+        params={props.params}
+        state={props.state}
+        {...item}
+      />
+    ))}
+  </div>
+)
 
 export default Extras

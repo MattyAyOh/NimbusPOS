@@ -7,23 +7,20 @@ import { Route } from "react-router"
  *
  * Settings:
  * `component`: A child component to display
- * `path`: An optional URL fragment at which to display the page.
+ * `path`: The URL fragment at which to display the page
  * `position`:
- *     A position within the parent layout at which to display this page.
+ *     A position within the parent layout at which to display this page
  */
-const Page = (props) => {
-  const area = (
-    <Canvas position={props.position}>
-      {React.createElement(props.component, { state: props.state })}
-    </Canvas>
-  )
-
-  const page = props.path
-    ? <Route path={props.path} component={() => area} />
-    : area
-
-  return page
-}
+const Page = ({ path, component, position }) => (
+  <Route
+    path={path}
+    component={({ match }) => (
+      <Canvas position={position}>
+        {React.createElement(component, { params: match.params })}
+      </Canvas>
+    )}
+  />
+)
 
 const Canvas = styled.div`
   ${(p) => p.position};

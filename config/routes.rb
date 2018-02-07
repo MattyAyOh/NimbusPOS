@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   get "*path", to: "app#index"
 
   root "app#index"
+
+  put "/update_order", to: "orders#update"
 end

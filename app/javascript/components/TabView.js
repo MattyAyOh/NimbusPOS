@@ -29,10 +29,6 @@ class TabView extends React.Component {
       </div>
     )
   }
-
-  report_name() {
-    return this.props.match.params.id
-  }
 }
 
 const TabSelector = styled.div`

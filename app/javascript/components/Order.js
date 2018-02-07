@@ -11,13 +11,26 @@ const Order = (props) => (
   props.state
   ? <Layout>
       <CloseLink to="/">Close</CloseLink>
+      <h2></h2>
 
       <TabView
-      tabs={{
-        snacks: () => <Extras {...props.extras} items={props.state.snacks} />,
-        drinks: () => <Extras {...props.extras} items={props.state.drinks} />,
-        checkout: () => <div>Checkout!</div>,
-      }}
+        tabs={{
+          snacks: () => <Extras
+                          extras={props.extras}
+                          items={props.state.snacks}
+                          params={props.params}
+                          state={props.state}
+                          {...props.extras}
+                        />,
+          drinks: () => <Extras
+                          extras={props.extras}
+                          items={props.state.drinks}
+                          params={props.params}
+                          state={props.state}
+                          {...props.extras}
+                        />,
+          checkout: () => <div>Checkout!</div>,
+        }}
       />
     </Layout>
   : <Loading/>

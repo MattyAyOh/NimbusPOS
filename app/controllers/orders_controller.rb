@@ -1,4 +1,5 @@
 class OrdersController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: :update
 
   def show
     @order = Order.find(params[:id])
@@ -41,11 +42,23 @@ class OrdersController < ApplicationController
   end
 
   def update
-    service = Service.find(params[:service_id])
-    order = service.orders.find(params[:id])
-    order.update(order_params)
+    service = Service.find_by(
+      name: params[:params][:service].titlecase,
+      position: params[:params][:number],
+    )
 
-    redirect_to service_order_path(service, order)
+    order = service.current_order || Order.create!(service: service)
+    extra = Extra.find_by(name: params[:params][:extra_name])
+
+    order_extra =
+      OrderExtra.find_by(order: order, extra: extra) ||
+      OrderExtra.create!(order: order, extra: extra)
+
+    result = order_extra.update(
+      params.require(:state).permit(:quantity)
+    )
+
+    render json: { persisted: result }
   end
 
   def destroy
