@@ -20,8 +20,7 @@ const Table = (table) => (
     </Number>
 
     <Price>
-      {table.current_order &&
-        "$" + toTwoDecimals(table.current_order.bill_amount)}
+      {table.current_order && "$" + String(table.current_order.bill_amount)}
     </Price>
   </Layout>
 )
@@ -55,13 +54,5 @@ const Price = styled.span`
   color: ${grey};
   text-align: left;
 `
-
-const toTwoDecimals = (number) => (
-  parseFloat(
-    Math.round(
-      number * 100
-    ) / 100
-  ).toFixed(2)
-)
 
 export default Table;
