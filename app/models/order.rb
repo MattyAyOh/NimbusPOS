@@ -1,7 +1,6 @@
 class Order < ApplicationRecord
   belongs_to :service
 
-  has_one :sale
   has_many :order_extras
   has_many :extras, through: :order_extras
 

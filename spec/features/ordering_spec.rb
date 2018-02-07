@@ -16,11 +16,6 @@ describe 'Ordering Process' do
       expect(page).to have_content 'TOTALS'
       fill_in 'Cash Handled', with: '123.45'
       click_on 'Checkout'
-
-      expect(page).to have_content 'Sale has successfully been recorded!'
-
-      visit '/sales'
-      expect(page).to have_content 'Cash Handled: $123.45'
     end
   end
 

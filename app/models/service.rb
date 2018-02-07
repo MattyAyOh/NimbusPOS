@@ -2,7 +2,6 @@ class Service < ApplicationRecord
   enum service_type: ["mahjong", "pool", "ktv"]
 
   has_many :orders
-  has_many :sales
 
   def current_order
     orders.open.first
