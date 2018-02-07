@@ -4,5 +4,6 @@ Rails.application.routes.draw do
 
   root "app#index"
 
-  put "/update_order", to: "orders#update"
+  put "/update/order", to: "update#order"
+  put "/update/order_extra", to: "update#order_extra"
 end
