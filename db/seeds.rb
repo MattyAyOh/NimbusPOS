@@ -3,7 +3,6 @@
 
 # First, remove old data
 OrderExtra.destroy_all
-Sale.destroy_all
 Order.destroy_all
 Extra.destroy_all
 Service.destroy_all

@@ -1,21 +1,6 @@
 class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :update
 
-  def show
-    @order = Order.find(params[:id])
-    @sale = @order.sale || @order.build_sale
-  end
-
-  def create
-    @service = Service.find(params[:service_id])
-    @order = @service.orders.create(order_params)
-    @order.open!
-    @service.occupied!
-    @order.save!
-
-    redirect_to service_order_path(@service, @order)
-  end
-
   def update
     service = Service.find_by(
       name: params[:params][:service].titlecase,
@@ -52,8 +37,6 @@ class OrdersController < ApplicationController
       :start_time,
       :end_time,
       :previous_cost,
-      snack_order_extras_attributes: [:id, :quantity, :extra_id, :_destroy],
-      drink_order_extras_attributes: [:id, :quantity, :extra_id, :_destroy],
     )
   end
 end
