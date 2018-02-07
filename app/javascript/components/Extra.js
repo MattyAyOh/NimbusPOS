@@ -7,8 +7,6 @@ class Extra extends React.Component {
   constructor(props) {
     super()
 
-    const service = props.params.service
-
     const order = props
       .state
       .services
@@ -53,13 +51,11 @@ class Extra extends React.Component {
     this.setState({ quantity: state.quantity, persisted: false })
 
     jquery.ajax({
-      url: "/update_order",
+      url: "/update/order_extra",
       type: "PUT",
       data: { params, state },
       success: (response) => this.setState({ persisted: response.persisted }),
     })
-
-    this.setState({ persisted: true })
   }
 }
 
