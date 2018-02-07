@@ -8,8 +8,13 @@ class Extra extends React.Component {
     super()
 
     const service = props.params.service
-    const index = props.params.number - 1
-    const order = props.state.services[service][index].current_order
+
+    const order = props
+      .state
+      .services
+      .filter(s => s.service == props.params.service && s.position == props.params.number)[0]
+      .current_order
+
     const extra = order.extras.filter((x) => x.extra.name == props.name)[0]
     const quantity = (extra && extra.quantity) || 0
 

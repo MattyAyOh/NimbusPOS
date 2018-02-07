@@ -16,7 +16,7 @@ const Lobby = (props) => (
         <Emoji>{ service_directory[service_name] }</Emoji>
 
         <Tables>
-          {props.services[service_name].map((table) => (
+          {props.services.filter(s => s.service == service_name).map((table) => (
             <Table service={service_name} {...table} key={table.position}/>
           ))}
         </Tables>

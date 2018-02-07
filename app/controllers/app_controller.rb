@@ -9,11 +9,7 @@ class AppController < ApplicationController
   # used by React to display the frontend
   def state
     render json: {
-      services: {
-        mahjong: Service.where(service_type: "mahjong").order(:position).as_json,
-        pool: Service.where(service_type: "pool").order(:position).as_json,
-        ktv: Service.where(service_type: "ktv").order(:position).as_json,
-      },
+      services: Service.order(:service_type, :position).as_json,
       snacks: Extra.where(extra_type: "snack").map(&:as_json),
       drinks: Extra.where(extra_type: "drink").map(&:as_json),
     }
