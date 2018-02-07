@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe "User visits services index" do
   before :each do
-    @service = Service.create(name: "Mahjong 1", status: "open", hourly_rate: 40, position: 1)
-    @service_3 = Service.create(name: "Mahjong 3", status: "open", hourly_rate: 40, position: 3)
-    @service_2 = Service.create(name: "Mahjong 2", status: "open", hourly_rate: 40, position: 2)
+    @service = Service.create(name: "Mahjong 1", hourly_rate: 40, position: 1)
+    @service_3 = Service.create(name: "Mahjong 3", hourly_rate: 40, position: 3)
+    @service_2 = Service.create(name: "Mahjong 2", hourly_rate: 40, position: 2)
     @extra = Extra.create(name: "Oreos", extra_type: "snack", price: 7)
   end
 
