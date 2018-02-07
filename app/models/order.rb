@@ -9,7 +9,7 @@ class Order < ApplicationRecord
   validates :start_time, presence: true
 
   def self.open
-    where(end_time: nil)
+    where(end_time: nil).or(where(cash_handled: nil))
   end
 
   def as_json
@@ -22,7 +22,7 @@ class Order < ApplicationRecord
   end
 
   def end_time
-    super || Time.current
+    super
   end
 
   def hours_spent
