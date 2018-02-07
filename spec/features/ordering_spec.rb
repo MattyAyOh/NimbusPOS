@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Ordering Process' do
-  let!(:service) { Service.create!(name: 'Mahjong 1', status: 'open', hourly_rate: 40) }
+  let!(:service) { Service.create!(name: 'Mahjong 1', hourly_rate: 40) }
 
   describe 'cash handled tracking' do
     it 'allows storage of amount of cash handled for an order' do

@@ -21,7 +21,7 @@ const Table = (table) => (
 
     <Price>
       {table.current_order &&
-        "$" + toTwoDecimals(table.current_order.accumulated_cost)}
+        "$" + toTwoDecimals(table.current_order.bill_amount)}
     </Price>
   </Layout>
 )

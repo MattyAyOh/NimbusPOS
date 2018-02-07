@@ -8,6 +8,7 @@ class SalesController < ApplicationController
     @service = Service.find(params[:service_id])
     @order = Order.find(params[:order_id])
     @order.closed!
+
     @sale = Sale.new(
       service_id: @service.id,
       order_id: @order.id,
@@ -15,7 +16,7 @@ class SalesController < ApplicationController
       date: Time.now.strftime("%B %d, %Y"),
       weekday: Time.now.strftime("%A"),
       time_spent: @order.time_difference,
-      total_bill: @order.total_bill,
+      total_bill: @order.bill_amount,
     )
 
     if @sale.save
