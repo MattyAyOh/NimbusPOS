@@ -8,8 +8,8 @@ const Extras = (props) => (
     {props.items.map((item) => (
       <Extra
         key={item.name}
+        order={props.order}
         params={props.params}
-        state={props.state}
         {...item}
       />
     ))}

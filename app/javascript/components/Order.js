@@ -13,15 +13,16 @@ class Order extends React.Component {
   constructor(props) {
     super(props)
 
-    const order = this.props
+    this.service = this.props
       .state
       .services
       .filter(s => s.service == this.props.params.service && s.position == this.props.params.number)[0]
-      .current_order
+
+    this.order = this.service.current_order
 
     this.state = {
-      start_time: order.start_time,
-      end_time: order.end_time,
+      start_time: this.order.start_time,
+      end_time: this.order.end_time,
     }
   }
 
@@ -48,18 +49,16 @@ class Order extends React.Component {
         <TabView
           tabs={{
             snacks: () => <Extras
-                            extras={this.props.extras}
+                            extras={this.order.extras}
                             items={this.props.state.snacks}
+                            order={this.order}
                             params={this.props.params}
-                            state={this.props.state}
-                            {...this.props.extras}
                           />,
             drinks: () => <Extras
-                            extras={this.props.extras}
+                            extras={this.order.extras}
                             items={this.props.state.drinks}
+                            order={this.order}
                             params={this.props.params}
-                            state={this.props.state}
-                            {...this.props.extras}
                           />,
             checkout: () => <div>Checkout!</div>,
           }}
