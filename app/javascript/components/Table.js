@@ -2,28 +2,52 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import {Link} from "react-router-dom"
+import jquery from "jquery"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
 
-const Table = (table) => (
-  <Layout>
-    <Time>
-      {table.current_order &&
-        moment(table.current_order.start_time).format('LT')}
-    </Time>
+class Table extends React.Component {
+  render() {
+    return (
+      <Layout>
+        <Time>
+          {this.props.current_order &&
+            moment(this.props.current_order.start_time).format('LT')}
+        </Time>
 
-    <Number active={table.current_order}>
-      <Link to={`/table/${table.service}/${table.position}`}>
-        {table.position}
-      </Link>
-    </Number>
+        {this.props.current_order
+        ? <Number active>
+            <Link to={`/table/${this.props.service}/${this.props.position}`} >
+              {this.props.position}
+            </Link>
+          </Number>
+        : <Number onClick={this.ensureCurrentOrder.bind(this)} >
+            {this.props.position}
+          </Number>
+        }
 
-    <Price>
-      {table.current_order && "$" + String(table.current_order.bill_amount)}
-    </Price>
-  </Layout>
-)
+        <Price>
+          {this.props.current_order && "$" + String(this.props.current_order.bill_amount)}
+        </Price>
+      </Layout>
+    )
+  }
+
+  ensureCurrentOrder() {
+    const params = {
+      service: this.props.service,
+      position: this.props.position,
+    }
+
+    jquery.ajax({
+      url: "/create/order",
+      type: "PUT",
+      data: { params },
+      success: (response) => this.props.refresh(),
+    })
+  }
+}
 
 const Layout = styled.div`
   display: grid;
