@@ -6,8 +6,9 @@ import jquery from "jquery"
 
 import Loading from "./assemble/Loading"
 
-import TabView from "./TabView"
+import Checkout from "./Checkout"
 import Extras from "./Extras"
+import TabView from "./TabView"
 
 class Order extends React.Component {
   constructor(props) {
@@ -60,7 +61,12 @@ class Order extends React.Component {
                             order={this.order}
                             params={this.props.params}
                           />,
-            checkout: () => <div>Checkout!</div>,
+            checkout: () => <Checkout
+                            extras={this.order.extras}
+                            order={this.order}
+                            params={this.props.params}
+                            service={this.service}
+                          />
           }}
         />
       </Layout>

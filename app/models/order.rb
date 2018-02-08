@@ -14,10 +14,11 @@ class Order < ApplicationRecord
 
   def as_json
     {
-      start_time: start_time,
+      bill_amount: bill_amount,
+      cash_handled: cash_handled,
       end_time: end_time,
       extras: order_extras.map(&:as_json),
-      bill_amount: bill_amount,
+      start_time: start_time,
     }
   end
 
