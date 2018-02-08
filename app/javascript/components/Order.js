@@ -31,6 +31,7 @@ class Order extends React.Component {
     return this.props.state
     ? <Layout>
         <CloseLink to="/">Close</CloseLink>
+        <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
         <h2></h2>
 
         <input
@@ -71,6 +72,17 @@ class Order extends React.Component {
         />
       </Layout>
     : <Loading/>
+  }
+
+  cancelOrder() {
+    let params = this.props.params
+
+    jquery.ajax({
+      url: "/destroy/order",
+      type: "PUT",
+      data: { params },
+      success: (response) => this.props.refresh(),
+    })
   }
 
   timeUpdated(field, new_time) {

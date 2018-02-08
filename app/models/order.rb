@@ -1,7 +1,7 @@
 class Order < ApplicationRecord
   belongs_to :service
 
-  has_many :order_extras
+  has_many :order_extras, dependent: :destroy
   has_many :extras, through: :order_extras
 
   before_save :offset_day_of_end_time, if: :end_time_changed?
