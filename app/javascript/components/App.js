@@ -47,20 +47,20 @@ class App extends React.Component {
           : <Loading position={Layout.area(2, 1)} />
         }
 
-        <Page
-          path="/table/:service/:number"
-          component={(params) =>
-            this.state.app
-            ? <Order
+        { this.state.loaded &&
+          <Page
+            path="/table/:service/:number"
+            component={(params) =>
+              <Order
                 {...params}
                 state={this.state.app}
                 refresh={this.fetchState.bind(this)}
               />
-            : null
-          }
-          position={Layout.area(2, 1)}
-          transition={SlideFromBottom}
-        />
+            }
+            position={Layout.area(2, 1)}
+            transition={SlideFromBottom}
+          />
+        }
       </Application>
     );
   }
