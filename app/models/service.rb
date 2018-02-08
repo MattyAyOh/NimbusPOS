@@ -11,6 +11,7 @@ class Service < ApplicationRecord
     {
       current_order: current_order.as_json,
       hourly_rate: hourly_rate,
+      name: name,
       position: position,
       service: service_type,
     }

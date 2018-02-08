@@ -33,7 +33,8 @@ class Order extends React.Component {
       <Layout>
         <CloseLink to="/" onClick={this.props.refresh}>Close</CloseLink>
         <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
-        <h2></h2>
+
+        <h2>{this.service.name} #{this.service.position}</h2>
 
         <input
           type="time"
