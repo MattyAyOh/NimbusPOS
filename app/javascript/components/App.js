@@ -42,13 +42,22 @@ class App extends React.Component {
           ? <Lobby
               position={Layout.area(2, 1)}
               services={this.state.app.services}
+              refresh={this.fetchState.bind(this)}
             />
           : <Loading position={Layout.area(2, 1)} />
         }
 
         <Page
           path="/table/:service/:number"
-          component={(params) => this.state.app ? <Order {...params} state={this.state.app}/> : null}
+          component={(params) =>
+            this.state.app
+            ? <Order
+                {...params}
+                state={this.state.app}
+                refresh={this.fetchState.bind(this)}
+              />
+            : null
+          }
           position={Layout.area(2, 1)}
           transition={SlideFromBottom}
         />

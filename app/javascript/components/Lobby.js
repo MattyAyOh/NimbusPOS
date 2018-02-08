@@ -17,7 +17,12 @@ const Lobby = (props) => (
 
         <Tables>
           {props.services.filter(s => s.service == service_name).map((table) => (
-            <Table service={service_name} {...table} key={table.position}/>
+            <Table
+              service={service_name}
+              {...table}
+              key={table.position}
+              refresh={props.refresh}
+            />
           ))}
         </Tables>
       </Service>
