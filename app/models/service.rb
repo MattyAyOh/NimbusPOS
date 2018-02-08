@@ -9,9 +9,10 @@ class Service < ApplicationRecord
 
   def as_json
     {
-      service: service_type,
+      current_order: current_order.as_json,
+      hourly_rate: hourly_rate,
       position: position,
-      current_order: current_order.as_json
+      service: service_type,
     }
   end
 end

@@ -10,7 +10,7 @@ class UpdateController < ApplicationController
     order = service.current_order || Order.create!(service: service)
 
     result = order.update(
-      params.require(:state).permit(:start_time, :end_time)
+      params.require(:state).permit(:start_time, :end_time, :cash_handled)
     )
 
     render json: { persisted: result }
