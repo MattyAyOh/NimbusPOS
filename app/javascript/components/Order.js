@@ -4,8 +4,6 @@ import { Link } from "react-router-dom"
 import moment from "moment"
 import jquery from "jquery"
 
-import Loading from "./assemble/Loading"
-
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
@@ -17,7 +15,10 @@ class Order extends React.Component {
     this.service = this.props
       .state
       .services
-      .filter(s => s.service == this.props.params.service && s.position == this.props.params.number)[0]
+      .filter(s =>
+        s.service == this.props.params.service &&
+        s.position == this.props.params.number
+      )[0]
 
     this.order = this.service.current_order
 
@@ -28,9 +29,9 @@ class Order extends React.Component {
   }
 
   render() {
-    return this.props.state
-    ? <Layout>
-        <CloseLink to="/">Close</CloseLink>
+    return (
+      <Layout>
+        <CloseLink to="/" onClick={this.props.refresh}>Close</CloseLink>
         <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
         <h2></h2>
 
@@ -71,7 +72,7 @@ class Order extends React.Component {
           }}
         />
       </Layout>
-    : <Loading/>
+    )
   }
 
   cancelOrder() {
