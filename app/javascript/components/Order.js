@@ -112,8 +112,13 @@ class Order extends React.Component {
   }
 }
 
+const blue = "#4a90e2"
 const Layout = styled.div`
+  border-left: 2rem solid ${blue};
   display: grid;
+  height: 100%;
+  overflow-y: scroll;
+  padding: 0 4rem;
 `
 
 const CloseLink = styled(Link)`

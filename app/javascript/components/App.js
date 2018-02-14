@@ -1,7 +1,7 @@
 import React from "react"
+import styled from "styled-components"
 
 import Application from "./assemble/Application"
-import Layout from "./assemble/layouts/SingleColumn"
 import SlideFromBottom from "./assemble/transitions/SlideFromBottom"
 import Page from "./assemble/Page"
 import Loading from "./assemble/Loading"
@@ -9,6 +9,19 @@ import Loading from "./assemble/Loading"
 import Header from "./Header"
 import Lobby from "./Lobby"
 import Order from "./Order"
+
+// This layout gives us four grid spaces
+const Layout = styled.div`
+  display: grid;
+  height: 100vh;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 4rem 1fr;
+`
+
+// Top right to bottom right
+const layoutRight = "grid-area: 1 / 2 / -1 / 2"
+// Bottom left
+const layoutLeft = "grid-area: 2 / 1"
 
 class App extends React.Component {
   constructor() {
@@ -40,11 +53,11 @@ class App extends React.Component {
 
         { this.state.loaded
           ? <Lobby
-              position={Layout.area(2, 1)}
+              position={layoutLeft}
               services={this.state.app.services}
               refresh={this.fetchState.bind(this)}
             />
-          : <Loading position={Layout.area(2, 1)} />
+          : <Loading position={layoutLeft}/>
         }
 
         { this.state.loaded &&
@@ -57,7 +70,7 @@ class App extends React.Component {
                 refresh={this.fetchState.bind(this)}
               />
             }
-            position={Layout.area(2, 1)}
+            position={layoutRight}
             transition={SlideFromBottom}
           />
         }
