@@ -18,17 +18,19 @@ class Extra extends React.Component {
 
   render () {
     return (
-      <div className="nested-fields order-extra-fields tile">
-        <div className="extra-name">{this.props.name}</div>
+      <Layout>
+        <Image
+          src={this.props.image_url}
+          onClick={() => this.add(1)}
+        />
 
-        <img src={this.props.image_url} className="img-thumbnail" width="100" />
+        <Quantity
+          onClick={() => this.add(1)}
+        >{this.state.quantity}
+        </Quantity>
 
-        <div className="actions">
-          <Button color="red" onClick={() => this.add(-1)}>-</Button>
-          <span>{this.state.quantity}</span>
-          <Button color="green" onClick={() => this.add(1)}>+</Button>
-        </div>
-      </div>
+        <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
+      </Layout>
     );
   }
 
@@ -53,11 +55,33 @@ class Extra extends React.Component {
   }
 }
 
-const Button = styled.span`
-  display: inline-block;
+const Layout = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 2rem;
+  align-items: center;
+  justify-items: center;
+`
+
+const Decrement = styled.div`
   background-color: ${({color}) => color};
   color: white;
-  max-width: 33%;
+  grid-row: 2;
+  text-align: center;
+  width: 100%;
+`
+
+const Image = styled.img`
+  grid-area: 1 / 1;
+  width: 100px;
+`
+
+const Quantity = styled.div`
+  -webkit-text-stroke: 2px #000;
+  color: #fff;
+  font-size: 4rem;
+  grid-area: 1 / 1;
+  text-align: center;
+  vertical-align: center;
 `
 
 export default Extra
