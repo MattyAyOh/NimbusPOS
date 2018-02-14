@@ -1,14 +1,9 @@
 import React from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 
-// TODO: use `this.props.layout` instead of hard-coding `layouts/SingleColumn`
-import Layout from "./layouts/SingleColumn"
-
-const Application = ({ children }) => (
+const Application = ({ children, layout }) => (
   <Router>
-    <Layout>
-      {children}
-    </Layout>
+    {React.createElement(layout, null, children)}
   </Router>
 )
 
