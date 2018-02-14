@@ -24,8 +24,6 @@ const Page = ({ path, component, position }) => (
 
 const Canvas = styled.div`
   ${(p) => p.position};
-  border: 1px solid #000;
-  background-color: #fff;
 `
 
 export default Page
