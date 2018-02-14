@@ -4,7 +4,7 @@ import styled from "styled-components"
 import Extra from "./Extra"
 
 const Extras = (props) => (
-  <div>
+  <Layout>
     {props.items.map((item) => (
       <Extra
         key={item.name}
@@ -13,7 +13,14 @@ const Extras = (props) => (
         {...item}
       />
     ))}
-  </div>
+  </Layout>
 )
+
+const Layout = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+`
 
 export default Extras
