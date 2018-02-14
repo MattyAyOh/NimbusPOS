@@ -4,6 +4,8 @@ import moment from "moment"
 import {Link} from "react-router-dom"
 import jquery from "jquery"
 
+import bill_amount from "../utils/bill_amount"
+
 const blue = "#4a90e2"
 const grey = "#afb5bd"
 
@@ -28,7 +30,7 @@ class Table extends React.Component {
         }
 
         <Price>
-          {this.props.current_order && "$" + String(this.props.current_order.bill_amount)}
+          {bill_amount(this.props.current_order, this.props.hourly_rate, this.props.current_time)}
         </Price>
       </Layout>
     )

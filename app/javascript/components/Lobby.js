@@ -18,10 +18,11 @@ const Lobby = (props) => (
         <Tables>
           {props.services.filter(s => s.service == service_name).map((table) => (
             <Table
-              service={service_name}
-              {...table}
+              current_time={props.current_time}
               key={table.position}
               refresh={props.refresh}
+              service={service_name}
+              {...table}
             />
           ))}
         </Tables>
