@@ -14,7 +14,6 @@ class Order < ApplicationRecord
 
   def as_json
     {
-      bill_amount: bill_amount,
       cash_handled: cash_handled,
       end_time: end_time,
       extras: order_extras.map(&:as_json),
@@ -28,13 +27,6 @@ class Order < ApplicationRecord
 
   def hours_spent
     ((end_time || Time.current) - start_time) / 3600.to_f
-  end
-
-  def bill_amount
-    (
-      service.hourly_rate * hours_spent +
-      order_extras.sum { |x| x.quantity * x.extra.price }
-    ).to_f.round(2)
   end
 
   private
