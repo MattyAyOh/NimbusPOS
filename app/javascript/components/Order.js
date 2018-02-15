@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import moment from "moment"
 import jquery from "jquery"
 
+import Timepicker from "./Timepicker"
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
@@ -23,8 +24,8 @@ class Order extends React.Component {
     this.order = this.service.current_order
 
     this.state = {
-      start_time: this.order.start_time,
-      end_time: this.order.end_time,
+      start_time: this.order.start_time ? moment(this.order.start_time) : null,
+      end_time: this.order.end_time ? moment(this.order.end_time) : null,
     }
   }
 
@@ -36,18 +37,16 @@ class Order extends React.Component {
 
         <h2>{this.service.name} #{this.service.position}</h2>
 
-        <input
-          type="time"
-          value={moment(this.state.start_time).format("HH:mm")}
-          onChange={(event) => this.timeUpdated("start_time", event.target.value)}
+        <Timepicker
+          time={moment(this.state.start_time)}
+          onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
         />
 
         to
 
-        <input
-          type="time"
-          value={moment(this.state.end_time).format("HH:mm")}
-          onChange={(event) => this.timeUpdated("end_time", event.target.value)}
+        <Timepicker
+          time={moment(this.state.end_time)}
+          onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
         />
 
         <TabView
@@ -87,13 +86,11 @@ class Order extends React.Component {
     })
   }
 
-  timeUpdated(field, chosen_time) {
+  timeUpdated(field, new_time) {
     let new_timestamps = {
       start_time: this.state.start_time,
       end_time: this.state.end_time,
     }
-
-    let new_time = moment(chosen_time, "HH:mm")
 
     const current_hour = moment().get("hour")
     const chosen_hour = new_time.get("hour")
