@@ -62,7 +62,7 @@ class Checkout extends React.Component {
     )
   }
 
-  persist = () => {
+  persist() {
     let state = this.state
     let params = this.props.params
 

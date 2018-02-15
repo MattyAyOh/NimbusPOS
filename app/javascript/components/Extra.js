@@ -40,7 +40,7 @@ class Extra extends React.Component {
     this.persist({ quantity: quantity })
   }
 
-  persist = (state) => {
+  persist(state) {
     let params = this.props.params
     params["extra_name"] = this.props.name
 
