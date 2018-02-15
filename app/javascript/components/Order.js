@@ -87,14 +87,21 @@ class Order extends React.Component {
     })
   }
 
-  timeUpdated(field, new_time) {
+  timeUpdated(field, chosen_time) {
     let new_timestamps = {
       start_time: this.state.start_time,
       end_time: this.state.end_time,
     }
 
-    new_timestamps[field] = moment(new_time, "HH:mm").toDate()
+    let new_time = moment(chosen_time, "HH:mm")
 
+    const current_hour = this.props.current_time.get("hour")
+    const chosen_hour = new_time.get("hour")
+
+    if(current_hour < 12 && chosen_hour > 12)
+      new_time.subtract(1, "day")
+
+    new_timestamps[field] = new_time.toDate()
     this.persist(new_timestamps)
   }
 

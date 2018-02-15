@@ -76,6 +76,7 @@ class App extends React.Component {
                 {...params}
                 state={this.state.app}
                 refresh={this.fetchState.bind(this)}
+                current_time={this.state.current_time}
               />
             }
             position={layoutRight}

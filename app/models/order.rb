@@ -4,8 +4,6 @@ class Order < ApplicationRecord
   has_many :order_extras, dependent: :destroy
   has_many :extras, through: :order_extras
 
-  before_save :offset_day_of_end_time, if: :end_time_changed?
-
   validates :start_time, presence: true
 
   def self.open
@@ -27,11 +25,5 @@ class Order < ApplicationRecord
 
   def hours_spent
     ((end_time || Time.current) - start_time) / 3600.to_f
-  end
-
-  private
-
-  def offset_day_of_end_time
-    self.end_time += 1.day if hours_spent.negative?
   end
 end
