@@ -95,7 +95,7 @@ class Order extends React.Component {
 
     let new_time = moment(chosen_time, "HH:mm")
 
-    const current_hour = this.props.current_time.get("hour")
+    const current_hour = moment().get("hour")
     const chosen_hour = new_time.get("hour")
 
     if(current_hour < 12 && chosen_hour > 12)
