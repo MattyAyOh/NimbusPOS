@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import moment from "moment"
 
 import Table from "./Table"
 
@@ -9,27 +10,51 @@ const service_directory = {
   ktv: "🎤 ",
 }
 
-const Lobby = (props) => (
-  <Layout position={props.position}>
-    { Object.keys(service_directory).map((service_name) => (
-      <Service key={service_name}>
-        <Emoji>{ service_directory[service_name] }</Emoji>
+class Lobby extends React.Component {
+  constructor(props) {
+    super(props)
 
-        <Tables>
-          {props.services.filter(s => s.service == service_name).map((table) => (
-            <Table
-              current_time={props.current_time}
-              key={table.position}
-              refresh={props.refresh}
-              service={service_name}
-              {...table}
-            />
-          ))}
-        </Tables>
-      </Service>
-    ))}
-  </Layout>
-)
+    this.timer = null
+
+    this.state = { current_time: moment() }
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => this.setTime(), 1000)
+  }
+
+  setTime() {
+    this.setState({ current_time: moment() })
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer)
+  }
+
+  render() {
+    return (
+      <Layout position={this.props.position}>
+        { Object.keys(service_directory).map((service_name) => (
+          <Service key={service_name}>
+            <Emoji>{ service_directory[service_name] }</Emoji>
+
+            <Tables>
+              {this.props.services.filter(s => s.service == service_name).map((table) => (
+                <Table
+                  current_time={this.state.current_time}
+                  key={table.position}
+                  refresh={this.props.refresh}
+                  service={service_name}
+                  {...table}
+                />
+              ))}
+            </Tables>
+          </Service>
+        ))}
+      </Layout>
+    )
+  }
+}
 
 const Layout = styled.div`
   ${(p) => p.position};

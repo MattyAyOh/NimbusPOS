@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
 
 import Application from "./assemble/Application"
 import SlideFromBottom from "./assemble/transitions/SlideFromBottom"
@@ -33,24 +32,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.setTime()
-    this.timer = setInterval(() => this.setTime(), 1000)
-
     this.fetchState()
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer)
   }
 
   fetchState() {
     fetch("/state").then((response) => response.json()).then((app_state) => {
       this.setState({ loaded: true, app: app_state })
     });
-  }
-
-  setTime() {
-    this.setState({ current_time: moment() })
   }
 
   render () {
@@ -60,7 +48,6 @@ class App extends React.Component {
 
         { this.state.loaded
           ? <Lobby
-              current_time={this.state.current_time}
               position={layoutLeft}
               services={this.state.app.services}
               refresh={this.fetchState.bind(this)}
@@ -76,7 +63,6 @@ class App extends React.Component {
                 {...params}
                 state={this.state.app}
                 refresh={this.fetchState.bind(this)}
-                current_time={this.state.current_time}
               />
             }
             position={layoutRight}
