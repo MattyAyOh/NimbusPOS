@@ -37,17 +37,19 @@ class Order extends React.Component {
 
         <h2>{this.service.name} #{this.service.position}</h2>
 
-        <Timepicker
-          time={moment(this.state.start_time)}
-          onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
-        />
+        <div>
+          <Timepicker
+            time={this.state.start_time}
+            onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
+          />
 
-        to
+          to
 
-        <Timepicker
-          time={moment(this.state.end_time)}
-          onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
-        />
+          <Timepicker
+            time={this.state.end_time}
+            onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
+          />
+        </div>
 
         <TabView
           tabs={{
@@ -86,6 +88,8 @@ class Order extends React.Component {
     })
   }
 
+  // `field`: `"start_time"` or `"end_time"`
+  // `new_time`: a `moment` object
   timeUpdated(field, new_time) {
     let new_timestamps = {
       start_time: this.state.start_time,
@@ -98,19 +102,27 @@ class Order extends React.Component {
     if(current_hour < 12 && chosen_hour > 12)
       new_time.subtract(1, "day")
 
-    new_timestamps[field] = new_time.toDate()
+    new_timestamps[field] = new_time
     this.persist(new_timestamps)
   }
 
-  persist = (state) => {
+  // takes a `state` object, with:
+  // `start_time`: `null` | `moment` object
+  // `end_time`: `null` | `moment` object
+  persist(state) {
+    this.setState({ ...state, persisted: false })
+
     let params = this.props.params
 
-    this.setState({ ...state, persisted: false })
+    let new_state = {
+      start_time: state.start_time && state.start_time.format(),
+      end_time: state.end_time && state.end_time.format(),
+    }
 
     jquery.ajax({
       url: "/update/order",
       type: "PUT",
-      data: { params, state },
+      data: { params, state: new_state },
       success: (response) => this.setState({ persisted: response.persisted }),
     })
   }
