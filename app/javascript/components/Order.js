@@ -43,7 +43,7 @@ class Order extends React.Component {
             onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
           />
 
-          to
+          <Margin>to</Margin>
 
           <Timepicker
             time={this.state.end_time}
@@ -139,6 +139,10 @@ const Layout = styled.div`
 
 const CloseLink = styled(Link)`
   text-align: right;
+`
+
+const Margin = styled.span`
+  padding: 1rem;
 `
 
 export default Order
