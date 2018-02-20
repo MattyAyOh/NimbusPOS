@@ -10,8 +10,7 @@ class AppController < ApplicationController
   def state
     render json: {
       services: Service.order(:service_type, :position).as_json,
-      snacks: Extra.where(extra_type: "snack").map(&:as_json),
-      drinks: Extra.where(extra_type: "drink").map(&:as_json),
+      extras: Extra.all.as_json,
     }
   end
 end

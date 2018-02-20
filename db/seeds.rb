@@ -55,5 +55,11 @@ Extra.create!(name: "Lemon Box", extra_type: "drink", price: 2.00)
 Extra.create!(name: "Bottled Water", extra_type: "drink", price: 1.00)
 Extra.create!(name: "Hot Tea", extra_type: "drink", price: 1.00)
 
+# Other fees
+Extra.create!(name: "Playing Cards", extra_type: "other", price: 5.00)
+Extra.create!(name: "Stickiness", extra_type: "other", price: 25.00)
+Extra.create!(name: "Puke", extra_type: "other", price: 50.00)
+Extra.create!(name: "Burns", extra_type: "other", price: 50.00)
+
 # Create an example order
 Service.first.orders.create!(start_time: 1.hour.ago)
