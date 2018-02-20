@@ -7,13 +7,19 @@ const LineItem = ({name, rate, quantity, amount}) => {
       <span>{name}</span>
       <span>{rate && `$${rate}`}</span>
       <span>{quantity}</span>
-      <span>${amount}</span>
+      <Right>${amount}</Right>
     </Layout>
   )
 }
 
 const Layout = styled.div`
   display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 2rem;
+`
+
+const Right = styled.span`
+  text-align: right;
 `
 
 export default LineItem

@@ -6,7 +6,7 @@ const bill_amount = (order, rate, current_time) => {
       timeComponent(order, rate, current_time)
       + extrasComponent(order)
 
-    return "$" + String(amount.toFixed(2))
+    return String(amount.toFixed(2))
   } else
     return null
 }

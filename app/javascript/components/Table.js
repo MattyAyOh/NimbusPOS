@@ -30,7 +30,9 @@ class Table extends React.Component {
         }
 
         <Price>
-          {bill_amount(this.props.current_order, this.props.hourly_rate, this.props.current_time)}
+          {this.props.current_order &&
+            "$" + bill_amount(this.props.current_order, this.props.hourly_rate, this.props.current_time)
+          }
         </Price>
       </Layout>
     )
