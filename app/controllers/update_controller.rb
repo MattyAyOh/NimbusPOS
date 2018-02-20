@@ -18,7 +18,7 @@ class UpdateController < ApplicationController
 
   def order_extra
     service = Service.find_by(
-      name: params[:params][:service].titlecase,
+      service_type: params[:params][:service],
       position: params[:params][:number],
     )
 
