@@ -5,7 +5,9 @@ import moment from "moment"
 import jquery from "jquery"
 
 import LineItem from "./LineItem"
-import Divider from "./Divider"
+import bill_amount from "../utils/bill_amount"
+
+const blue = "#4a90e2"
 
 class Checkout extends React.Component {
   constructor(props) {
@@ -45,19 +47,21 @@ class Checkout extends React.Component {
 
           <LineItem
             key="total"
-            name="total"
-            amount={this.props.order.bill_amount}
+            name="Total"
+            amount={bill_amount(this.props.order, this.props.service.hourly_rate, moment())}
           />
         </Bill>
 
-        <div>
+        <Register>
           Cash Handled:
+
           <input
             value={this.state.cash_handled || ""}
             onChange={(event) => this.setState({cash_handled: event.target.value})}
           />
-          <Link to="/" onClick={this.persist}>Confirm</Link>
-        </div>
+        </Register>
+
+        <Confirm to="/" onClick={this.persist}>Confirm</Confirm>
       </Layout>
     )
   }
@@ -83,6 +87,22 @@ const Bill = styled.div`
 
 const Layout = styled.div`
   display: grid;
+`
+
+const Register = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+
+const Confirm = styled(Link)`
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  text-align: center;
+`
+
+const Divider = styled.div`
+  border-top: 1px solid ${blue};
+  height: 1rem;
 `
 
 export default Checkout
