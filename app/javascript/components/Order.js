@@ -57,13 +57,19 @@ class Order extends React.Component {
           tabs={{
             snacks: () => <Extras
                             extras={this.order.extras}
-                            items={this.props.state.snacks}
+                            items={this.props.state.extras.filter(s => s.extra_type == "snack")}
                             order={this.order}
                             params={this.props.params}
                           />,
             drinks: () => <Extras
                             extras={this.order.extras}
-                            items={this.props.state.drinks}
+                            items={this.props.state.extras.filter(s => s.extra_type == "drink")}
+                            order={this.order}
+                            params={this.props.params}
+                          />,
+            other: () => <Extras
+                            extras={this.order.extras}
+                            items={this.props.state.extras.filter(s => s.extra_type == "other")}
                             order={this.order}
                             params={this.props.params}
                           />,

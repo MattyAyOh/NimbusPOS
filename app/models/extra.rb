@@ -1,5 +1,5 @@
 class Extra < ApplicationRecord
-  enum extra_type: ["snack", "drink"]
+  enum extra_type: ["snack", "drink", "other"]
   has_many :order_extras
   has_many :orders, through: :order_extras
 
