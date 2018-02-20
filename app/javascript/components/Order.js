@@ -32,8 +32,10 @@ class Order extends React.Component {
   render() {
     return (
       <Layout>
-        <CloseLink to="/" onClick={this.props.refresh}>Close</CloseLink>
-        <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
+        <Links>
+          <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
+          <Link to="/" onClick={this.props.refresh}>Close</Link>
+        </Links>
 
         <h2>{this.service.name} #{this.service.position}</h2>
 
@@ -132,17 +134,19 @@ const blue = "#4a90e2"
 const Layout = styled.div`
   border-left: 2rem solid ${blue};
   display: grid;
+  grid-template-rows: 1fr 2fr 2fr 80%;
   height: 100%;
   overflow-y: scroll;
   padding: 0 4rem;
 `
 
-const CloseLink = styled(Link)`
-  text-align: right;
-`
-
 const Margin = styled.span`
   padding: 1rem;
+`
+
+const Links = styled.div`
+  display: flex;
+  justify-content: space-between;
 `
 
 export default Order
