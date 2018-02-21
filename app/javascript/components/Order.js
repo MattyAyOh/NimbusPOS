@@ -57,6 +57,7 @@ class Order extends React.Component {
           </div>
 
           <TabView
+            match={this.props.match}
             tabs={{
               snacks: () => <Extras
                               extras={this.order.extras}

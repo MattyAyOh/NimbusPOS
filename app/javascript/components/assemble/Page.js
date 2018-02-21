@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Route } from "react-router"
+import { Route } from "react-router-dom"
 
 /* `Page`
  * A generic React component that can be customized with a variety of behaviors.
@@ -16,7 +16,7 @@ const Page = ({ path, component, position }) => (
     path={path}
     component={({ match }) => (
       <Canvas position={position}>
-        {React.createElement(component, { params: match.params })}
+        {React.createElement(component, { params: match.params, match: match })}
       </Canvas>
     )}
   />
