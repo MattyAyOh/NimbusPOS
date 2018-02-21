@@ -10,6 +10,7 @@ const Extras = (props) => (
         key={item.name}
         order={props.order}
         params={props.params}
+        refresh={props.refresh}
         {...item}
       />
     ))}

@@ -63,18 +63,21 @@ class Order extends React.Component {
                               items={this.props.state.extras.filter(s => s.extra_type == "snack")}
                               order={this.order}
                               params={this.props.params}
+                              refresh={this.props.refresh}
                             />,
               drinks: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type == "drink")}
                               order={this.order}
                               params={this.props.params}
+                              refresh={this.props.refresh}
                             />,
               other: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type == "other")}
                               order={this.order}
                               params={this.props.params}
+                              refresh={this.props.refresh}
                             />,
               checkout: () => <Checkout
                               extras={this.order.extras}
