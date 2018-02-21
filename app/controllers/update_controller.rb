@@ -9,11 +9,11 @@ class UpdateController < ApplicationController
 
     order = service.current_order || Order.create!(service: service)
 
-    result = order.update(
+    result = order.update!(
       params.require(:state).permit(:start_time, :end_time, :cash_handled)
     )
 
-    render json: { persisted: result }
+    render json: { persisted: result, closed: !order.open? }
   end
 
   def order_extra
@@ -29,7 +29,7 @@ class UpdateController < ApplicationController
       OrderExtra.find_by(order: order, extra: extra) ||
       OrderExtra.create!(order: order, extra: extra)
 
-    result = order_extra.update(
+    result = order_extra.update!(
       params.require(:state).permit(:quantity)
     )
 

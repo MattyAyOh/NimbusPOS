@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { Link } from "react-router-dom"
 import moment from "moment"
 import jquery from "jquery"
 
@@ -61,23 +60,9 @@ class Checkout extends React.Component {
           />
         </Register>
 
-        <Confirm to="/" onClick={this.persist}>Confirm</Confirm>
+        <Confirm onClick={() => this.props.persist(this.state)}>Confirm</Confirm>
       </Layout>
     )
-  }
-
-  persist() {
-    let state = this.state
-    let params = this.props.params
-
-    this.setState({ ...state, persisted: false })
-
-    jquery.ajax({
-      url: "/update/order",
-      type: "PUT",
-      data: { params, state },
-      success: (response) => this.setState({ persisted: response.persisted }),
-    })
   }
 }
 
@@ -94,7 +79,7 @@ const Register = styled.div`
   justify-content: space-between;
 `
 
-const Confirm = styled(Link)`
+const Confirm = styled.span`
   font-size: 1.2rem;
   margin-top: 2rem;
   text-align: center;

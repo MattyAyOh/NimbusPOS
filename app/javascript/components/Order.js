@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Link } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 import moment from "moment"
 import jquery from "jquery"
 
@@ -24,64 +24,67 @@ class Order extends React.Component {
     this.order = this.service.current_order
 
     this.state = {
-      start_time: this.order.start_time ? moment(this.order.start_time) : null,
-      end_time: this.order.end_time ? moment(this.order.end_time) : null,
+      start_time: this.order && this.order.start_time ? moment(this.order.start_time) : null,
+      end_time: this.order && this.order.end_time ? moment(this.order.end_time) : null,
+      closed: this.order == null,
     }
   }
 
   render() {
     return (
-      <Layout>
-        <Links>
-          <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
-          <Link to="/" onClick={this.props.refresh}>Close</Link>
-        </Links>
+      this.state.closed
+      ? <Redirect to="/" />
+      : <Layout>
+          <Links>
+            <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
+            <Link to="/" onClick={this.props.refresh}>Close</Link>
+          </Links>
 
-        <h2>{this.service.name} #{this.service.position}</h2>
+          <h2>{this.service.name} #{this.service.position}</h2>
 
-        <div>
-          <Timepicker
-            time={this.state.start_time}
-            onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
+          <div>
+            <Timepicker
+              time={this.state.start_time}
+              onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
+            />
+
+            <Margin>to</Margin>
+
+            <Timepicker
+              time={this.state.end_time}
+              onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
+            />
+          </div>
+
+          <TabView
+            tabs={{
+              snacks: () => <Extras
+                              extras={this.order.extras}
+                              items={this.props.state.extras.filter(s => s.extra_type == "snack")}
+                              order={this.order}
+                              params={this.props.params}
+                            />,
+              drinks: () => <Extras
+                              extras={this.order.extras}
+                              items={this.props.state.extras.filter(s => s.extra_type == "drink")}
+                              order={this.order}
+                              params={this.props.params}
+                            />,
+              other: () => <Extras
+                              extras={this.order.extras}
+                              items={this.props.state.extras.filter(s => s.extra_type == "other")}
+                              order={this.order}
+                              params={this.props.params}
+                            />,
+              checkout: () => <Checkout
+                              extras={this.order.extras}
+                              order={this.order}
+                              service={this.service}
+                              persist={this.persist.bind(this)}
+                            />
+            }}
           />
-
-          <Margin>to</Margin>
-
-          <Timepicker
-            time={this.state.end_time}
-            onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
-          />
-        </div>
-
-        <TabView
-          tabs={{
-            snacks: () => <Extras
-                            extras={this.order.extras}
-                            items={this.props.state.extras.filter(s => s.extra_type == "snack")}
-                            order={this.order}
-                            params={this.props.params}
-                          />,
-            drinks: () => <Extras
-                            extras={this.order.extras}
-                            items={this.props.state.extras.filter(s => s.extra_type == "drink")}
-                            order={this.order}
-                            params={this.props.params}
-                          />,
-            other: () => <Extras
-                            extras={this.order.extras}
-                            items={this.props.state.extras.filter(s => s.extra_type == "other")}
-                            order={this.order}
-                            params={this.props.params}
-                          />,
-            checkout: () => <Checkout
-                            extras={this.order.extras}
-                            order={this.order}
-                            params={this.props.params}
-                            service={this.service}
-                          />
-          }}
-        />
-      </Layout>
+        </Layout>
     )
   }
 
@@ -122,16 +125,18 @@ class Order extends React.Component {
 
     let params = this.props.params
 
-    let new_state = {
-      start_time: state.start_time && state.start_time.format(),
-      end_time: state.end_time && state.end_time.format(),
-    }
+    if(state.start_time) state.start_time = state.start_time.format()
+    if(state.end_time) state.end_time = state.end_time.format()
 
     jquery.ajax({
       url: "/update/order",
       type: "PUT",
-      data: { params, state: new_state },
-      success: (response) => this.setState({ persisted: response.persisted }),
+      data: { params, state },
+      success: (response) => {
+        this.setState({ persisted: response.persisted, closed: response.closed })
+        if(response.closed)
+          this.props.refresh()
+      },
     })
   }
 }
