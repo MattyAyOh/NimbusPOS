@@ -20,7 +20,7 @@ class Table extends React.Component {
 
         {this.props.current_order
         ? <Number active>
-            <Link to={`/table/${this.props.service}/${this.props.position}`} >
+            <Link to={`/table/${this.props.service}/${this.props.position}/snacks`} >
               {this.props.position}
             </Link>
           </Number>
