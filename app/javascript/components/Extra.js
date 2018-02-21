@@ -50,7 +50,10 @@ class Extra extends React.Component {
       url: "/update/order_extra",
       type: "PUT",
       data: { params, state },
-      success: (response) => this.setState({ persisted: response.persisted }),
+      success: (response) => {
+        this.props.refresh()
+        this.setState({ persisted: response.persisted })
+      },
     })
   }
 }
