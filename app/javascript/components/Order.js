@@ -84,6 +84,7 @@ class Order extends React.Component {
                               extras={this.order.extras}
                               order={this.order}
                               service={this.service}
+                              onMount={() => this.ensureEndTime()}
                               persist={this.persist.bind(this)}
                             />
             }}
@@ -101,6 +102,13 @@ class Order extends React.Component {
       data: { params },
       success: (response) => this.props.refresh(),
     })
+  }
+
+  ensureEndTime() {
+    if(this.state.end_time == null) {
+      this.persist({end_time: moment()})
+      this.props.refresh()
+    }
   }
 
   // `field`: `"start_time"` or `"end_time"`
