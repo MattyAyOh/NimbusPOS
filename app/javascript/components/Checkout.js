@@ -64,6 +64,10 @@ class Checkout extends React.Component {
       </Layout>
     )
   }
+
+  componentDidMount() {
+    this.props.onMount()
+  }
 }
 
 const Bill = styled.div`
