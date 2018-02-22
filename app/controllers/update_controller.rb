@@ -29,9 +29,13 @@ class UpdateController < ApplicationController
       OrderExtra.find_by(order: order, extra: extra) ||
       OrderExtra.create!(order: order, extra: extra)
 
-    result = order_extra.update!(
-      params.require(:state).permit(:quantity)
-    )
+    if(params[:state][:quantity].to_i > 0)
+      result = order_extra.update!(
+        params.require(:state).permit(:quantity)
+      )
+    else
+      order_extra.destroy!
+    end
 
     render json: { persisted: result }
   end
