@@ -6,6 +6,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db/karaoke_development
       - PORT=3000
+      - PASSWORD=foobar
     links:
       - db
     ports:
