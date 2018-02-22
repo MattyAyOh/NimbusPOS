@@ -35,9 +35,11 @@ class Timepicker extends React.Component {
   }
 
   render() {
+    let hour_options = [18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4]
+    let minute_options = Array.apply(null, {length: 60}).map(Number.call, Number)
+
     return (
-      <Wrapper
-      >
+      <Wrapper>
         <TimeInput
           value={this.props.time ? this.props.time.format("HH:mm") : ""}
           onChange={(event) => this.props.onChange(moment(event.target.value, "HH:mm"))}
@@ -48,7 +50,7 @@ class Timepicker extends React.Component {
         { this.state.open &&
           <TouchInput>
             <Scroll>
-              {Array.apply(null, {length: 24}).map(Number.call, Number).map((hour) => (
+              {hour_options.map((hour) => (
                 <TimeOption
                   innerRef={(node) => this.hourRendered(node, hour)}
                   key={hour}
@@ -59,7 +61,7 @@ class Timepicker extends React.Component {
             </Scroll>
 
             <Scroll>
-              {Array.apply(null, {length: 60}).map(Number.call, Number).map((minute) => (
+              {minute_options.map((minute) => (
                 <TimeOption
                   innerRef={(node) => this.minuteRendered(node, minute)}
                   key={minute}
@@ -132,7 +134,7 @@ const TimeOption = styled.div`
 `
 
 const Close = styled.div`
-  background-color: green;
+  background-color: ${blue};
   color: white;
   grid-column: 1 / -1;
   padding: 0.5rem;
