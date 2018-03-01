@@ -51,14 +51,16 @@ exports[`Displays correctly 1`] = `
     Cash Handled:
     <input
       onChange={[Function]}
+      type="number"
       value=""
     />
   </div>
-  <span
+  <button
     className="sc-EHOje jjUlfT"
+    id="confirm"
     onClick={[Function]}
   >
     Confirm
-  </span>
+  </button>
 </div>
 `;

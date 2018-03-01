@@ -14,7 +14,21 @@ test("Displays correctly", () => {
 })
 
 test("Confirm button is disabled until 'Cash Handled' is inputted", () => {
-  const checkout = Enzyme.shallow(<Checkout {...default_props} />);
+  const checkout = Enzyme.mount(<Checkout {...default_props} />);
+
+  expect(checkout.state().cash_handled).toEqual(null)
+
+  debugger
+
+  expect(checkout.find("button")[0]).attribs["disabled"].toBe("")
+  // TODO expect(checkout.find(text: "Confirm")).toBeDisabled()
+
+  checkout.find("input").simulate("change", { target: { value: 10 }})
+
+  expect(checkout.state().cash_handled).toEqual(10)
+  // TODO expect(checkout.findElement(text: "Confirm")).toBeEnabled()
+
+  // expect(companySelect.closest("fieldset")[0].attribs["disabled"]).toBe("");
 });
 
 const default_props = {
