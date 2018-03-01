@@ -55,12 +55,18 @@ class Checkout extends React.Component {
           Cash Handled:
 
           <input
+            type="number"
             value={this.state.cash_handled || ""}
             onChange={(event) => this.setState({cash_handled: event.target.value})}
           />
         </Register>
 
-        <Confirm onClick={() => this.props.persist(this.state)}>Confirm</Confirm>
+        <Confirm
+          id="confirm"
+          onClick={() => this.props.persist(this.state)}
+        >
+          Confirm
+        </Confirm>
       </Layout>
     )
   }
@@ -83,7 +89,7 @@ const Register = styled.div`
   justify-content: space-between;
 `
 
-const Confirm = styled.span`
+const Confirm = styled.button`
   font-size: 1.2rem;
   margin-top: 2rem;
   text-align: center;

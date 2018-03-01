@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Displays correctly 1`] = `
+<div
+  className="sc-bxivhb etFryt"
+>
+  <div
+    className="sc-htpNat ebTkst"
+  >
+    <div
+      className="sc-bdVaJa jzqtRL"
+    >
+      <span>
+        Mahjong
+      </span>
+      <span>
+        $20 / hr
+      </span>
+      <span>
+        1 hr
+      </span>
+      <span
+        className="sc-bwzfXH dkRrwr"
+      >
+        $
+        20
+      </span>
+    </div>
+    <div
+      className="sc-bZQynM jAZOmj"
+    />
+    <div
+      className="sc-bdVaJa jzqtRL"
+    >
+      <span>
+        Total
+      </span>
+      <span />
+      <span />
+      <span
+        className="sc-bwzfXH dkRrwr"
+      >
+        $
+        20.00
+      </span>
+    </div>
+  </div>
+  <div
+    className="sc-ifAKCX fOGIFb"
+  >
+    Cash Handled:
+    <input
+      onChange={[Function]}
+      type="number"
+      value=""
+    />
+  </div>
+  <button
+    className="sc-EHOje jjUlfT"
+    id="confirm"
+    onClick={[Function]}
+  >
+    Confirm
+  </button>
+</div>
+`;
