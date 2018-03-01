@@ -15,7 +15,7 @@ module.exports = function(config) {
       stats: "errors-only"
     },
 
-    reporters: ['progress'],
+    reporters: ['nyan'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
