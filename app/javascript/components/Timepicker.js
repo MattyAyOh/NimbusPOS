@@ -91,11 +91,11 @@ class Timepicker extends React.Component {
   }
 
   hourSelected(hour) {
-    this.props.onChange(this.props.time.hour(hour))
+    this.props.onChange(moment(`${hour}:${this.props.time.minute()}`, "HH:mm"))
   }
 
   minuteSelected(minute) {
-    this.props.onChange(this.props.time.minute(minute))
+    this.props.onChange(moment(`${this.props.time.hour()}:${minute}`, "HH:mm"))
     this.setState({open: false})
   }
 }

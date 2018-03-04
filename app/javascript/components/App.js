@@ -27,7 +27,6 @@ class App extends React.Component {
   constructor() {
     super()
 
-    this.timer = null
     this.state = { loaded: false }
   }
 

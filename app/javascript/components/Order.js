@@ -122,10 +122,23 @@ class Order extends React.Component {
     const current_hour = moment().get("hour")
     const chosen_hour = new_time.get("hour")
 
+    // Chose a time before this past midnight?
     if(current_hour < 12 && chosen_hour > 12)
       new_time.subtract(1, "day")
 
+    // Chose a time after this coming midnight?
+    if(current_hour > 12 && chosen_hour < 12)
+      new_time.add(1, "day")
+
     new_timestamps[field] = new_time
+
+    // If it ends before it starts, swap the timestamps
+    if(new_timestamps.start_time > new_timestamps.end_time) {
+      let temp = new_timestamps.end_time
+      new_timestamps.end_time = new_timestamps.start_time
+      new_timestamps.start_time = temp
+    }
+
     this.persist(new_timestamps)
   }
 
@@ -146,8 +159,7 @@ class Order extends React.Component {
       data: { params, state },
       success: (response) => {
         this.setState({ persisted: response.persisted, closed: response.closed })
-        if(response.closed)
-          this.props.refresh()
+        this.props.refresh()
       },
     })
   }
