@@ -15,6 +15,7 @@ heroku config:set --app $1 \
   RAILS_ENV=production \
   NODE_ENV=production \
   RAILS_SERVE_STATIC_FILES=true \
+  PASSWORD=foobar \
   SECRET_KEY_BASE=$(docker-compose run --rm web rake secret)
 
 # Add a `postgres` database through Heroku Addons
