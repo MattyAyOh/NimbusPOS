@@ -35,9 +35,11 @@ class App extends React.Component {
     this.fetchState()
   }
 
-  fetchState() {
+  fetchState(callback) {
     fetch("/state").then((response) => response.json()).then((app_state) => {
       this.setState({ loaded: true, app: app_state })
+
+      if(callback) callback()
     });
   }
 
