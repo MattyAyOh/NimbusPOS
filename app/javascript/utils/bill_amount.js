@@ -16,7 +16,7 @@ const timeComponent = (order, rate, current_time) => {
   let end_time   = order.end_time   ? moment(order.end_time)   : moment(current_time)
 
   // Bill with minute-level granularity
-  return end_time.diff(start_time, "minutes") * rate / 60.0
+  return (end_time.diff(start_time, "minutes") + 1) * rate / 60.0
 }
 
 const extrasComponent = (order) => {
