@@ -18,8 +18,10 @@ class Checkout extends React.Component {
   }
 
   render() {
-    const hours_spent = moment(this.props.order.end_time)
-      .diff(this.props.order.start_time, "hours")
+    const hours_spent = (
+      moment(this.props.order.end_time)
+        .diff(this.props.order.start_time, "minutes") + 1
+    ) / 60.0
 
     return (
       <Layout>
@@ -28,8 +30,8 @@ class Checkout extends React.Component {
             key={this.props.service.name}
             name={this.props.service.name}
             rate={`${this.props.service.hourly_rate} / hr`}
-            quantity={`${hours_spent} hr`}
-            amount={this.props.service.hourly_rate * hours_spent}
+            quantity={`${hours_spent.toFixed(1)} hr`}
+            amount={(this.props.service.hourly_rate * hours_spent).toFixed(2)}
           />
 
           {this.props.extras.map((extra) => (
