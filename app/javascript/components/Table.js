@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import {Link} from "react-router-dom"
+import {Link, withRouter} from "react-router-dom"
 import jquery from "jquery"
 
 import bill_amount from "../utils/bill_amount"
@@ -20,7 +20,7 @@ class Table extends React.Component {
 
         {this.props.current_order
         ? <Number active>
-            <Link to={`/table/${this.props.service}/${this.props.position}/snacks`} >
+            <Link to={this.orderUrl()} >
               {this.props.position}
             </Link>
           </Number>
@@ -48,8 +48,13 @@ class Table extends React.Component {
       url: "/create/order",
       type: "PUT",
       data: { params },
-      success: (response) => this.props.refresh(),
+      success: (response) =>
+        this.props.refresh(() => this.props.history.push(this.orderUrl()))
     })
+  }
+
+  orderUrl() {
+    return `/table/${this.props.service}/${this.props.position}/snacks`
   }
 }
 
@@ -83,4 +88,4 @@ const Price = styled.span`
   text-align: left;
 `
 
-export default Table;
+export default withRouter(Table);
