@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom"
 import moment from "moment"
 import jquery from "jquery"
 
-import Timepicker from "./Timepicker"
+import TimeSpanInput from "./TimeSpanInput"
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
@@ -42,21 +42,13 @@ class Order extends React.Component {
 
           <h2>{this.service.name} #{this.service.position}</h2>
 
-          <div>
-            <Timepicker
-              hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
-              initialValue={this.state.start_time}
-              onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
-            />
-
-            <Margin>to</Margin>
-
-            <Timepicker
-              hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
-              initialValue={this.state.end_time}
-              onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
-            />
-          </div>
+          <TimeSpanInput
+            startTime={this.state.start_time}
+            endTime={this.state.end_time}
+            onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
+            onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime)}
+            hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
+          />
 
           <TabView
             match={this.props.match}
@@ -133,14 +125,6 @@ class Order extends React.Component {
       new_time.add(1, "day")
 
     new_timestamps[field] = new_time
-
-    // If it ends before it starts, swap the timestamps
-    if(new_timestamps.start_time > new_timestamps.end_time) {
-      let temp = new_timestamps.end_time
-      new_timestamps.end_time = new_timestamps.start_time
-      new_timestamps.start_time = temp
-    }
-
     this.persist(new_timestamps)
   }
 
@@ -175,10 +159,6 @@ const Layout = styled.div`
   height: 100%;
   overflow-y: scroll;
   padding: 0 4rem;
-`
-
-const Margin = styled.span`
-  padding: 1rem;
 `
 
 const Links = styled.div`
