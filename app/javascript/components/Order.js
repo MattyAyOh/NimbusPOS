@@ -44,14 +44,16 @@ class Order extends React.Component {
 
           <div>
             <Timepicker
-              time={this.state.start_time}
+              hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
+              initialValue={this.state.start_time}
               onChange={(chosen_time) => this.timeUpdated("start_time", chosen_time)}
             />
 
             <Margin>to</Margin>
 
             <Timepicker
-              time={this.state.end_time}
+              hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
+              initialValue={this.state.end_time}
               onChange={(chosen_time) => this.timeUpdated("end_time", chosen_time)}
             />
           </div>

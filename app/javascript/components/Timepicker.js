@@ -6,97 +6,109 @@ const blue = "#4a90e2"
 
 /*
  * Props:
- * `time`: a `moment` object
+ * `initialValue`: a `moment` object
  * `onChange`: a callback function that takes a `moment` object.
+ * `hourOptions`: a list of allowed values for the hour
+ * `minuteOptions`: a list of allowed values for the minute
  */
 class Timepicker extends React.Component {
   constructor(props) {
     super(props)
 
-    this.scrollOptions = {
-      behavior: "auto",
-      block: "center",
-      inline: "nearest",
-    }
-
     this.state = {
+      time: this.props.initialValue,
+      enteredText: this.props.initialValue ? this.props.initialValue.format("HH:mm") : "",
       open: false,
     }
   }
 
-  minuteRendered(node, minute) {
-    if(node && this.props.time.minute() == minute)
-      node.scrollIntoView(this.scrollOptions)
+  hourOptions() {
+    return this.props.hourOptions ||
+      Array.apply(null, {length: 24}).map(Number.call, Number)
   }
 
-  hourRendered(node, hour) {
-    if(node && this.props.time.hour() == hour)
-      node.scrollIntoView(this.scrollOptions)
+  minuteOptions() {
+    return this.props.minuteOptions ||
+      Array.apply(null, {length: 60}).map(Number.call, Number)
   }
 
   render() {
-    let hour_options = [18, 19, 20, 21, 22, 23, 0, 1, 2, 3, 4]
-    let minute_options = Array.apply(null, {length: 60}).map(Number.call, Number)
+    let selectedHour = this.state.time && this.state.time.hour()
+    let selectedMinute = this.state.time && this.state.time.minute()
 
     return (
       <Wrapper>
         <TimeInput
-          value={this.props.time ? this.props.time.format("HH:mm") : ""}
-          onChange={(event) => this.props.onChange(moment(event.target.value, "HH:mm"))}
-          onFocus={() => this.focused()}
+          onChange={(e) => this.setState({ enteredText: e.target.value })}
+          onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
+          placeholder="--:--"
+          value={this.state.enteredText}
         />
 
         { this.state.open &&
           <TouchInput>
             <Scroll>
-              {hour_options.map((hour) => (
+              {this.hourOptions().map((hour) => (
                 <TimeOption
-                  innerRef={(node) => this.hourRendered(node, hour)}
+                  innerRef={(node) => node && (hour == selectedHour) && node.scrollIntoView()}
                   key={hour}
                   onClick={() => this.hourSelected(hour)}
-                  selected={hour == this.props.time.hour()}
+                  selected={hour == selectedHour}
                 >{pad(hour, 2)}</TimeOption>
               ))}
             </Scroll>
 
             <Scroll>
-              {minute_options.map((minute) => (
+              {this.minuteOptions().map((minute) => (
                 <TimeOption
-                  innerRef={(node) => this.minuteRendered(node, minute)}
+                  innerRef={(node) => node && (minute == selectedMinute) && node.scrollIntoView()}
                   key={minute}
                   onClick={() => this.minuteSelected(minute)}
-                  selected={minute == this.props.time.minute()}
+                  selected={minute == selectedMinute}
                 >{pad(minute, 2)}</TimeOption>
               ))}
             </Scroll>
-
-            <Close onClick={() => this.setState({open: false})}>X</Close>
           </TouchInput>
         }
       </Wrapper>
     )
   }
 
-  focused() {
-    this.setState({ open: true })
+  focused(event) {
+    event.target.select()
 
-    if(this.props.time == null)
-      this.props.onChange(moment())
+    this.setState({
+      open: true,
+      time: this.state.time || moment(),
+    })
   }
 
   enter(event) {
     event.target.blur()
-    this.setState({ open: false})
+    this.timeChanged(moment(event.target.value, "HH:mm"))
   }
 
   hourSelected(hour) {
-    this.props.onChange(moment(`${hour}:${this.props.time.minute()}`, "HH:mm"))
+    let minute = this.state.time.minute()
+    let newTime = moment(`${hour}:${minute}`, "HH:mm")
+    this.setState({ time: newTime, enteredText: newTime.format("HH:mm") })
   }
 
   minuteSelected(minute) {
-    this.props.onChange(moment(`${this.props.time.hour()}:${minute}`, "HH:mm"))
-    this.setState({open: false})
+    let hour = this.state.time.hour()
+    let newTime = moment(`${hour}:${minute}`, "HH:mm")
+    this.timeChanged(newTime)
+  }
+
+  timeChanged(newTime) {
+    this.props.onChange(newTime)
+
+    this.setState({
+      enteredText: newTime.format("HH:mm"),
+      open: false,
+      time: newTime,
+    })
   }
 }
 
@@ -131,14 +143,6 @@ const Scroll = styled.div`
 const TimeOption = styled.div`
   padding: 0.5rem;
   ${({selected}) => selected && `background-color: ${blue}; color: white;`}
-`
-
-const Close = styled.div`
-  background-color: ${blue};
-  color: white;
-  grid-column: 1 / -1;
-  padding: 0.5rem;
-  text-align: center;
 `
 
 export default Timepicker
