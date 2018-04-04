@@ -13,15 +13,16 @@ import Order from "./Order"
 // This layout gives us four grid spaces
 const Layout = styled.div`
   display: grid;
-  height: 100vh;
+  grid-row-gap: 2rem;
   grid-template-columns: 50% 50%;
   grid-template-rows: 4rem 1fr;
+  height: 100vh;
 `
 
 // Top right to bottom right
 const layoutRight = "grid-area: 1 / 2 / -1 / 2"
 // Bottom left
-const layoutLeft = "grid-area: 2 / 1"
+const layoutLeft = "grid-area: 2 / 1 / -1 / 1"
 
 class App extends React.Component {
   constructor() {

@@ -127,9 +127,10 @@ const Wrapper = styled.div`
 `
 
 const TouchInput = styled.div`
+  background-color: white;
+  color: black;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: white;
   height: 15rem;
   position: fixed;
   width: 10rem;

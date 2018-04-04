@@ -36,8 +36,8 @@ class Order extends React.Component {
       ? <Redirect to="/" />
       : <Layout>
           <Links>
-            <Link to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</Link>
-            <Link to="/" onClick={this.props.refresh}>Close</Link>
+            <StyledLink to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</StyledLink>
+            <StyledLink to="/" onClick={this.props.refresh}>Close</StyledLink>
           </Links>
 
           <h2>{this.service.name} #{this.service.position}</h2>
@@ -152,16 +152,22 @@ class Order extends React.Component {
 }
 
 const blue = "#4a90e2"
+const StyledLink = styled(Link)`
+  color: #fff;
+`
+
 const Layout = styled.div`
-  border-left: 2rem solid ${blue};
+  background-color: #253241;
+  color: #fff;
   display: grid;
-  grid-template-rows: 1fr 2fr 2fr 80%;
+  grid-template-rows: 4rem 1fr 1fr 80%;
   height: 100%;
   overflow-y: scroll;
   padding: 0 4rem;
 `
 
 const Links = styled.div`
+  align-items: flex-end;
   display: flex;
   justify-content: space-between;
 `
