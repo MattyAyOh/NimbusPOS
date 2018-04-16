@@ -11,7 +11,8 @@
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "react_ujs": "^2.4.3",
-    "styled-components": "^3.1.4"
+    "styled-components": "^3.1.4",
+    "webpacker-react": "^0.3.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

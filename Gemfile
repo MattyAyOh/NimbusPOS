@@ -1,4 +1,4 @@
-ruby "2.5.0"
+ruby "2.5.1"
 source "https://rubygems.org"
 
 git_source(:github) do |repo_name|
@@ -14,6 +14,7 @@ gem "react-rails"
 gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem "uglifier", ">= 1.3.0"
 gem "webpacker"
+gem "webpacker-react", "~> 0.3.2"
 
 group :development, :test do
   # Call `byebug` to stop execution and get a debugger console
