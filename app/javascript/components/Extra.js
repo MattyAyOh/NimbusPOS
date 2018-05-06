@@ -28,6 +28,8 @@ class Extra extends React.Component {
           onClick={() => this.add(1)}
         >{this.state.quantity}
         </Quantity>
+
+        <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
       </Layout>
     );
   }
@@ -75,6 +77,14 @@ const Quantity = styled.div`
   grid-area: 1 / 1;
   text-align: center;
   vertical-align: center;
+`
+
+const Decrement = styled.div`
+  background-color: ${({color}) => color};
+  color: white;
+  grid-row: 2;
+  text-align: center;
+  width: 100%;
 `
 
 export default Extra
