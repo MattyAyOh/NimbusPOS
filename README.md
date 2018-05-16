@@ -1,13 +1,10 @@
+# Nimbus: Point of Sale
 
-Custom POS System for Nimbus
+Custom POS System for booking time-priced resources,
+such as Karaoke rooms.
 
-One webpage, split into two parts
+## Previous System
 
-Left part is "Room Buttons", right part is "Room Bill"
-
-Pressing a Room Button changes the Room Bill to the corresponding Room
-
-Current System:
 Manual Time Sheets: [NimbusTimeSheets.pdf](https://github.com/MattyAyOh/NimbusPOS/files/1456983/NimbusTimeSheets.pdf)
 Data Entry: [export.pdf](https://github.com/MattyAyOh/NimbusPOS/files/1456982/export.pdf)
 
@@ -34,7 +31,7 @@ Set up the database:
 ./bin/docker-compose run --rm web rake db:seed
 ```
 
-Start the server:
+Start the app:
 
 ```
 ./bin/docker-compose up -d
@@ -87,4 +84,20 @@ Deploy with:
 
 ```
 ./bin/deploy
+```
+
+## Development
+
+During development, run the frontend code natively for fast webpage reloads:
+
+```
+docker-compose up -d
+cd frontend && yarn start
+```
+
+You'll need to edit `frontend/package.json`,
+and change the `"proxy" option:
+
+```
+  "proxy": "http://localhost:3001/",
 ```

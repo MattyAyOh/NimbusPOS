@@ -10,7 +10,7 @@ services:
     command: yarn start
     image: node
     ports:
-      - 8000:3000
+      - 3000:3000
     volumes:
       - ./frontend:/app
     working_dir: /app
@@ -19,12 +19,14 @@ services:
     build: .
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db/karaoke_development
-      - PORT=3000
+      - PORT=3001
       - PASSWORD=foobar
     links:
       - db
     expose:
-      - 3000
+      - 3001
+    ports:
+      - 3001:3001
     volumes:
       - .:/app
     working_dir: /app
