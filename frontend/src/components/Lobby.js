@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
+import { Link } from "react-router-dom"
 
 import Table from "./Table"
 
@@ -51,6 +52,10 @@ class Lobby extends React.Component {
             </Tables>
           </Service>
         ))}
+
+        <Layout.ReservationLink to="/reservations">
+          Reservations
+        </Layout.ReservationLink>
       </Layout>
     )
   }
@@ -59,6 +64,12 @@ class Lobby extends React.Component {
 const Layout = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 5rem;
+  height: 100%;
+`
+
+Layout.ReservationLink = styled(Link)`
+  grid-area: 2 / 2 / 2 / 2;
 `
 
 const Emoji = styled.span`

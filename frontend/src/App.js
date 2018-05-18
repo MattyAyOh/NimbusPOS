@@ -6,6 +6,7 @@ import Header from "./components/Header"
 import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
+import Reservations from "./components/Reservations"
 
 class App extends React.Component {
   constructor() {
@@ -57,6 +58,14 @@ class App extends React.Component {
               }
             />
           }
+
+          <Route
+            path="/reservations"
+            component={({ match }) =>
+              <Layout.Right>
+                <Reservations/>
+              </Layout.Right>
+            } />
         </Layout>
       </Router>
     );
