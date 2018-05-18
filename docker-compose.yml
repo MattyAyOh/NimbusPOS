@@ -16,7 +16,7 @@ services:
     working_dir: /app
 
   web:
-    build: .
+    build: ./server
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db/karaoke_development
       - PORT=3001
@@ -27,5 +27,5 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - .:/app
+      - ./server:/app
     working_dir: /app
