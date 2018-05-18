@@ -4,7 +4,7 @@ import moment from "moment"
 
 import Table from "./Table"
 
-const service_directory = {
+const service_icons = {
   mahjong: "🀄️ ",
   pool: "🎱 ",
   ktv: "🎤 ",
@@ -34,9 +34,9 @@ class Lobby extends React.Component {
   render() {
     return (
       <Layout>
-        { Object.keys(service_directory).map((service_name) => (
+        { Object.keys(service_icons).map((service_name) => (
           <Service key={service_name}>
-            <Emoji>{ service_directory[service_name] }</Emoji>
+            <Emoji>{ service_icons[service_name] }</Emoji>
 
             <Tables>
               {this.props.services.filter(s => s.service == service_name).map((table) => (
