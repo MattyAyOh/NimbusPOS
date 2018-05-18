@@ -33,7 +33,7 @@ class Lobby extends React.Component {
 
   render() {
     return (
-      <Layout position={this.props.position}>
+      <Layout>
         { Object.keys(service_directory).map((service_name) => (
           <Service key={service_name}>
             <Emoji>{ service_directory[service_name] }</Emoji>
@@ -57,7 +57,6 @@ class Lobby extends React.Component {
 }
 
 const Layout = styled.div`
-  ${(p) => p.position};
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 `
