@@ -13,14 +13,9 @@
 !/log/.keep
 !/tmp/.keep
 
-/node_modules
-/yarn-error.log
-
 .byebug_history
 .idea
-/public/packs
-/public/packs-test
-/node_modules
+node_modules
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity

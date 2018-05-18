@@ -8,9 +8,6 @@ Rails.application.routes.draw do
   end
 
   get "/state", to: "app#state"
-  get "*path", to: "app#index"
-
-  root "app#index"
 
   put "/create/order", to: "create#order"
   put "/destroy/order", to: "destroy#order"
