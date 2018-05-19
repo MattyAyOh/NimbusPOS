@@ -8,10 +8,10 @@
 /.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
-!/tmp/.keep
+/server/log/*
+/server/tmp/*
+!/server/log/.keep
+!/server/tmp/.keep
 
 .byebug_history
 .idea
