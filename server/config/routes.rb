@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   end
 
   put "/create/order", to: "create#order"
-  put "/update/order_extra", to: "update#order_extra"
 
   post "/evaluate", to: "code#evaluate"
 end

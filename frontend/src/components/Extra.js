@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import jquery from "jquery"
+import server from "../server"
 
 class Extra extends React.Component {
   constructor(props) {
@@ -41,19 +41,33 @@ class Extra extends React.Component {
   }
 
   persist(state) {
-    let params = this.props.params
-    params["extra_name"] = this.props.name
-
     this.setState({ quantity: state.quantity, persisted: false })
 
-    jquery.ajax({
-      url: "/update/order_extra",
-      type: "PUT",
-      data: { params, state },
-      success: (response) => {
-        this.props.refresh()
-        this.setState({ persisted: response.persisted })
-      },
+    server(`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(this.props.params.service)},
+        position: ${JSON.stringify(this.props.params.number)},
+      )
+
+      order = service.current_order || Order.create!(service: service)
+      extra = Extra.find_by(name: ${JSON.stringify(this.props.name)})
+
+      order_extra =
+        OrderExtra.find_by(order: order, extra: extra) ||
+        OrderExtra.create!(order: order, extra: extra)
+
+      if(${JSON.stringify(state.quantity)}.to_i > 0)
+        result = order_extra.update!(
+          quantity: ${JSON.stringify(state.quantity)},
+        )
+      else
+        order_extra.destroy!
+      end
+
+      { persisted: result }
+    `).then((response) => {
+      this.props.refresh()
+      this.setState({ persisted: response.persisted })
     })
   }
 }
