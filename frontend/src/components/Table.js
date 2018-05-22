@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import {Link, withRouter} from "react-router-dom"
-import jquery from "jquery"
 
 import bill_amount from "../utils/bill_amount"
 import server from "../server"

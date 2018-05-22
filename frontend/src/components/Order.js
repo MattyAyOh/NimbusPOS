@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { Link, Redirect } from "react-router-dom"
 import moment from "moment"
-import jquery from "jquery"
 
 import TimeSpanInput from "./TimeSpanInput"
 import Checkout from "./Checkout"

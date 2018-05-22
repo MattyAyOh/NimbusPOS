@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import jquery from "jquery"
 
 import LineItem from "./LineItem"
 import bill_amount from "../utils/bill_amount"
