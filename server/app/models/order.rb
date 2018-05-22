@@ -14,7 +14,7 @@ class Order < ApplicationRecord
     start_time.nil? || end_time.nil? || cash_handled.nil?
   end
 
-  def as_json
+  def as_json(*args)
     {
       cash_handled: cash_handled,
       end_time: end_time,

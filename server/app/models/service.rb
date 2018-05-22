@@ -7,7 +7,7 @@ class Service < ApplicationRecord
     orders.open.first
   end
 
-  def as_json
+  def as_json(*args)
     {
       current_order: current_order.as_json,
       hourly_rate: hourly_rate,

@@ -8,6 +8,8 @@ import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 
+import server from "./server"
+
 class App extends React.Component {
   constructor() {
     super()
@@ -20,7 +22,10 @@ class App extends React.Component {
   }
 
   fetchState(callback) {
-    fetch("/state").then((response) => response.json()).then((app_state) => {
+    server(`{
+      services: Service.order(:service_type, :position),
+      extras: Extra.all,
+    }`).then((app_state) => {
       this.setState({ loaded: true, app: app_state })
 
       if(callback) callback()

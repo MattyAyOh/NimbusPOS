@@ -8,7 +8,7 @@ class Extra < ApplicationRecord
       "https://jpg.cool/#{name.downcase.gsub(" ", ".")}"
   end
 
-  def as_json
+  def as_json(*args)
     {
       image_url: image_url,
       name: name,
