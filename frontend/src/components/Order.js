@@ -9,6 +9,8 @@ import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
 
+import server from "../server"
+
 class Order extends React.Component {
   constructor(props) {
     super(props)
@@ -88,14 +90,12 @@ class Order extends React.Component {
   }
 
   cancelOrder() {
-    let params = this.props.params
-
-    jquery.ajax({
-      url: "/destroy/order",
-      type: "PUT",
-      data: { params },
-      success: (response) => this.props.refresh(),
-    })
+    server(`
+      Service.find_by(
+        service_type: ${JSON.stringify(this.props.params.service)},
+        position: ${JSON.stringify(this.props.params.number)}
+      ).current_order.destroy!
+    `).then(this.props.refresh)
   }
 
   ensureEndTime() {
