@@ -139,14 +139,19 @@ class Order extends React.Component {
     if(state.start_time) state.start_time = state.start_time.format()
     if(state.end_time) state.end_time = state.end_time.format()
 
-    jquery.ajax({
-      url: "/update/order",
-      type: "PUT",
-      data: { params, state },
-      success: (response) => {
-        this.setState({ persisted: response.persisted, closed: response.closed })
-        this.props.refresh()
-      },
+    server(`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(params.service)},
+        position: ${JSON.stringify(params.number)},
+      )
+
+      order = service.current_order || Order.create!(service: service)
+      result = order.update!(JSON.parse('${JSON.stringify(state)}'))
+
+      { persisted: result, closed: !order.open? }
+    `).then((result) => {
+      this.setState({ persisted: result.persisted, closed: result.closed })
+      this.props.refresh()
     })
   }
 }
