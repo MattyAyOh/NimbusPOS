@@ -40,7 +40,7 @@ class Lobby extends React.Component {
             <Emoji>{ service_icons[service_name] }</Emoji>
 
             <Tables>
-              {this.props.services.filter(s => s.service == service_name).map((table) => (
+              {this.props.services.filter(s => s.service === service_name).map((table) => (
                 <Table
                   current_time={this.state.current_time}
                   key={table.position}

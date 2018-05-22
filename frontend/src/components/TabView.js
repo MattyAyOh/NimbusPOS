@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Switch, Route, Redirect, Link } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 
 const blue = "#4a90e2"
 
@@ -13,7 +13,7 @@ class TabView extends React.Component {
             <Tab
               key={tab}
               to={this.props.match.url + "/" + tab}
-              selected={window.location.pathname == this.props.match.url + "/" + tab}
+              selected={window.location.pathname === this.props.match.url + "/" + tab}
             >
               {tab}
             </Tab>

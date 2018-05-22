@@ -18,8 +18,8 @@ class Order extends React.Component {
       .state
       .services
       .filter(s =>
-        s.service == this.props.params.service &&
-        s.position == this.props.params.number
+        s.service === this.props.params.service &&
+        s.position === this.props.params.number
       )[0]
 
     this.order = this.service.current_order
@@ -56,21 +56,21 @@ class Order extends React.Component {
             tabs={{
               snacks: () => <Extras
                               extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type == "snack")}
+                              items={this.props.state.extras.filter(s => s.extra_type === "snack")}
                               order={this.order}
                               params={this.props.params}
                               refresh={this.props.refresh}
                             />,
               drinks: () => <Extras
                               extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type == "drink")}
+                              items={this.props.state.extras.filter(s => s.extra_type === "drink")}
                               order={this.order}
                               params={this.props.params}
                               refresh={this.props.refresh}
                             />,
               other: () => <Extras
                               extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type == "other")}
+                              items={this.props.state.extras.filter(s => s.extra_type === "other")}
                               order={this.order}
                               params={this.props.params}
                               refresh={this.props.refresh}
@@ -155,7 +155,6 @@ class Order extends React.Component {
   }
 }
 
-const blue = "#4a90e2"
 const StyledLink = styled(Link)`
   color: #fff;
 `

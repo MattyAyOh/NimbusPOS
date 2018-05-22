@@ -7,7 +7,7 @@ class Extra extends React.Component {
   constructor(props) {
     super(props)
 
-    const extra = props.order.extras.filter((x) => x.extra.name == props.name)[0]
+    const extra = props.order.extras.filter((x) => x.extra.name === props.name)[0]
     const quantity = (extra && extra.quantity) || 0
 
     this.state = {

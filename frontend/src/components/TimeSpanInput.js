@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
 
 import Timepicker from "./Timepicker"
 
@@ -32,7 +31,8 @@ const TimeSpanInput = (props) => (
 
     { (props.endTime < props.startTime) &&
       <Warning>
-      ⚠️ Hold on - the times are in the wrong order.
+      <span role="img" aria-label="warning">⚠️</span>
+      Hold on - the times are in the wrong order.
       </Warning>
     }
   </div>

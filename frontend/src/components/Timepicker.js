@@ -51,10 +51,10 @@ class Timepicker extends React.Component {
             <Scroll>
               {this.hourOptions().map((hour) => (
                 <TimeOption
-                  innerRef={(node) => node && (hour == selectedHour) && node.scrollIntoView()}
+                  innerRef={(node) => node && (hour === selectedHour) && node.scrollIntoView()}
                   key={hour}
                   onClick={() => this.hourSelected(hour)}
-                  selected={hour == selectedHour}
+                  selected={hour === selectedHour}
                 >{pad(hour, 2)}</TimeOption>
               ))}
             </Scroll>
@@ -62,10 +62,10 @@ class Timepicker extends React.Component {
             <Scroll>
               {this.minuteOptions().map((minute) => (
                 <TimeOption
-                  innerRef={(node) => node && (minute == selectedMinute) && node.scrollIntoView()}
+                  innerRef={(node) => node && (minute === selectedMinute) && node.scrollIntoView()}
                   key={minute}
                   onClick={() => this.minuteSelected(minute)}
-                  selected={minute == selectedMinute}
+                  selected={minute === selectedMinute}
                 >{pad(minute, 2)}</TimeOption>
               ))}
             </Scroll>
