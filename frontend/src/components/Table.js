@@ -5,6 +5,7 @@ import {Link, withRouter} from "react-router-dom"
 import jquery from "jquery"
 
 import bill_amount from "../utils/bill_amount"
+import server from "../server"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -39,18 +40,16 @@ class Table extends React.Component {
   }
 
   ensureCurrentOrder() {
-    const params = {
-      service: this.props.service,
-      position: this.props.position,
-    }
+    server(`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(this.props.service)},
+        position: ${JSON.stringify(this.props.position)},
+      )
 
-    jquery.ajax({
-      url: "/create/order",
-      type: "PUT",
-      data: { params },
-      success: (response) =>
+      service.current_order || service.orders.create!(start_time: Time.current)
+    `).then((response) =>
         this.props.refresh(() => this.props.history.push(this.orderUrl()))
-    })
+    )
   }
 
   orderUrl() {

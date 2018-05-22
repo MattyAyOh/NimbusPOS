@@ -7,7 +7,5 @@ Rails.application.routes.draw do
     root to: "orders#index"
   end
 
-  put "/create/order", to: "create#order"
-
   post "/evaluate", to: "code#evaluate"
 end
