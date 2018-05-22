@@ -25,6 +25,7 @@ class App extends React.Component {
     server(`{
       services: Service.order(:service_type, :position),
       extras: Extra.all,
+      reservations: Reservation.all.order(:start_time),
     }`).then((app_state) => {
       this.setState({ loaded: true, app: app_state })
 
@@ -68,7 +69,13 @@ class App extends React.Component {
             path="/reservations"
             component={({ match }) =>
               <Layout.Right>
-                <Reservations/>
+                {this.state.loaded &&
+                  <Reservations
+                    refresh={this.fetchState.bind(this)}
+                    reservations={this.state.app.reservations}
+                    services={this.state.app.services}
+                  />
+                }
               </Layout.Right>
             } />
         </Layout>

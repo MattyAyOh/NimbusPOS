@@ -7,7 +7,8 @@ import Timepicker from "./Timepicker"
  * Props:
  * `startTime`: a `moment` object
  * `endTime`: a `moment` object
- * `onChange`: a callback function that takes a `moment` object.
+ * `onStartTimeChange`: a callback function that takes a `moment` object.
+ * `onEndTimeChange`: a callback function that takes a `moment` object.
  * `hourOptions`: a list of allowed values for the hour
  * `minuteOptions`: a list of allowed values for the minute
  */
