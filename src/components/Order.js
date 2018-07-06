@@ -8,8 +8,6 @@ import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
 
-import server from "../server"
-
 class Order extends React.Component {
   constructor(props) {
     super(props)
@@ -37,8 +35,14 @@ class Order extends React.Component {
       ? <Redirect to="/" />
       : <Layout>
           <Links>
-            <StyledLink to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</StyledLink>
-            <StyledLink to="/" onClick={this.props.refresh}>Close</StyledLink>
+            <StyledLink
+              to="/"
+              onClick={() => this.props.onCancel(this.props.params.service, this.props.params.number)}
+            >
+              Cancel Order
+            </StyledLink>
+
+            <StyledLink to="/">Close</StyledLink>
           </Links>
 
           <h2>{this.service.name} #{this.service.position}</h2>
@@ -59,28 +63,30 @@ class Order extends React.Component {
                               items={this.props.state.extras.filter(s => s.extra_type === "snack")}
                               order={this.order}
                               params={this.props.params}
-                              refresh={this.props.refresh}
+                              onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type === "drink")}
                               order={this.order}
                               params={this.props.params}
-                              refresh={this.props.refresh}
+                              onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type === "other")}
                               order={this.order}
                               params={this.props.params}
-                              refresh={this.props.refresh}
+                              onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
                               extras={this.order.extras}
                               order={this.order}
                               service={this.service}
                               onMount={() => this.ensureEndTime()}
-                              persist={this.persist.bind(this)}
+                              persist={(state) => this.props.onPersist(state).then((result) => {
+                                this.setState({ closed: result.closed })
+                              })}
                             />
             }}
           />
@@ -88,19 +94,11 @@ class Order extends React.Component {
     )
   }
 
-  cancelOrder() {
-    server(`
-      Service.find_by(
-        service_type: ${JSON.stringify(this.props.params.service)},
-        position: ${JSON.stringify(this.props.params.number)}
-      ).current_order.destroy!
-    `).then(this.props.refresh)
-  }
-
   ensureEndTime() {
     if(this.state.end_time == null) {
-      this.persist({end_time: moment()})
-      this.props.refresh()
+      this.props.onPersist({end_time: moment()}).then((result) => {
+        this.setState({ closed: result.closed })
+      })
     }
   }
 
@@ -124,33 +122,8 @@ class Order extends React.Component {
       new_time.add(1, "day")
 
     new_timestamps[field] = new_time
-    this.persist(new_timestamps)
-  }
-
-  // takes a `state` object, with:
-  // `start_time`: `null` | `moment` object
-  // `end_time`: `null` | `moment` object
-  persist(state) {
-    this.setState({ ...state, persisted: false })
-
-    let params = this.props.params
-
-    if(state.start_time) state.start_time = state.start_time.format()
-    if(state.end_time) state.end_time = state.end_time.format()
-
-    server(`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(params.service)},
-        position: ${JSON.stringify(params.number)},
-      )
-
-      order = service.current_order || Order.create!(service: service)
-      result = order.update!(JSON.parse('${JSON.stringify(state)}'))
-
-      { persisted: result, closed: !order.open? }
-    `).then((result) => {
-      this.setState({ persisted: result.persisted, closed: result.closed })
-      this.props.refresh()
+    this.props.onPersist(new_timestamps).then((result) => {
+      this.setState({ closed: result.closed })
     })
   }
 }

@@ -7,10 +7,10 @@ const Extras = (props) => (
   <Layout>
     {props.items.map((item) => (
       <Extra
+        onPersist={props.onPersist}
         key={item.name}
         order={props.order}
         params={props.params}
-        refresh={props.refresh}
         {...item}
       />
     ))}

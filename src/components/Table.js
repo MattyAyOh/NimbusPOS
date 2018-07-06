@@ -4,7 +4,6 @@ import moment from "moment"
 import {Link, withRouter} from "react-router-dom"
 
 import bill_amount from "../utils/bill_amount"
-import server from "../server"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -24,7 +23,9 @@ class Table extends React.Component {
               {this.props.position}
             </Link>
           </Number>
-        : <Number onClick={this.ensureCurrentOrder.bind(this)} >
+        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service, this.props.position)
+            .then(() => this.props.history.push(this.orderUrl()))
+          } >
             {this.props.position}
           </Number>
         }
@@ -35,19 +36,6 @@ class Table extends React.Component {
           }
         </Price>
       </Layout>
-    )
-  }
-
-  ensureCurrentOrder() {
-    server(`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(this.props.service)},
-        position: ${JSON.stringify(this.props.position)},
-      )
-
-      service.current_order || service.orders.create!(start_time: Time.current)
-    `).then((response) =>
-        this.props.refresh(() => this.props.history.push(this.orderUrl()))
     )
   }
 

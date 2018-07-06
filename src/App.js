@@ -8,9 +8,26 @@ import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 
-import server from "./server"
+import Assemble from "./Assemble"
+
+const reservations = [
+  {
+    start_time: "2017-05-20 10pm",
+    end_time: "2017-05-20 12pm",
+    service: "pool",
+    room: 4,
+  },
+  {
+    start_time: "2017-05-20 12pm",
+    end_time: "2017-05-21 4am",
+    service: "karaoke",
+    room: 1,
+  },
+]
 
 class App extends React.Component {
+  assemble = new Assemble("https://localhost:3000")
+
   constructor() {
     super()
 
@@ -18,18 +35,14 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchState()
-  }
-
-  fetchState(callback) {
-    server(`{
+    this.assemble.watch("nimbus")`
+    {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
-    }`).then((app_state) => {
-      this.setState({ loaded: true, app: app_state })
-
-      if(callback) callback()
-    });
+    }
+    `((app_state) =>
+      this.setState({ loaded: true, app: app_state, reservations })
+    );
   }
 
   render () {
@@ -42,7 +55,7 @@ class App extends React.Component {
             { this.state.loaded
             ?  <Lobby
                   services={this.state.app.services}
-                  refresh={this.fetchState.bind(this)}
+                  onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                 />
             : <Loading/>
             }
@@ -57,7 +70,9 @@ class App extends React.Component {
                     params={match.params}
                     match={match}
                     state={this.state.app}
-                    refresh={this.fetchState.bind(this)}
+                    onCancel={(service, number) => this.cancelOrder(service, number)}
+                    onPersist={(state) => this.persistOrder(state, match.params)}
+                    onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
                   />
                 </Layout.Right>
               }
@@ -67,13 +82,79 @@ class App extends React.Component {
           <Route
             path="/reservations"
             component={({ match }) =>
-              <Layout.Right>
-                <Reservations/>
-              </Layout.Right>
+              this.state.loaded
+              ? <Layout.Right>
+                  <Reservations reservations={this.state.reservations} />
+                </Layout.Right>
+              : <Loading />
             } />
         </Layout>
       </Router>
     );
+  }
+
+  // takes a `state` object, with:
+  // `start_time`: `null` | `moment` object
+  // `end_time`: `null` | `moment` object
+  persistOrder = (state, params) => {
+    if(state.start_time) state.start_time = state.start_time.format()
+    if(state.end_time) state.end_time = state.end_time.format()
+
+    return this.assemble.run("nimbus")`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(params.service)},
+        position: ${JSON.stringify(params.number)},
+      )
+
+      order = service.current_order || Order.create!(service: service)
+      result = order.update!(JSON.parse('${JSON.stringify(state)}'))
+
+      { persisted: result, closed: !order.open? }
+    `
+  }
+
+  persistExtra(state, extra_name, params) {
+    this.assemble.run("nimbus")`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(params.service)},
+        position: ${JSON.stringify(params.number)},
+      )
+
+      order = service.current_order || Order.create!(service: service)
+      extra = Extra.find_by(name: ${JSON.stringify(extra_name)})
+
+      order_extra =
+        OrderExtra.find_by(order: order, extra: extra) ||
+        OrderExtra.create!(order: order, extra: extra)
+
+      if(${JSON.stringify(state.quantity)}.to_i > 0)
+        result = order_extra.update!(
+          quantity: ${JSON.stringify(state.quantity)},
+        )
+      else
+        order_extra.destroy!
+      end
+    `
+  }
+
+  ensureCurrentOrder(service, position) {
+    return this.assemble.run("nimbus")`
+      service = Service.find_by(
+        service_type: ${JSON.stringify(service)},
+        position: ${JSON.stringify(position)},
+      )
+
+      service.current_order || service.orders.create!(start_time: Time.current)
+    `
+  }
+
+  cancelOrder = (service, number) => {
+    this.assemble.run("nimbus")`
+      Service.find_by(
+        service_type: ${JSON.stringify(service)},
+        position: ${JSON.stringify(number)}
+      ).current_order.destroy!
+    `
   }
 }
 
