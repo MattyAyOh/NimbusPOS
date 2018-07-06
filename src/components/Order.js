@@ -19,7 +19,7 @@ class Order extends React.Component {
       .services
       .filter(s =>
         s.service === this.props.params.service &&
-        s.position === this.props.params.number
+        s.position === parseInt(this.props.params.number, 10)
       )[0]
 
     this.order = this.service.current_order
