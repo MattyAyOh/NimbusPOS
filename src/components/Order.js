@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 import styled from "styled-components"
 import { Link, Redirect } from "react-router-dom"
 import moment from "moment"
@@ -7,6 +8,9 @@ import TimeSpanInput from "./TimeSpanInput"
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
+
+import OrderModel from "../data/Order"
+import ExtraModel from "../data/Extra"
 
 class Order extends React.Component {
   constructor(props) {
@@ -133,5 +137,10 @@ const Links = styled.div`
   display: flex;
   justify-content: space-between;
 `
+
+Order.propTypes = {
+  data: PropTypes.instanceOf(OrderModel),
+  extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
+}
 
 export default Order

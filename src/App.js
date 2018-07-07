@@ -10,6 +10,7 @@ import Reservations from "./components/Reservations"
 
 import Assemble from "./Assemble"
 import Service from "./data/Service"
+import Extra from "./data/Extra"
 
 const reservations = [
   {
@@ -191,7 +192,7 @@ const parseService = (json) => {
 }
 
 const parseExtra = (json) => {
-  return json
+  return new Extra(json)
 }
 
 export default App
