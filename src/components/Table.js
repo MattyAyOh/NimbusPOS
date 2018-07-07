@@ -3,8 +3,6 @@ import styled from "styled-components"
 import moment from "moment"
 import {Link, withRouter} from "react-router-dom"
 
-import bill_amount from "../utils/bill_amount"
-
 const blue = "#4a90e2"
 const grey = "#afb5bd"
 
@@ -13,26 +11,26 @@ class Table extends React.Component {
     return (
       <Layout>
         <Time>
-          {this.props.current_order &&
-            moment(this.props.current_order.start_time).format('LT')}
+          {this.props.data.current_order &&
+            moment(this.props.data.current_order.start_time).format('LT')}
         </Time>
 
-        {this.props.current_order
+        {this.props.data.current_order
         ? <Number active>
             <Link to={this.orderUrl()} >
-              {this.props.position}
+              {this.props.data.position}
             </Link>
           </Number>
-        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service, this.props.position)
+        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.data.service, this.props.data.position)
             .then(() => this.props.history.push(this.orderUrl()))
           } >
-            {this.props.position}
+            {this.props.data.position}
           </Number>
         }
 
         <Price>
-          {this.props.current_order &&
-            "$" + bill_amount(this.props.current_order, this.props.hourly_rate, this.props.current_time)
+          {this.props.data.current_order &&
+            "$" + this.props.data.current_order.bill_amount(this.props.data.hourly_rate, this.props.current_time)
           }
         </Price>
       </Layout>
@@ -40,7 +38,7 @@ class Table extends React.Component {
   }
 
   orderUrl() {
-    return `/table/${this.props.service}/${this.props.position}/snacks`
+    return `/table/${this.props.data.service}/${this.props.data.position}/snacks`
   }
 }
 

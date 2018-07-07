@@ -9,6 +9,7 @@ import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 
 import Assemble from "./Assemble"
+import Service from "./data/Service"
 
 const reservations = [
   {
@@ -41,7 +42,10 @@ class App extends React.Component {
       extras: Extra.all,
     }
     `((app_state) =>
-      this.setState({ loaded: true, app: app_state, reservations })
+      this.setState({ loaded: true, app: {
+        services: app_state.services.map(parseService),
+        extras: app_state.extras.map(parseExtra),
+      }, reservations })
     );
   }
 
@@ -173,5 +177,13 @@ Layout.Left = styled.div`
 Layout.Right = styled.div`
   grid-area: 1 / 2 / -1 / 2;
 `
+
+const parseService = (json) => {
+  return new Service(json)
+}
+
+const parseExtra = (json) => {
+  return json
+}
 
 export default App

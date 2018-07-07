@@ -45,8 +45,7 @@ class Lobby extends React.Component {
                   onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
                   current_time={this.state.current_time}
                   key={table.position}
-                  service={service_name}
-                  {...table}
+                  data={table}
                 />
               ))}
             </Tables>

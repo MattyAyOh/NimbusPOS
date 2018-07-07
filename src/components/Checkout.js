@@ -3,7 +3,6 @@ import styled from "styled-components"
 import moment from "moment"
 
 import LineItem from "./LineItem"
-import bill_amount from "../utils/bill_amount"
 
 const blue = "#4a90e2"
 
@@ -48,7 +47,7 @@ class Checkout extends React.Component {
           <LineItem
             key="total"
             name="Total"
-            amount={bill_amount(this.props.order, this.props.service.hourly_rate, moment())}
+            amount={this.props.order.bill_amount(this.props.service.hourly_rate, moment())}
           />
         </Bill>
 
