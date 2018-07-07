@@ -1,7 +1,9 @@
 import React from "react"
+import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 
+import Order from "../data/Order"
 import LineItem from "./LineItem"
 
 const blue = "#4a90e2"
@@ -11,25 +13,25 @@ class Checkout extends React.Component {
     super(props)
 
     this.state = {
-      cash_handled: props.order.cash_handled,
+      cash_handled: props.data.cash_handled,
     }
   }
 
   render() {
     const hours_spent = (
-      moment(this.props.order.end_time)
-        .diff(this.props.order.start_time, "minutes") + 1
+      moment(this.props.data.end_time)
+        .diff(this.props.data.start_time, "minutes") + 1
     ) / 60.0
 
     return (
       <Layout>
         <Bill>
           <LineItem
-            key={this.props.service.name}
-            name={this.props.service.name}
-            rate={`${this.props.service.hourly_rate} / hr`}
+            key={this.props.data.service.name}
+            name={this.props.data.service.name}
+            rate={`${this.props.data.service.hourly_rate} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
-            amount={(this.props.service.hourly_rate * hours_spent).toFixed(2)}
+            amount={(this.props.data.service.hourly_rate * hours_spent).toFixed(2)}
           />
 
           {this.props.extras.map((extra) => (
@@ -47,7 +49,7 @@ class Checkout extends React.Component {
           <LineItem
             key="total"
             name="Total"
-            amount={this.props.order.bill_amount(this.props.service.hourly_rate, moment())}
+            amount={this.props.data.bill_amount(this.props.data.service.hourly_rate, moment())}
           />
         </Bill>
 
@@ -104,5 +106,9 @@ const Divider = styled.div`
   border-top: 1px solid ${blue};
   height: 1rem;
 `
+
+Checkout.propTypes = {
+  data: PropTypes.instanceOf(Order),
+}
 
 export default Checkout

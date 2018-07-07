@@ -29,6 +29,10 @@ class Service {
     this.current_order = values.current_order
       ? new Order(values.current_order)
       : null
+
+    // Back-reference
+    if(this.current_order)
+      this.current_order.service = this
   }
 }
 

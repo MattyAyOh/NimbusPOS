@@ -12,20 +12,10 @@ class Order extends React.Component {
   constructor(props) {
     super(props)
 
-    this.service = this.props
-      .state
-      .services
-      .filter(s =>
-        s.service === this.props.params.service &&
-        s.position === parseInt(this.props.params.number, 10)
-      )[0]
-
-    this.order = this.service.current_order
-
     this.state = {
-      start_time: this.order && this.order.start_time ? moment(this.order.start_time) : null,
-      end_time: this.order && this.order.end_time ? moment(this.order.end_time) : null,
-      closed: this.order == null,
+      start_time: this.props.data && this.props.data.start_time ? moment(this.props.data.start_time) : null,
+      end_time: this.props.data && this.props.data.end_time ? moment(this.props.data.end_time) : null,
+      closed: this.props.data == null,
     }
   }
 
@@ -37,7 +27,7 @@ class Order extends React.Component {
           <Links>
             <StyledLink
               to="/"
-              onClick={() => this.props.onCancel(this.props.params.service, this.props.params.number)}
+              onClick={() => this.props.onCancel(this.props.data.service)}
             >
               Cancel Order
             </StyledLink>
@@ -45,7 +35,7 @@ class Order extends React.Component {
             <StyledLink to="/">Close</StyledLink>
           </Links>
 
-          <h2>{this.service.name} #{this.service.position}</h2>
+          <h2>{this.props.data.service.name} #{this.props.data.service.position}</h2>
 
           <TimeSpanInput
             startTime={this.state.start_time}
@@ -59,27 +49,26 @@ class Order extends React.Component {
             match={this.props.match}
             tabs={{
               snacks: () => <Extras
-                              extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type === "snack")}
-                              order={this.order}
+                              extras={this.props.data.extras}
+                              items={this.props.extras.filter(s => s.extra_type === "snack")}
+                              order={this.props.data}
                               onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
-                              extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type === "drink")}
-                              order={this.order}
+                              extras={this.props.data.extras}
+                              items={this.props.extras.filter(s => s.extra_type === "drink")}
+                              order={this.props.data}
                               onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
-                              extras={this.order.extras}
-                              items={this.props.state.extras.filter(s => s.extra_type === "other")}
-                              order={this.order}
+                              extras={this.props.data.extras}
+                              items={this.props.extras.filter(s => s.extra_type === "other")}
+                              order={this.props.data}
                               onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
-                              extras={this.order.extras}
-                              order={this.order}
-                              service={this.service}
+                              extras={this.props.data.extras}
+                              data={this.props.data}
                               onMount={() => this.ensureEndTime()}
                               persist={(state) => this.props.onPersist(state).then((result) => {
                                 this.setState({ closed: result.closed })

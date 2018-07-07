@@ -73,8 +73,16 @@ class App extends React.Component {
                   <Order
                     params={match.params}
                     match={match}
-                    state={this.state.app}
-                    onCancel={(service, number) => this.cancelOrder(service, number)}
+                    extras={this.state.app.extras}
+                    data={
+                      this.state.app
+                      .services
+                      .filter(s =>
+                        s.service === match.params.service &&
+                        s.position === parseInt(match.params.number, 10)
+                      )[0].current_order
+                    }
+                    onCancel={this.cancelOrder}
                     onPersist={(state) => this.persistOrder(state, match.params)}
                     onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
                   />
@@ -152,11 +160,11 @@ class App extends React.Component {
     `
   }
 
-  cancelOrder = (service, number) => {
+  cancelOrder = (service) => {
     this.assemble.run("nimbus")`
       Service.find_by(
-        service_type: ${JSON.stringify(service)},
-        position: ${JSON.stringify(number)}
+        service_type: ${JSON.stringify(service.service)},
+        position: ${JSON.stringify(service.position)}
       ).current_order.destroy!
     `
   }
