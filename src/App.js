@@ -58,7 +58,7 @@ class App extends React.Component {
           <Layout.Left>
             { this.state.loaded
             ?  <Lobby
-                  services={this.state.app.services}
+                  data={this.state.app.services}
                   onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                 />
             : <Loading/>

@@ -2,8 +2,10 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import { Link } from "react-router-dom"
+import PropTypes from "prop-types"
 
 import Table from "./Table"
+import Service from "../data/Service"
 
 const service_icons = {
   mahjong: "🀄️ ",
@@ -36,11 +38,11 @@ class Lobby extends React.Component {
     return (
       <Layout>
         { Object.keys(service_icons).map((service_name) => (
-          <Service key={service_name}>
+          <Column key={service_name}>
             <Emoji>{ service_icons[service_name] }</Emoji>
 
             <Tables>
-              {this.props.services.filter(s => s.service === service_name).map((table) => (
+              {this.props.data.filter(s => s.service === service_name).map((table) => (
                 <Table
                   onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
                   current_time={this.state.current_time}
@@ -49,7 +51,7 @@ class Lobby extends React.Component {
                 />
               ))}
             </Tables>
-          </Service>
+          </Column>
         ))}
 
         <Layout.ReservationLink to="/reservations">
@@ -76,12 +78,16 @@ const Emoji = styled.span`
   padding-bottom: 2rem;
 `
 
-const Service = styled.div`
+const Column = styled.div`
   text-align: center;
 `
 
 const Tables = styled.div`
   margin-top: 2rem;
 `
+
+Lobby.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.instanceOf(Service)),
+}
 
 export default Lobby
