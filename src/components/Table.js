@@ -1,7 +1,10 @@
 import React from "react"
+import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 import {Link, withRouter} from "react-router-dom"
+
+import Service from "../data/Service"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -11,26 +14,26 @@ class Table extends React.Component {
     return (
       <Layout>
         <Time>
-          {this.props.data.current_order &&
-            moment(this.props.data.current_order.start_time).format('LT')}
+          {this.props.service.current_order &&
+            moment(this.props.service.current_order.start_time).format('LT')}
         </Time>
 
-        {this.props.data.current_order
+        {this.props.service.current_order
         ? <Number active>
             <Link to={this.orderUrl()} >
-              {this.props.data.position}
+              {this.props.service.position}
             </Link>
           </Number>
-        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.data.service, this.props.data.position)
+        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
             .then(() => this.props.history.push(this.orderUrl()))
           } >
-            {this.props.data.position}
+            {this.props.service.position}
           </Number>
         }
 
         <Price>
-          {this.props.data.current_order &&
-            "$" + this.props.data.current_order.bill_amount(this.props.data.hourly_rate, this.props.current_time)
+          {this.props.service.current_order &&
+            "$" + this.props.service.current_order.bill_amount(this.props.service.hourly_rate, this.props.current_time)
           }
         </Price>
       </Layout>
@@ -38,7 +41,7 @@ class Table extends React.Component {
   }
 
   orderUrl() {
-    return `/table/${this.props.data.service}/${this.props.data.position}/snacks`
+    return `/table/${this.props.service.service}/${this.props.service.position}/snacks`
   }
 }
 
@@ -71,5 +74,9 @@ const Price = styled.span`
   color: ${grey};
   text-align: left;
 `
+
+Table.propTypes = {
+  service: PropTypes.instanceOf(Service)
+}
 
 export default withRouter(Table);

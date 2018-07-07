@@ -59,7 +59,7 @@ class App extends React.Component {
           <Layout.Left>
             { this.state.loaded
             ?  <Lobby
-                  data={this.state.app.services}
+                  services={this.state.app.services}
                   onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                 />
             : <Loading/>
@@ -75,7 +75,7 @@ class App extends React.Component {
                     params={match.params}
                     match={match}
                     extras={this.state.app.extras}
-                    data={
+                    order={
                       this.state.app
                       .services
                       .filter(s =>

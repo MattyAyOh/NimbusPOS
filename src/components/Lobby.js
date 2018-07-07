@@ -42,12 +42,12 @@ class Lobby extends React.Component {
             <Emoji>{ service_icons[service_name] }</Emoji>
 
             <Tables>
-              {this.props.data.filter(s => s.service === service_name).map((table) => (
+              {this.props.services.filter(s => s.service === service_name).map((table) => (
                 <Table
                   onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
                   current_time={this.state.current_time}
                   key={table.position}
-                  data={table}
+                  service={table}
                 />
               ))}
             </Tables>
@@ -87,7 +87,7 @@ const Tables = styled.div`
 `
 
 Lobby.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.instanceOf(Service)),
+  services: PropTypes.arrayOf(PropTypes.instanceOf(Service)),
 }
 
 export default Lobby

@@ -17,9 +17,9 @@ class Order extends React.Component {
     super(props)
 
     this.state = {
-      start_time: this.props.data && this.props.data.start_time ? moment(this.props.data.start_time) : null,
-      end_time: this.props.data && this.props.data.end_time ? moment(this.props.data.end_time) : null,
-      closed: this.props.data == null,
+      start_time: this.props.order && this.props.order.start_time ? moment(this.props.order.start_time) : null,
+      end_time: this.props.order && this.props.order.end_time ? moment(this.props.order.end_time) : null,
+      closed: this.props.order == null,
     }
   }
 
@@ -31,7 +31,7 @@ class Order extends React.Component {
           <Links>
             <StyledLink
               to="/"
-              onClick={() => this.props.onCancel(this.props.data.service)}
+              onClick={() => this.props.onCancel(this.props.order.service)}
             >
               Cancel Order
             </StyledLink>
@@ -39,7 +39,7 @@ class Order extends React.Component {
             <StyledLink to="/">Close</StyledLink>
           </Links>
 
-          <h2>{this.props.data.service.name} #{this.props.data.service.position}</h2>
+          <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
 
           <TimeSpanInput
             startTime={this.state.start_time}
@@ -53,26 +53,26 @@ class Order extends React.Component {
             match={this.props.match}
             tabs={{
               snacks: () => <Extras
-                              extras={this.props.data.extras}
+                              extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "snack")}
-                              order={this.props.data}
+                              order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
-                              extras={this.props.data.extras}
+                              extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "drink")}
-                              order={this.props.data}
+                              order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
-                              extras={this.props.data.extras}
+                              extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "other")}
-                              order={this.props.data}
+                              order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
-                              extras={this.props.data.extras}
-                              data={this.props.data}
+                              extras={this.props.order.extras}
+                              order={this.props.order}
                               onMount={() => this.ensureEndTime()}
                               persist={(state) => this.props.onPersist(state).then((result) => {
                                 this.setState({ closed: result.closed })
@@ -139,7 +139,7 @@ const Links = styled.div`
 `
 
 Order.propTypes = {
-  data: PropTypes.instanceOf(OrderModel),
+  order: PropTypes.instanceOf(OrderModel),
   extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
 }
 
