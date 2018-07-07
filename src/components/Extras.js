@@ -10,7 +10,6 @@ const Extras = (props) => (
         onPersist={props.onPersist}
         key={item.name}
         order={props.order}
-        params={props.params}
         {...item}
       />
     ))}

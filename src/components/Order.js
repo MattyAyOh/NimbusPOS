@@ -62,21 +62,18 @@ class Order extends React.Component {
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type === "snack")}
                               order={this.order}
-                              params={this.props.params}
                               onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type === "drink")}
                               order={this.order}
-                              params={this.props.params}
                               onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
                               extras={this.order.extras}
                               items={this.props.state.extras.filter(s => s.extra_type === "other")}
                               order={this.order}
-                              params={this.props.params}
                               onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
