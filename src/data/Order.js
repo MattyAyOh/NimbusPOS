@@ -1,3 +1,4 @@
+import { observable } from "mobx"
 import moment from "moment"
 
 // JSON from server:
@@ -9,10 +10,10 @@ import moment from "moment"
 //   start_time: 2018-07-06T21:26:37.894Z
 
 class Order {
-  cash_handled = null
-  end_time = null
-  extras = null
-  start_time = null
+  @observable cash_handled = null
+  @observable end_time = null
+  @observable extras = null
+  @observable start_time = null
 
   constructor(values) {
     this.cash_handled = values.cash_handled

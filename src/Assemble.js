@@ -1,4 +1,5 @@
 import jquery from "jquery"
+import { runInAction } from "mobx"
 
 class Assemble {
   constructor(url) {
@@ -23,9 +24,7 @@ class Assemble {
     }).then((result) => {
       let watches = this.watches[system]
       if(this.active && watches !== undefined) {
-        watches.forEach((watch) => {
-          watch()
-        })
+        watches.forEach((watch) => watch())
       }
 
       return result;
@@ -48,8 +47,8 @@ class Assemble {
             url: "/evaluate",
             type: "POST",
             data: { system, code },
-            success: (result) => { if(this.active) { callback(result) } },
-            error: (result) => { if(this.active) { callback(result) } },
+            success: (result) => { if(this.active) { runInAction(() => callback(result)) } },
+            error: (result) => { if(this.active) { runInAction(() => callback(result)) } },
           })
 
         this.watches[system].push(watch)

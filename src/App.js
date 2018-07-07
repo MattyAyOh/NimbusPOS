@@ -1,6 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { BrowserRouter as Router, Route } from "react-router-dom"
+import { observer } from "mobx-react"
+import { observable } from "mobx"
 
 import Header from "./components/Header"
 import Loading from "./components/Loading"
@@ -27,14 +29,14 @@ const reservations = [
   },
 ]
 
+@observer
 class App extends React.Component {
   assemble = new Assemble("https://localhost:3000")
 
-  constructor() {
-    super()
-
-    this.state = { loaded: false }
-  }
+  @observable loaded = false
+  @observable reservations = reservations
+  @observable services = []
+  @observable extras = []
 
   componentDidMount() {
     this.assemble.watch("nimbus")`
@@ -42,12 +44,11 @@ class App extends React.Component {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
     }
-    `((app_state) =>
-      this.setState({ loaded: true, app: {
-        services: app_state.services.map(parseService),
-        extras: app_state.extras.map(parseExtra),
-      }, reservations })
-    );
+    `((result) => {
+      this.loaded = true
+      this.services = result.services.map(parseService)
+      this.extras = result.extras.map(parseExtra)
+    });
   }
 
   render () {
@@ -57,16 +58,16 @@ class App extends React.Component {
           <Header/>
 
           <Layout.Left>
-            { this.state.loaded
+            { this.loaded
             ?  <Lobby
-                  services={this.state.app.services}
+                  services={this.services}
                   onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                 />
             : <Loading/>
             }
           </Layout.Left>
 
-          { this.state.loaded &&
+          { this.loaded &&
             <Route
               path="/table/:service/:number"
               component={({match}) =>
@@ -74,11 +75,8 @@ class App extends React.Component {
                   <Order
                     params={match.params}
                     match={match}
-                    extras={this.state.app.extras}
-                    order={
-                      this.state.app
-                      .services
-                      .filter(s =>
+                    extras={this.extras}
+                    order={this.services.filter(s =>
                         s.service === match.params.service &&
                         s.position === parseInt(match.params.number, 10)
                       )[0].current_order
@@ -95,9 +93,9 @@ class App extends React.Component {
           <Route
             path="/reservations"
             component={({ match }) =>
-              this.state.loaded
+              this.loaded
               ? <Layout.Right>
-                  <Reservations reservations={this.state.reservations} />
+                  <Reservations reservations={this.reservations} />
                 </Layout.Right>
               : <Loading />
             } />

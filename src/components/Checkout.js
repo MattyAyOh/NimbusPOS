@@ -2,19 +2,22 @@ import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
+import { observable } from "mobx"
+import { observer } from "mobx-react"
 
 import Order from "../data/Order"
 import LineItem from "./LineItem"
 
 const blue = "#4a90e2"
 
+@observer
 class Checkout extends React.Component {
+  @observable cash_handled = null
+
   constructor(props) {
     super(props)
 
-    this.state = {
-      cash_handled: props.order.cash_handled,
-    }
+    this.cash_handled = props.order.cash_handled
   }
 
   render() {
@@ -58,14 +61,14 @@ class Checkout extends React.Component {
 
           <input
             type="number"
-            value={this.state.cash_handled || ""}
+            value={this.cash_handled || ""}
             onChange={(event) => this.set_cash_handled(event.target.value)}
           />
         </Register>
 
         <Confirm
-          onClick={() => this.props.persist(this.state)}
-          disabled={this.state.cash_handled == null}
+          onClick={() => this.props.persist({ cash_handled: this.cash_handled })}
+          disabled={this.cash_handled == null}
         >Confirm</Confirm>
       </Layout>
     )
@@ -77,9 +80,9 @@ class Checkout extends React.Component {
 
   set_cash_handled(value) {
     if(value === "")
-      this.setState({cash_handled: null})
+      this.cash_handled = null
     else
-      this.setState({cash_handled: value})
+      this.cash_handled = value
   }
 }
 

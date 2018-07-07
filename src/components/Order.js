@@ -1,32 +1,38 @@
 import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
-import { Link, Redirect } from "react-router-dom"
+import { Link, withRouter } from "react-router-dom"
 import moment from "moment"
+import { observable } from "mobx"
+import { observer } from "mobx-react"
 
 import TimeSpanInput from "./TimeSpanInput"
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
+import Loading from "./Loading"
 
 import OrderModel from "../data/Order"
 import ExtraModel from "../data/Extra"
 
+@observer
 class Order extends React.Component {
+  @observable start_time = null
+  @observable end_time = null
+
   constructor(props) {
     super(props)
 
-    this.state = {
-      start_time: this.props.order && this.props.order.start_time ? moment(this.props.order.start_time) : null,
-      end_time: this.props.order && this.props.order.end_time ? moment(this.props.order.end_time) : null,
-      closed: this.props.order == null,
+    if(this.props.order) {
+      this.start_time = this.props.order.start_time && moment(this.props.order.start_time)
+      this.end_time = this.props.order.end_time && moment(this.props.order.end_time)
     }
   }
 
   render() {
     return (
-      this.state.closed
-      ? <Redirect to="/" />
+      this.props.order == null
+      ? <Loading />
       : <Layout>
           <Links>
             <StyledLink
@@ -42,8 +48,8 @@ class Order extends React.Component {
           <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
 
           <TimeSpanInput
-            startTime={this.state.start_time}
-            endTime={this.state.end_time}
+            startTime={this.start_time}
+            endTime={this.end_time}
             onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
             onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime)}
             hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
@@ -75,7 +81,7 @@ class Order extends React.Component {
                               order={this.props.order}
                               onMount={() => this.ensureEndTime()}
                               persist={(state) => this.props.onPersist(state).then((result) => {
-                                this.setState({ closed: result.closed })
+                                if(result.closed) this.props.history.push("/")
                               })}
                             />
             }}
@@ -85,9 +91,9 @@ class Order extends React.Component {
   }
 
   ensureEndTime() {
-    if(this.state.end_time == null) {
+    if(this.end_time == null) {
       this.props.onPersist({end_time: moment()}).then((result) => {
-        this.setState({ closed: result.closed })
+        if(result.closed) this.props.history.push("/")
       })
     }
   }
@@ -96,8 +102,8 @@ class Order extends React.Component {
   // `new_time`: a `moment` object
   timeUpdated(field, new_time) {
     let new_timestamps = {
-      start_time: this.state.start_time,
-      end_time: this.state.end_time,
+      start_time: this.start_time,
+      end_time: this.end_time,
     }
 
     const current_hour = moment().get("hour")
@@ -112,9 +118,7 @@ class Order extends React.Component {
       new_time.add(1, "day")
 
     new_timestamps[field] = new_time
-    this.props.onPersist(new_timestamps).then((result) => {
-      this.setState({ closed: result.closed })
-    })
+    this.props.onPersist(new_timestamps)
   }
 }
 
@@ -143,4 +147,4 @@ Order.propTypes = {
   extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
 }
 
-export default Order
+export default withRouter(Order)

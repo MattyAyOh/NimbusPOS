@@ -3,6 +3,8 @@ import styled from "styled-components"
 import moment from "moment"
 import { Link } from "react-router-dom"
 import PropTypes from "prop-types"
+import { observable } from "mobx"
+import { observer } from "mobx-react"
 
 import Table from "./Table"
 import Service from "../data/Service"
@@ -13,21 +15,18 @@ const service_icons = {
   ktv: "🎤 ",
 }
 
+@observer
 class Lobby extends React.Component {
+  @observable current_time = moment()
+
   constructor(props) {
     super(props)
 
     this.timer = null
-
-    this.state = { current_time: moment() }
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.setTime(), 1000)
-  }
-
-  setTime() {
-    this.setState({ current_time: moment() })
+    this.timer = setInterval(() => this.current_time = moment(), 1000)
   }
 
   componentWillUnmount() {
@@ -45,7 +44,7 @@ class Lobby extends React.Component {
               {this.props.services.filter(s => s.service === service_name).map((table) => (
                 <Table
                   onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
-                  current_time={this.state.current_time}
+                  current_time={this.current_time}
                   key={table.position}
                   service={table}
                 />

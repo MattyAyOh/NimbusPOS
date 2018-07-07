@@ -1,8 +1,10 @@
+import { observable } from "mobx"
+
 class Extra {
-  image_url = null
-  name = null
-  price = null
-  extra_type = null
+  @observable image_url = null
+  @observable name = null
+  @observable price = null
+  @observable extra_type = null
 
   constructor(values) {
     this.image_url = values.image_url
