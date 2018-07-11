@@ -926,26 +926,6 @@ In the future we plan to integrate it into Create React App even more closely.
 
 To learn more about Flow, check out [its documentation](https://flowtype.org/).
 
-## Adding a Router
-
-Create React App doesn't prescribe a specific routing solution, but [React Router](https://reacttraining.com/react-router/) is the most popular one.
-
-To add it, run:
-
-```sh
-npm install --save react-router-dom
-```
-
-Alternatively you may use `yarn`:
-
-```sh
-yarn add react-router-dom
-```
-
-To try it, delete all the code in `src/App.js` and replace it with any of the examples on its website. The [Basic Example](https://reacttraining.com/react-router/web/example/basic) is a good place to get started.
-
-Note that [you may need to configure your production server to support client-side routing](#serving-apps-with-client-side-routing) before deploying your app.
-
 ## Adding Custom Environment Variables
 
 >Note: this feature is available with `react-scripts@0.2.3` and higher.
@@ -2108,15 +2088,6 @@ To override this, specify the `homepage` in your `package.json`, for example:
 ```
 
 This will let Create React App correctly infer the root path to use in the generated HTML file.
-
-**Note**: If you are using `react-router@^4`, you can root `<Link>`s using the `basename` prop on any `<Router>`.<br>
-More information [here](https://reacttraining.com/react-router/web/api/BrowserRouter/basename-string).<br>
-<br>
-For example:
-```js
-<BrowserRouter basename="/calendar"/>
-<Link to="/today"/> // renders <a href="/calendar/today">
-```
 
 #### Serving the Same Build from Different Paths
 

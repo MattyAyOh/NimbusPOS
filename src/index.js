@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import Store from "./Store"
 
-ReactDOM.render(<App />, document.getElementById('root'));
+window.store = new Store()
+
+ReactDOM.render(<App store={window.store} />, document.getElementById('root'));
 registerServiceWorker();

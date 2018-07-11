@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import { Link } from "react-router-dom"
 import PropTypes from "prop-types"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
@@ -43,6 +42,7 @@ class Lobby extends React.Component {
             <Tables>
               {this.props.services.filter(s => s.service === service_name).map((table) => (
                 <Table
+                  store={this.props.store}
                   onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
                   current_time={this.current_time}
                   key={table.position}
@@ -53,9 +53,9 @@ class Lobby extends React.Component {
           </Column>
         ))}
 
-        <Layout.ReservationLink to="/reservations">
+        <Link onClick={() => this.props.store.showReservations()}>
           Reservations
-        </Layout.ReservationLink>
+        </Link>
       </Layout>
     )
   }
@@ -68,8 +68,13 @@ const Layout = styled.div`
   height: 100%;
 `
 
-Layout.ReservationLink = styled(Link)`
+// TODO handle colors better
+const blue = "#4a90e2"
+
+const Link = styled.span`
   grid-area: 2 / 2 / 2 / 2;
+  color: ${blue};
+  text-decoration: underline;
 `
 
 const Emoji = styled.span`

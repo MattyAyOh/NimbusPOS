@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { BrowserRouter as Router, Route } from "react-router-dom"
 import { observer } from "mobx-react"
 import { observable } from "mobx"
 
@@ -53,82 +52,70 @@ class App extends React.Component {
 
   render () {
     return (
-      <Router>
-        <Layout>
-          <Header/>
+      <Layout>
+        <Header/>
 
-          <Layout.Left>
-            { this.loaded
-            ?  <Lobby
-                  services={this.services}
-                  onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
-                />
-            : <Loading/>
-            }
-          </Layout.Left>
+        <Layout.Left>
+          { this.loaded
+          ?  <Lobby
+                store={this.props.store}
+                services={this.services}
+                onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
+              />
+          : <Loading/>
+          }
+        </Layout.Left>
 
+        <Layout.Right>
           { this.loaded &&
-            <Route
-              path="/table/:service/:number"
-              component={({match}) =>
-                <Layout.Right>
-                  <Order
-                    params={match.params}
-                    match={match}
-                    extras={this.extras}
-                    order={this.services.filter(s =>
-                        s.service === match.params.service &&
-                        s.position === parseInt(match.params.number, 10)
-                      )[0].current_order
-                    }
-                    onCancel={this.cancelOrder}
-                    onPersist={(state) => this.persistOrder(state, match.params)}
-                    onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
-                  />
-                </Layout.Right>
-              }
+            this.props.store.currentView &&
+            this.props.store.currentView.name === "order" &&
+            <Order
+              store={this.props.store}
+              extras={this.extras}
+              order={this.props.store.currentView.order}
+              onCancel={this.cancelOrder}
+              onPersist={(state) => this.persistOrder(state, this.props.store.currentView.order)}
+              onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, this.props.store.currentView.order)}
             />
           }
 
-          <Route
-            path="/reservations"
-            component={({ match }) =>
-              this.loaded
-              ? <Layout.Right>
-                  <Reservations reservations={this.reservations} />
-                </Layout.Right>
-              : <Loading />
-            } />
-        </Layout>
-      </Router>
+          { this.props.store.currentView &&
+            this.props.store.currentView.name === "reservations" &&
+            <Reservations reservations={this.reservations} />
+          }
+        </Layout.Right>
+      </Layout>
     );
   }
 
   // takes a `state` object, with:
   // `start_time`: `null` | `moment` object
   // `end_time`: `null` | `moment` object
-  persistOrder = (state, params) => {
+  persistOrder = (state, order) => {
     if(state.start_time) state.start_time = state.start_time.format()
     if(state.end_time) state.end_time = state.end_time.format()
 
     return this.assemble.run("nimbus")`
       service = Service.find_by(
-        service_type: ${JSON.stringify(params.service)},
-        position: ${JSON.stringify(params.number)},
+        service_type: ${JSON.stringify(order.service.service)},
+        position: ${JSON.stringify(order.service.position)},
       )
 
       order = service.current_order || Order.create!(service: service)
       result = order.update!(JSON.parse('${JSON.stringify(state)}'))
 
       { persisted: result, closed: !order.open? }
-    `
+    `.then((result) => {
+      if(result.closed) this.props.store.showLobby()
+    })
   }
 
-  persistExtra(state, extra_name, params) {
+  persistExtra(state, extra_name, order) {
     this.assemble.run("nimbus")`
       service = Service.find_by(
-        service_type: ${JSON.stringify(params.service)},
-        position: ${JSON.stringify(params.number)},
+        service_type: ${JSON.stringify(order.service.service)},
+        position: ${JSON.stringify(order.service.position)},
       )
 
       order = service.current_order || Order.create!(service: service)
@@ -165,7 +152,7 @@ class App extends React.Component {
         service_type: ${JSON.stringify(service.service)},
         position: ${JSON.stringify(service.position)}
       ).current_order.destroy!
-    `
+    `.then(() => this.props.store.showLobby())
   }
 }
 

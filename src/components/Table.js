@@ -21,12 +21,12 @@ class Table extends React.Component {
 
         {this.props.service.current_order
         ? <Number active>
-            <Link to={this.orderUrl()} >
+            <Link onClick={() => this.props.store.showOrder(this.props.service.current_order)} >
               {this.props.service.position}
             </Link>
           </Number>
         : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
-            .then(() => this.props.history.push(this.orderUrl()))
+            .then(() =>  this.props.store.showOrder(this.props.service.current_order))
           } >
             {this.props.service.position}
           </Number>
@@ -39,10 +39,6 @@ class Table extends React.Component {
         </Price>
       </Layout>
     )
-  }
-
-  orderUrl() {
-    return `/table/${this.props.service.service}/${this.props.service.position}/snacks`
   }
 }
 
@@ -76,8 +72,12 @@ const Price = styled.span`
   text-align: left;
 `
 
+const Link = styled.span`
+  text-decoration: underline;
+`
+
 Table.propTypes = {
   service: PropTypes.instanceOf(Service)
 }
 
-export default withRouter(Table);
+export default Table

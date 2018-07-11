@@ -1,7 +1,6 @@
 import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
-import { Link, withRouter } from "react-router-dom"
 import moment from "moment"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
@@ -35,14 +34,11 @@ class Order extends React.Component {
       ? <Loading />
       : <Layout>
           <Links>
-            <StyledLink
-              to="/"
-              onClick={() => this.props.onCancel(this.props.order.service)}
-            >
+            <Link onClick={() => this.props.onCancel(this.props.order.service)} >
               Cancel Order
-            </StyledLink>
+            </Link>
 
-            <StyledLink to="/">Close</StyledLink>
+            <Link onClick={() => this.props.store.closeOrder(this.propss.order)}>Close</Link>
           </Links>
 
           <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
@@ -56,7 +52,7 @@ class Order extends React.Component {
           />
 
           <TabView
-            match={this.props.match}
+            store={this.props.store}
             tabs={{
               snacks: () => <Extras
                               extras={this.props.order.extras}
@@ -80,9 +76,7 @@ class Order extends React.Component {
                               extras={this.props.order.extras}
                               order={this.props.order}
                               onMount={() => this.ensureEndTime()}
-                              persist={(state) => this.props.onPersist(state).then((result) => {
-                                if(result.closed) this.props.history.push("/")
-                              })}
+                              persist={(state) => this.props.onPersist(state)}
                             />
             }}
           />
@@ -92,9 +86,7 @@ class Order extends React.Component {
 
   ensureEndTime() {
     if(this.end_time == null) {
-      this.props.onPersist({end_time: moment()}).then((result) => {
-        if(result.closed) this.props.history.push("/")
-      })
+      this.props.onPersist({end_time: moment()})
     }
   }
 
@@ -122,8 +114,9 @@ class Order extends React.Component {
   }
 }
 
-const StyledLink = styled(Link)`
+const Link = styled.span`
   color: #fff;
+  text-decoration: underline;
 `
 
 const Layout = styled.div`
@@ -147,4 +140,4 @@ Order.propTypes = {
   extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
 }
 
-export default withRouter(Order)
+export default Order

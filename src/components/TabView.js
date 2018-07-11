@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { Switch, Route, Link } from 'react-router-dom'
 import { observer } from "mobx-react"
 
 const blue = "#4a90e2"
@@ -13,24 +12,17 @@ class TabView extends React.Component {
         <TabSelector tabCount={Object.keys(this.props.tabs).length}>
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
+              store={this.props.store}
               key={tab}
-              to={this.props.match.url + "/" + tab}
-              selected={window.location.pathname === this.props.match.url + "/" + tab}
+              onClick={() => this.props.store.showTab(tab)}
+              selected={this.props.store.currentView.tab === tab}
             >
               {tab}
             </Tab>
           ))}
         </TabSelector>
 
-        <Switch>
-          { Object.keys(this.props.tabs).map((tab) => (
-            <Route
-              key={tab}
-              path={this.props.match.url + "/" + tab}
-              component={this.props.tabs[tab]}
-            />
-          ))}
-        </Switch>
+        { React.createElement(this.props.tabs[this.props.store.currentView.tab]) }
       </div>
     )
   }
@@ -45,7 +37,7 @@ const TabSelector = styled.div`
   font-size: 1.2rem;
 `
 
-const Tab = styled(Link)`
+const Tab = styled.span`
   text-align: right;
   text-transform: capitalize;
   color: ${(p) => p.selected ? blue : "inherit"};
