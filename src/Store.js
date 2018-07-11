@@ -6,6 +6,18 @@ import Service from "./data/Service"
 import LineItem from "./data/LineItem"
 import Extra from "./data/Extra"
 
+class View {
+  @observable name = null
+  @observable tab = null
+  @observable order = null
+
+  constructor(values) {
+    this.name = values.name
+    this.tab = values.tab
+    this.order = values.order
+  }
+}
+
 const reservations = [
   {
     start_time: "2017-05-20 10pm",
@@ -47,6 +59,7 @@ class Store {
     }));
 
     autorun(this.ensureEndTime.bind(this))
+    autorun(this.persistOrder.bind(this))
   }
 
   lineItemForExtra(extra) {
@@ -83,19 +96,29 @@ class Store {
       && this.currentView.name === "order"
       && this.currentView.tab === "checkout"
       && this.currentView.order.end_time === null)
-      this.persistOrder({ end_time: moment() })
+      this.currentView.order.end_time = moment()
   }
 
-  @computed get isAuthenticated() {
-    return this.currentUser !== null
+  @computed get start_time() {
+    if(this.currentView.order) {
+      return this.currentView.order.start_time &&
+        moment(this.currentView.order.start_time)
+    }
+  }
+
+  @computed get end_time() {
+    if(this.currentView.order) {
+      return this.currentView.order.end_time &&
+        moment(this.currentView.order.end_time)
+    }
   }
 
   @action showOrder(order) {
-    this.currentView = {
+    this.currentView = new View({
       name: "order",
-      order,
+      order: order,
       tab: "snacks",
-    }
+    })
   }
 
   @action showTab(tabName) {
@@ -103,9 +126,9 @@ class Store {
   }
 
   @action showReservations() {
-    this.currentView = {
+    this.currentView = new View({
       name: "reservations"
-    }
+    })
   }
 
   @action showLobby() {
@@ -133,17 +156,20 @@ class Store {
     `.then(() => this.showLobby())
   }
 
-  // takes a `state` object, with:
-  // `start_time`: `null` | `moment` object
-  // `end_time`: `null` | `moment` object
-  persistOrder(state, order) {
-    if(state.start_time) state.start_time = state.start_time.format()
-    if(state.end_time) state.end_time = state.end_time.format()
+  persistOrder() {
+    if(!Boolean(this.currentView && this.currentView.order))
+      return;
+
+    let state = {
+      start_time: this.start_time && this.start_time.format(),
+      end_time: this.end_time && this.end_time.format(),
+      cash_handled: this.currentView.order.cash_handled,
+    }
 
     return this.assemble.run("nimbus")`
       service = Service.find_by(
-        service_type: ${JSON.stringify(order.service.service)},
-        position: ${JSON.stringify(order.service.position)},
+        service_type: ${JSON.stringify(this.currentView.order.service.service)},
+        position: ${JSON.stringify(this.currentView.order.service.position)},
       )
 
       order = service.current_order || Order.create!(service: service)

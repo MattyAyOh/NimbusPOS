@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import { observer } from "mobx-react"
-import { action, observable } from "mobx"
+import { action, observable, computed } from "mobx"
 
 const blue = "#4a90e2"
 
@@ -16,14 +16,19 @@ const blue = "#4a90e2"
 @observer
 class Timepicker extends React.Component {
   @observable time = null
-  @observable enteredText = ""
   @observable open = false
 
   constructor(props) {
     super(props)
+    this.acceptProps(props)
+  }
 
-    this.time = this.props.initialValue
-    this.enteredText = this.props.initialValue ? this.props.initialValue.format("HH:mm") : ""
+  componentWillUpdate(newProps) {
+    this.acceptProps(newProps)
+  }
+
+  acceptProps(props) {
+    this.time = props.initialValue
   }
 
   hourOptions() {
@@ -36,6 +41,13 @@ class Timepicker extends React.Component {
       Array.apply(null, {length: 60}).map(Number.call, Number)
   }
 
+  @computed get displayText() {
+    if(this.time)
+      return this.time.format("HH:mm")
+    else
+      return ""
+  }
+
   render() {
     let selectedHour = this.time && this.time.hour()
     let selectedMinute = this.time && this.time.minute()
@@ -43,11 +55,10 @@ class Timepicker extends React.Component {
     return (
       <Wrapper>
         <TimeInput
-          onChange={(e) => this.enteredText = e.target.value }
           onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
           placeholder="--:--"
-          value={this.enteredText}
+          value={this.displayText}
         />
 
         { this.open &&
@@ -92,13 +103,10 @@ class Timepicker extends React.Component {
     this.timeChanged(moment(event.target.value, "HH:mm"))
   }
 
-  @action
   hourSelected(hour) {
-    let minute = this.time.minute()
+    let minute = (this.time && this.time.minute()) || 0
     let newTime = moment(`${hour}:${minute}`, "HH:mm")
-
-    this.time = newTime
-    this.enteredText = newTime.format("HH:mm")
+    this.timeChanged(newTime, true)
   }
 
   minuteSelected(minute) {
@@ -108,11 +116,10 @@ class Timepicker extends React.Component {
   }
 
   @action
-  timeChanged(newTime) {
+  timeChanged(newTime, leaveOpen = false) {
     this.props.onChange(newTime)
 
-    this.enteredText = newTime.format("HH:mm")
-    this.open = false
+    this.open = leaveOpen
     this.time = newTime
   }
 }

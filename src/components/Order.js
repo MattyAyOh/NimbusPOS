@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import { observable } from "mobx"
 import { observer } from "mobx-react"
 
 import TimeSpanInput from "./TimeSpanInput"
@@ -12,18 +11,6 @@ import Loading from "./Loading"
 
 @observer
 class Order extends React.Component {
-  @observable start_time = null
-  @observable end_time = null
-
-  constructor(props) {
-    super(props)
-
-    if(this.props.store.currentView.order) {
-      this.start_time = this.props.store.currentView.order.start_time && moment(this.props.store.currentView.order.start_time)
-      this.end_time = this.props.store.currentView.order.end_time && moment(this.props.store.currentView.order.end_time)
-    }
-  }
-
   render() {
     return (
       this.props.store.currentView.order == null
@@ -40,8 +27,8 @@ class Order extends React.Component {
           <h2>{this.props.store.currentView.order.service.name} #{this.props.store.currentView.order.service.position}</h2>
 
           <TimeSpanInput
-            startTime={this.start_time}
-            endTime={this.end_time}
+            startTime={this.props.store.start_time}
+            endTime={this.props.store.end_time}
             onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
             onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime)}
             hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
@@ -63,11 +50,6 @@ class Order extends React.Component {
   // `field`: `"start_time"` or `"end_time"`
   // `new_time`: a `moment` object
   timeUpdated(field, new_time) {
-    let new_timestamps = {
-      start_time: this.start_time,
-      end_time: this.end_time,
-    }
-
     const current_hour = moment().get("hour")
     const chosen_hour = new_time.get("hour")
 
@@ -79,8 +61,7 @@ class Order extends React.Component {
     if(current_hour > 12 && chosen_hour < 12)
       new_time.add(1, "day")
 
-    new_timestamps[field] = new_time
-    this.props.store.persistOrder(new_timestamps)
+    this.props.store.currentView.order[field] = new_time
   }
 }
 

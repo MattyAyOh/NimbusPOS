@@ -4,6 +4,7 @@ import styled from "styled-components"
 import moment from "moment"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
+import { createViewModel } from "mobx-utils"
 
 import Order from "../data/Order"
 import LineItem from "./LineItem"
@@ -12,38 +13,38 @@ const blue = "#4a90e2"
 
 @observer
 class Checkout extends React.Component {
-  @observable cash_handled = null
+  @observable order = null
 
   constructor(props) {
     super(props)
 
-    this.cash_handled = props.order.cash_handled
+    this.order = createViewModel(props.store.currentView.order)
   }
 
   render() {
     const hours_spent = (
-      moment(this.props.order.end_time)
-        .diff(this.props.order.start_time, "minutes") + 1
+      moment(this.order.end_time)
+        .diff(this.order.start_time, "minutes") + 1
     ) / 60.0
 
     return (
       <Layout>
         <Bill>
           <LineItem
-            key={this.props.order.service.name}
-            name={this.props.order.service.name}
-            rate={`${this.props.order.service.hourly_rate} / hr`}
+            key={this.order.service.name}
+            name={this.order.service.name}
+            rate={`${this.order.service.hourly_rate} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
-            amount={(this.props.order.service.hourly_rate * hours_spent).toFixed(2)}
+            amount={(this.order.service.hourly_rate * hours_spent).toFixed(2)}
           />
 
-          {this.props.store.currentView.order.extras.map((extra) => (
+          {this.order.line_items.map((item) => (
             <LineItem
-              key={extra.extra.name}
-              name={extra.extra.name}
-              rate={extra.extra.price}
-              quantity={extra.quantity}
-              amount={extra.quantity * extra.extra.price}
+              key={item.name}
+              name={item.name}
+              rate={item.price}
+              quantity={item.quantity}
+              amount={item.quantity * item.price}
             />
           ))}
 
@@ -52,7 +53,7 @@ class Checkout extends React.Component {
           <LineItem
             key="total"
             name="Total"
-            amount={this.props.order.bill_amount(this.props.order.service.hourly_rate, moment())}
+            amount={this.order.model.bill_amount(this.order.service.hourly_rate, moment())}
           />
         </Bill>
 
@@ -61,14 +62,14 @@ class Checkout extends React.Component {
 
           <input
             type="number"
-            value={this.cash_handled || ""}
+            value={this.order.cash_handled || ""}
             onChange={(event) => this.set_cash_handled(event.target.value)}
           />
         </Register>
 
         <Confirm
-          onClick={() => this.props.store.persistOrder({ cash_handled: this.cash_handled })}
-          disabled={this.cash_handled == null}
+          onClick={() => this.order.submit() }
+          disabled={this.order.cash_handled == null}
         >Confirm</Confirm>
       </Layout>
     )
@@ -76,9 +77,9 @@ class Checkout extends React.Component {
 
   set_cash_handled(value) {
     if(value === "")
-      this.cash_handled = null
+      this.order.cash_handled = null
     else
-      this.cash_handled = value
+      this.order.cash_handled = value
   }
 }
 
