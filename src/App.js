@@ -9,73 +9,37 @@ import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 
-import Service from "./data/Service"
-import Extra from "./data/Extra"
-
-const reservations = [
-  {
-    start_time: "2017-05-20 10pm",
-    end_time: "2017-05-20 12pm",
-    service: "pool",
-    room: 4,
-  },
-  {
-    start_time: "2017-05-20 12pm",
-    end_time: "2017-05-21 4am",
-    service: "karaoke",
-    room: 1,
-  },
-]
-
 @observer
 class App extends React.Component {
-  @observable loaded = false
-  @observable reservations = reservations
-  @observable services = []
-  @observable extras = []
-
-  componentDidMount() {
-    this.props.store.assemble.watch("nimbus")`
-    {
-      services: Service.order(:service_type, :position),
-      extras: Extra.all,
-    }
-    `((result) => {
-      this.loaded = true
-      this.services = result.services.map(parseService)
-      this.extras = result.extras.map(parseExtra)
-    });
-  }
-
   render () {
     return (
       <Layout>
         <Header/>
 
         <Layout.Left>
-          { this.loaded
+          { this.props.store.loaded
           ?  <Lobby
                 store={this.props.store}
-                services={this.services}
+                services={this.props.store.services}
               />
           : <Loading/>
           }
         </Layout.Left>
 
         <Layout.Right>
-          { this.loaded &&
+          { this.props.store.loaded &&
             this.props.store.currentView &&
             this.props.store.currentView.name === "order" &&
             <Order
               store={this.props.store}
-              extras={this.extras}
+              extras={this.props.store.extras}
               order={this.props.store.currentView.order}
             />
           }
 
           { this.props.store.currentView &&
             this.props.store.currentView.name === "reservations" &&
-            <Reservations reservations={this.reservations} />
+            <Reservations reservations={this.props.store.reservations} />
           }
         </Layout.Right>
       </Layout>
@@ -98,13 +62,5 @@ Layout.Left = styled.div`
 Layout.Right = styled.div`
   grid-area: 1 / 2 / -1 / 2;
 `
-
-const parseService = (json) => {
-  return new Service(json)
-}
-
-const parseExtra = (json) => {
-  return new Extra(json)
-}
 
 export default App

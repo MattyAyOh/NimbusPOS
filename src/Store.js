@@ -1,19 +1,59 @@
 import { observable, computed, action, autorun } from 'mobx';
 import moment from "moment"
 import Assemble from "./Assemble"
-import Service from "./data/Service"
 
-// TODO normalize data models with UUIDs
+import Service from "./data/Service"
+import Extra from "./data/Extra"
+
+const reservations = [
+  {
+    start_time: "2017-05-20 10pm",
+    end_time: "2017-05-20 12pm",
+    service: "pool",
+    room: 4,
+  },
+  {
+    start_time: "2017-05-20 12pm",
+    end_time: "2017-05-21 4am",
+    service: "karaoke",
+    room: 1,
+  },
+]
 
 class Store {
   assemble = null;
   @observable currentUser = null;
   @observable currentView = null;
 
+  // TODO normalize data models with UUIDs
+  @observable loaded = false
+  @observable reservations = reservations
+  @observable services = []
+  @observable extras = []
+
   constructor(assemble) {
     this.assemble = assemble || new Assemble("https://localhost:3000")
 
+    this.assemble.watch("nimbus")`
+    {
+      services: Service.order(:service_type, :position),
+      extras: Extra.all,
+    }
+    `((result) => {
+      this.loaded = true
+      this.services = result.services.map(this.parseService)
+      this.extras = result.extras.map(this.parseExtra)
+    });
+
     autorun(this.ensureEndTime.bind(this))
+  }
+
+  parseService(json) {
+    return new Service(json)
+  }
+
+  parseExtra(json) {
+    return new Extra(json)
   }
 
   ensureEndTime() {
