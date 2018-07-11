@@ -25,9 +25,7 @@ class Table extends React.Component {
               {this.props.service.position}
             </Link>
           </Number>
-        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
-            .then(() =>  this.props.store.showOrder(this.props.service.current_order))
-          } >
+        : <Number onClick={() => this.props.store.ensureCurrentOrder(this.props.service)} >
             {this.props.service.position}
           </Number>
         }

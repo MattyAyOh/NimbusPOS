@@ -9,7 +9,7 @@ const Extras = observer((props) => (
   <Layout>
     {props.items.map((item) => (
       <Extra
-        onPersist={props.onPersist}
+        store={props.store}
         key={item.name}
         order={props.order}
         {...item}

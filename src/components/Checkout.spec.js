@@ -26,7 +26,6 @@ describe("Checkout", () => {
 });
 
 const default_props = {
-  onMount: () => {},
   order: {
     extras: [],
     cash_handled: null,

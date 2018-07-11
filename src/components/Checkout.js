@@ -67,15 +67,11 @@ class Checkout extends React.Component {
         </Register>
 
         <Confirm
-          onClick={() => this.props.persist({ cash_handled: this.cash_handled })}
+          onClick={() => this.props.store.persistOrder({ cash_handled: this.cash_handled })}
           disabled={this.cash_handled == null}
         >Confirm</Confirm>
       </Layout>
     )
-  }
-
-  componentDidMount() {
-    this.props.onMount()
   }
 
   set_cash_handled(value) {

@@ -9,7 +9,6 @@ import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 
-import Assemble from "./Assemble"
 import Service from "./data/Service"
 import Extra from "./data/Extra"
 
@@ -30,15 +29,13 @@ const reservations = [
 
 @observer
 class App extends React.Component {
-  assemble = new Assemble("https://localhost:3000")
-
   @observable loaded = false
   @observable reservations = reservations
   @observable services = []
   @observable extras = []
 
   componentDidMount() {
-    this.assemble.watch("nimbus")`
+    this.props.store.assemble.watch("nimbus")`
     {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
@@ -60,7 +57,6 @@ class App extends React.Component {
           ?  <Lobby
                 store={this.props.store}
                 services={this.services}
-                onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
               />
           : <Loading/>
           }
@@ -74,9 +70,6 @@ class App extends React.Component {
               store={this.props.store}
               extras={this.extras}
               order={this.props.store.currentView.order}
-              onCancel={this.cancelOrder}
-              onPersist={(state) => this.persistOrder(state, this.props.store.currentView.order)}
-              onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, this.props.store.currentView.order)}
             />
           }
 
@@ -87,72 +80,6 @@ class App extends React.Component {
         </Layout.Right>
       </Layout>
     );
-  }
-
-  // takes a `state` object, with:
-  // `start_time`: `null` | `moment` object
-  // `end_time`: `null` | `moment` object
-  persistOrder = (state, order) => {
-    if(state.start_time) state.start_time = state.start_time.format()
-    if(state.end_time) state.end_time = state.end_time.format()
-
-    return this.assemble.run("nimbus")`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(order.service.service)},
-        position: ${JSON.stringify(order.service.position)},
-      )
-
-      order = service.current_order || Order.create!(service: service)
-      result = order.update!(JSON.parse('${JSON.stringify(state)}'))
-
-      { persisted: result, closed: !order.open? }
-    `.then((result) => {
-      if(result.closed) this.props.store.showLobby()
-    })
-  }
-
-  persistExtra(state, extra_name, order) {
-    this.assemble.run("nimbus")`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(order.service.service)},
-        position: ${JSON.stringify(order.service.position)},
-      )
-
-      order = service.current_order || Order.create!(service: service)
-      extra = Extra.find_by(name: ${JSON.stringify(extra_name)})
-
-      order_extra =
-        OrderExtra.find_by(order: order, extra: extra) ||
-        OrderExtra.create!(order: order, extra: extra)
-
-      if(${JSON.stringify(state.quantity)}.to_i > 0)
-        result = order_extra.update!(
-          quantity: ${JSON.stringify(state.quantity)},
-        )
-      else
-        order_extra.destroy!
-      end
-    `
-  }
-
-  ensureCurrentOrder(service, position) {
-    return this.assemble.run("nimbus")`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(service)},
-        position: ${JSON.stringify(position)},
-      )
-
-      service.current_order || service.orders.create!(start_time: Time.current)
-    `
-  }
-
-  cancelOrder = (service) => {
-    this.assemble.run("nimbus")`
-      Service.find_by(
-        service_type: ${JSON.stringify(service.service)},
-        position: ${JSON.stringify(service.position)}
-      ).current_order.destroy!
-    `.then(() => this.props.store.showLobby())
   }
 }
 

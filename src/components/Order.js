@@ -34,7 +34,7 @@ class Order extends React.Component {
       ? <Loading />
       : <Layout>
           <Links>
-            <Link onClick={() => this.props.onCancel(this.props.order.service)} >
+            <Link onClick={() => this.props.store.cancelOrder(this.props.order.service)} >
               Cancel Order
             </Link>
 
@@ -55,39 +55,31 @@ class Order extends React.Component {
             store={this.props.store}
             tabs={{
               snacks: () => <Extras
+                              store={this.props.store}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "snack")}
                               order={this.props.order}
-                              onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
+                              store={this.props.store}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "drink")}
                               order={this.props.order}
-                              onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
+                              store={this.props.store}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "other")}
                               order={this.props.order}
-                              onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
                               extras={this.props.order.extras}
                               order={this.props.order}
-                              onMount={() => this.ensureEndTime()}
-                              persist={(state) => this.props.onPersist(state)}
                             />
             }}
           />
         </Layout>
     )
-  }
-
-  ensureEndTime() {
-    if(this.end_time == null) {
-      this.props.onPersist({end_time: moment()})
-    }
   }
 
   // `field`: `"start_time"` or `"end_time"`
@@ -110,7 +102,7 @@ class Order extends React.Component {
       new_time.add(1, "day")
 
     new_timestamps[field] = new_time
-    this.props.onPersist(new_timestamps)
+    this.props.store.persistOrder(new_timestamps)
   }
 }
 

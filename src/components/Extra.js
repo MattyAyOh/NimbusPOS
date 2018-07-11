@@ -36,7 +36,7 @@ class Extra extends React.Component {
   add(value) {
     const quantity = this.state.quantity + value
 
-    this.props.onPersist({ quantity: quantity }, this.props.name)
+    this.props.store.persistExtra({ quantity: quantity }, this.props.name)
   }
 }
 
