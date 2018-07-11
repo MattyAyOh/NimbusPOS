@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 import { observable } from "mobx"
@@ -11,9 +10,6 @@ import Extras from "./Extras"
 import TabView from "./TabView"
 import Loading from "./Loading"
 
-import OrderModel from "../data/Order"
-import ExtraModel from "../data/Extra"
-
 @observer
 class Order extends React.Component {
   @observable start_time = null
@@ -22,26 +18,26 @@ class Order extends React.Component {
   constructor(props) {
     super(props)
 
-    if(this.props.order) {
-      this.start_time = this.props.order.start_time && moment(this.props.order.start_time)
-      this.end_time = this.props.order.end_time && moment(this.props.order.end_time)
+    if(this.props.store.currentView.order) {
+      this.start_time = this.props.store.currentView.order.start_time && moment(this.props.store.currentView.order.start_time)
+      this.end_time = this.props.store.currentView.order.end_time && moment(this.props.store.currentView.order.end_time)
     }
   }
 
   render() {
     return (
-      this.props.order == null
+      this.props.store.currentView.order == null
       ? <Loading />
       : <Layout>
           <Links>
-            <Link onClick={() => this.props.store.cancelOrder(this.props.order.service)} >
+            <Link onClick={() => this.props.store.cancelOrder(this.props.store.currentView.order.service)} >
               Cancel Order
             </Link>
 
             <Link onClick={() => this.props.store.closeOrder(this.propss.order)}>Close</Link>
           </Links>
 
-          <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
+          <h2>{this.props.store.currentView.order.service.name} #{this.props.store.currentView.order.service.position}</h2>
 
           <TimeSpanInput
             startTime={this.start_time}
@@ -54,28 +50,10 @@ class Order extends React.Component {
           <TabView
             store={this.props.store}
             tabs={{
-              snacks: () => <Extras
-                              store={this.props.store}
-                              extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "snack")}
-                              order={this.props.order}
-                            />,
-              drinks: () => <Extras
-                              store={this.props.store}
-                              extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "drink")}
-                              order={this.props.order}
-                            />,
-              other: () => <Extras
-                              store={this.props.store}
-                              extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "other")}
-                              order={this.props.order}
-                            />,
-              checkout: () => <Checkout
-                              extras={this.props.order.extras}
-                              order={this.props.order}
-                            />
+              snacks: () => <Extras store={this.props.store} type="snack" />,
+              drinks: () => <Extras store={this.props.store} type="drink" />,
+              other: () => <Extras store={this.props.store} type="other" />,
+              checkout: () => <Checkout store={this.props.store} />
             }}
           />
         </Layout>
@@ -126,10 +104,5 @@ const Links = styled.div`
   display: flex;
   justify-content: space-between;
 `
-
-Order.propTypes = {
-  order: PropTypes.instanceOf(OrderModel),
-  extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
-}
 
 export default Order

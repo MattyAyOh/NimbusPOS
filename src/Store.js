@@ -1,8 +1,9 @@
-import { observable, computed, action, autorun } from 'mobx';
+import { observable, computed, action, autorun, runInAction } from 'mobx';
 import moment from "moment"
 import Assemble from "./Assemble"
 
 import Service from "./data/Service"
+import LineItem from "./data/LineItem"
 import Extra from "./data/Extra"
 
 const reservations = [
@@ -39,13 +40,34 @@ class Store {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
     }
-    `((result) => {
+    `(result => runInAction(() => {
       this.loaded = true
       this.services = result.services.map(this.parseService)
       this.extras = result.extras.map(this.parseExtra)
-    });
+    }));
 
     autorun(this.ensureEndTime.bind(this))
+  }
+
+  lineItemForExtra(extra) {
+    let lineItem = this.currentView.order.line_items.filter((x) =>
+      x.name === extra.name
+    )[0]
+
+    if(!Boolean(lineItem)) {
+      lineItem = new LineItem({ extra: extra, quantity: 0 })
+      runInAction(() => this.currentView.order.line_items.push(lineItem))
+    }
+
+    return lineItem
+  }
+
+  @action
+  incrementExtraQuantity(extra, amount) {
+    const lineItem = this.lineItemForExtra(extra)
+    lineItem.quantity = lineItem.quantity + amount
+
+    this.persistExtra({ quantity: lineItem.quantity }, extra.name)
   }
 
   parseService(json) {

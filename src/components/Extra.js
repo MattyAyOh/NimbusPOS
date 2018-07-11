@@ -4,39 +4,26 @@ import { observer } from "mobx-react"
 
 @observer
 class Extra extends React.Component {
-  constructor(props) {
-    super(props)
-
-    const extra = props.order.extras.filter((x) => x.extra.name === props.name)[0]
-    const quantity = (extra && extra.quantity) || 0
-
-    this.state = {
-      quantity: quantity,
-    }
-  }
-
   render () {
     return (
       <Layout>
         <Image
           src={this.props.image_url}
-          onClick={() => this.add(1)}
+          onClick={() => this.props.store.incrementExtraQuantity(this.props.extra, 1)}
         />
 
         <Quantity
-          onClick={() => this.add(1)}
-        >{this.state.quantity}
+          onClick={() => this.props.store.incrementExtraQuantity(this.props.extra, 1)}
+        >
+          {this.props.store.lineItemForExtra(this.props.extra).quantity}
         </Quantity>
 
-        <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
+        <Decrement
+          color="red"
+          onClick={() => this.props.store.incrementExtraQuantity(this.props.extra, -1)}
+        >-</Decrement>
       </Layout>
     );
-  }
-
-  add(value) {
-    const quantity = this.state.quantity + value
-
-    this.props.store.persistExtra({ quantity: quantity }, this.props.name)
   }
 }
 

@@ -1,5 +1,6 @@
 import { observable } from "mobx"
 import moment from "moment"
+import LineItem from "./LineItem"
 
 // JSON from server:
 //
@@ -12,20 +13,20 @@ import moment from "moment"
 class Order {
   @observable cash_handled = null
   @observable end_time = null
-  @observable extras = null
+  @observable line_items = null
   @observable start_time = null
 
   constructor(values) {
     this.cash_handled = values.cash_handled
     this.end_time = values.end_time
-    this.extras = values.extras
+    this.line_items = values.extras.map(x => new LineItem(x))
     this.start_time = values.start_time
   }
 
   bill_amount(rate, current_time) {
     let amount =
       this.timeComponent(rate, current_time)
-      + this.extrasComponent()
+      + this.lineItemTotal()
 
     return String(amount.toFixed(2))
   }
@@ -38,11 +39,10 @@ class Order {
     return (end_time.diff(start_time, "minutes") + 1) * rate / 60.0
   }
 
-  extrasComponent() {
-    const subtotals = this.extras.map((x) => (x.quantity * x.extra.price))
+  lineItemTotal() {
+    const subtotals = this.line_items.map((x) => (x.quantity * x.price))
     return subtotals.reduce((running_total, x) => (running_total + x), 0)
   }
-
 }
 
 // Create a new Order object with:

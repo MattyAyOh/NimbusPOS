@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import { observer } from "mobx-react"
-import { observable } from "mobx"
 
 import Header from "./components/Header"
 import Loading from "./components/Loading"
@@ -18,10 +17,7 @@ class App extends React.Component {
 
         <Layout.Left>
           { this.props.store.loaded
-          ?  <Lobby
-                store={this.props.store}
-                services={this.props.store.services}
-              />
+          ? <Lobby store={this.props.store} />
           : <Loading/>
           }
         </Layout.Left>
@@ -30,11 +26,7 @@ class App extends React.Component {
           { this.props.store.loaded &&
             this.props.store.currentView &&
             this.props.store.currentView.name === "order" &&
-            <Order
-              store={this.props.store}
-              extras={this.props.store.extras}
-              order={this.props.store.currentView.order}
-            />
+            <Order store={this.props.store} />
           }
 
           { this.props.store.currentView &&

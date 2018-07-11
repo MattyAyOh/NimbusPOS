@@ -7,14 +7,15 @@ import { observer } from "mobx-react"
 
 const Extras = observer((props) => (
   <Layout>
-    {props.items.map((item) => (
+    {props.store.extras.filter(extra =>
+      extra.extra_type === props.type
+    ).map(extra =>
       <Extra
         store={props.store}
-        key={item.name}
-        order={props.order}
-        {...item}
+        key={extra.name}
+        extra={extra}
       />
-    ))}
+    )}
   </Layout>
 ))
 

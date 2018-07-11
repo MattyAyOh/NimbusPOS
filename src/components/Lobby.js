@@ -1,12 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import PropTypes from "prop-types"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
 
 import Table from "./Table"
-import Service from "../data/Service"
 
 const service_icons = {
   mahjong: "🀄️ ",
@@ -40,7 +38,7 @@ class Lobby extends React.Component {
             <Emoji>{ service_icons[service_name] }</Emoji>
 
             <Tables>
-              {this.props.services.filter(s => s.service === service_name).map((table) => (
+              {this.props.store.services.filter(s => s.service === service_name).map((table) => (
                 <Table
                   store={this.props.store}
                   current_time={this.current_time}
@@ -88,9 +86,5 @@ const Column = styled.div`
 const Tables = styled.div`
   margin-top: 2rem;
 `
-
-Lobby.propTypes = {
-  services: PropTypes.arrayOf(PropTypes.instanceOf(Service)),
-}
 
 export default Lobby
