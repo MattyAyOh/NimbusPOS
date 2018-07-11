@@ -3,7 +3,9 @@ import styled from "styled-components"
 
 import Extra from "./Extra"
 
-const Extras = (props) => (
+import { observer } from "mobx-react"
+
+const Extras = observer((props) => (
   <Layout>
     {props.items.map((item) => (
       <Extra
@@ -14,7 +16,7 @@ const Extras = (props) => (
       />
     ))}
   </Layout>
-)
+))
 
 const Layout = styled.div`
   display: grid;

@@ -1,9 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 import { Switch, Route, Link } from 'react-router-dom'
+import { observer } from "mobx-react"
 
 const blue = "#4a90e2"
 
+@observer
 class TabView extends React.Component {
   render() {
     return (

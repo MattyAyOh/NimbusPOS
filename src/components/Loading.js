@@ -1,9 +1,11 @@
 import React from "react"
 
-const Loading = (props) => (
+import { observer } from "mobx-react"
+
+const Loading = observer((props) => (
   <div>
     Loading...
   </div>
-)
+))
 
 export default Loading

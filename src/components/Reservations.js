@@ -3,7 +3,9 @@ import styled from "styled-components"
 
 import Reservation from "./Reservation"
 
-const Reservations = ({ reservations }) => (
+import { observer } from "mobx-react"
+
+const Reservations = observer(({ reservations }) => (
   <Layout>
     <Layout.Title>Reservations</Layout.Title>
 
@@ -11,7 +13,7 @@ const Reservations = ({ reservations }) => (
       <Layout.Reservation {...reservation} />
     ))}
   </Layout>
-)
+))
 
 const Layout = styled.div`
 `

@@ -1,5 +1,6 @@
 import React from "react"
 import styled from "styled-components"
+import { observer } from "mobx-react"
 
 import Timepicker from "./Timepicker"
 
@@ -11,7 +12,7 @@ import Timepicker from "./Timepicker"
  * `hourOptions`: a list of allowed values for the hour
  * `minuteOptions`: a list of allowed values for the minute
  */
-const TimeSpanInput = (props) => (
+const TimeSpanInput = observer((props) => (
   <div>
     <Timepicker
       hourOptions={props.hourOptions}
@@ -36,7 +37,7 @@ const TimeSpanInput = (props) => (
       </Warning>
     }
   </div>
-)
+))
 
 const Margin = styled.span`
   padding: 1rem;

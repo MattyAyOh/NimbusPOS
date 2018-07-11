@@ -2,13 +2,14 @@ import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
-import {Link, withRouter} from "react-router-dom"
+import { observer } from "mobx-react"
 
 import Service from "../data/Service"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
 
+@observer
 class Table extends React.Component {
   render() {
     return (

@@ -3,11 +3,13 @@ import styled from "styled-components"
 
 import logo from "../images/logo.png"
 
-const Header = () => (
+import { observer } from "mobx-react"
+
+const Header = observer(() => (
   <Layout>
     <Logo src={logo} alt="Nimbus"/>
   </Layout>
-)
+))
 
 const Layout = styled.div`
   align-items: flex-end;
