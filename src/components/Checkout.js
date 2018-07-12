@@ -15,7 +15,7 @@ class Checkout extends React.Component {
   constructor(props) {
     super(props)
 
-    this.order = createViewModel(props.store.currentView.order)
+    this.order = createViewModel(props.store.order)
   }
 
   render() {

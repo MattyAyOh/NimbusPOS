@@ -12,18 +12,18 @@ import Loading from "./Loading"
 class Order extends React.Component {
   render() {
     return (
-      this.props.store.currentView.order == null
+      this.props.store.order == null
       ? <Loading />
       : <Layout>
           <Links>
-            <Link onClick={() => this.props.store.cancelOrder(this.props.store.currentView.order.service)} >
+            <Link onClick={() => this.props.store.cancelOrder(this.props.store.order.service)} >
               Cancel Order
             </Link>
 
             <Link onClick={() => this.props.store.closeOrder(this.propss.order)}>Close</Link>
           </Links>
 
-          <h2>{this.props.store.currentView.order.service.name} #{this.props.store.currentView.order.service.position}</h2>
+          <h2>{this.props.store.order.service.name} #{this.props.store.order.service.position}</h2>
 
           <TimeSpanInput
             hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}

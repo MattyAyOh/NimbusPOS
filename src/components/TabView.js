@@ -15,14 +15,14 @@ class TabView extends React.Component {
               store={this.props.store}
               key={tab}
               onClick={() => this.props.store.showTab(tab)}
-              selected={this.props.store.currentView.tab === tab}
+              selected={this.props.store.currentView.get("tab") === tab}
             >
               {tab}
             </Tab>
           ))}
         </TabSelector>
 
-        { React.createElement(this.props.tabs[this.props.store.currentView.tab]) }
+        { React.createElement(this.props.tabs[this.props.store.currentView.get("tab")]) }
       </div>
     )
   }

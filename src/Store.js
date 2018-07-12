@@ -6,28 +6,18 @@ import Service from "./data/Service"
 import LineItem from "./data/LineItem"
 import Extra from "./data/Extra"
 
-class View {
-  @observable name = null
-  @observable tab = null
-  @observable order = null
-
-  constructor(values) {
-    this.name = values.name
-    this.tab = values.tab
-    this.order = values.order
-  }
-}
-
 class Store {
   assemble = null;
   @observable currentUser = null;
-  @observable currentView = null;
+  @observable currentView = observable.map();
 
   // TODO normalize data models with UUIDs
   @observable loaded = false
   @observable reservations = []
   @observable services = []
   @observable extras = []
+
+  @computed get order() { return this.currentView.get("order") }
 
   constructor(assemble) {
     this.assemble = assemble || new Assemble("https://localhost:3000")
@@ -52,13 +42,13 @@ class Store {
   }
 
   lineItemForExtra(extra) {
-    let lineItem = this.currentView.order.line_items.filter((x) =>
+    let lineItem = this.order.line_items.filter((x) =>
       x.name === extra.name
     )[0]
 
     if(!Boolean(lineItem)) {
       lineItem = new LineItem({ extra: extra, quantity: 0 })
-      runInAction(() => this.currentView.order.line_items.push(lineItem))
+      runInAction(() => this.order.line_items.push(lineItem))
     }
 
     return lineItem
@@ -82,28 +72,28 @@ class Store {
 
   ensureEndTime() {
     if(this.currentView
-      && this.currentView.name === "order"
-      && this.currentView.tab === "checkout"
-      && this.currentView.order.end_time === null)
-      this.currentView.order.end_time = moment()
+      && this.currentView.get("name") === "order"
+      && this.currentView.get("tab") === "checkout"
+      && this.order.end_time === null)
+      this.order.end_time = moment()
   }
 
   @computed get start_time() {
-    if(this.currentView.order) {
-      return this.currentView.order.start_time &&
-        moment(this.currentView.order.start_time)
+    if(this.order) {
+      return this.order.start_time &&
+        moment(this.order.start_time)
     }
   }
 
   @computed get end_time() {
-    if(this.currentView.order) {
-      return this.currentView.order.end_time &&
-        moment(this.currentView.order.end_time)
+    if(this.order) {
+      return this.order.end_time &&
+        moment(this.order.end_time)
     }
   }
 
   @action showOrder(order) {
-    this.currentView = new View({
+    this.currentView = observable.map({
       name: "order",
       order: order,
       tab: "snacks",
@@ -111,17 +101,17 @@ class Store {
   }
 
   @action showTab(tabName) {
-    this.currentView.tab = tabName
+    this.currentView.set("tab", tabName)
   }
 
   @action showReservations() {
-    this.currentView = new View({
+    this.currentView = observable.map({
       name: "reservations"
     })
   }
 
   @action showLobby() {
-    this.currentView = null
+    this.currentView = observable.map()
   }
 
   ensureCurrentOrder(service) {
@@ -146,19 +136,19 @@ class Store {
   }
 
   persistOrder() {
-    if(!Boolean(this.currentView && this.currentView.order))
+    if(!Boolean(this.order))
       return;
 
     let state = {
       start_time: this.start_time && this.start_time.format(),
       end_time: this.end_time && this.end_time.format(),
-      cash_handled: this.currentView.order.cash_handled,
+      cash_handled: this.order.cash_handled,
     }
 
     return this.assemble.run("nimbus")`
       service = Service.find_by(
-        service_type: ${JSON.stringify(this.currentView.order.service.service)},
-        position: ${JSON.stringify(this.currentView.order.service.position)},
+        service_type: ${JSON.stringify(this.order.service.service)},
+        position: ${JSON.stringify(this.order.service.position)},
       )
 
       order = service.current_order || Order.create!(service: service)
@@ -172,13 +162,13 @@ class Store {
 
   persistExtra(state, extra_name) {
     // We can only update an extra quantity if the order is on the page.
-    if(!Boolean(this.currentView.order))
+    if(!Boolean(this.order))
       return
 
     this.assemble.run("nimbus")`
       service = Service.find_by(
-        service_type: ${JSON.stringify(this.currentView.order.service.service)},
-        position: ${JSON.stringify(this.currentView.order.service.position)},
+        service_type: ${JSON.stringify(this.order.service.service)},
+        position: ${JSON.stringify(this.order.service.position)},
       )
 
       order = service.current_order || Order.create!(service: service)
@@ -213,7 +203,7 @@ class Store {
     if(current_hour > 12 && chosen_hour < 12)
       new_time.add(1, "day")
 
-    this.currentView.order[field] = new_time
+    this.order[field] = new_time
   }
 }
 

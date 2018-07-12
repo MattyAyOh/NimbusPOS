@@ -24,13 +24,11 @@ class App extends React.Component {
 
         <Layout.Right>
           { this.props.store.loaded &&
-            this.props.store.currentView &&
-            this.props.store.currentView.name === "order" &&
+            this.props.store.currentView.get("name") === "order" &&
             <Order store={this.props.store} />
           }
 
-          { this.props.store.currentView &&
-            this.props.store.currentView.name === "reservations" &&
+          { this.props.store.currentView.get("name") === "reservations" &&
             <Reservations reservations={this.props.store.reservations} />
           }
         </Layout.Right>
