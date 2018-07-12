@@ -27,18 +27,38 @@ class Store {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
     }
-    `(result => runInAction(() => {
-      this.loaded = true
-      this.services = result.services.map(this.parseService)
-      this.extras = result.extras.map(this.parseExtra)
-    }));
+    `(result => {
+      // TODO when UUID indexing exists, we should not need to clear the array.
+      this.services = []
+      result.services.map(this.addService)
+
+      // TODO when UUID indexing exists, we should not need to clear the array.
+      this.extras = []
+      result.extras.map(this.addExtra)
+
+      runInAction(() => this.loaded = true)
+    });
 
     autorun(this.ensureEndTime.bind(this))
     autorun(this.persistOrder.bind(this))
   }
 
+  // TODO index on IDs, only add if ID is not present.
+  @action.bound
+  addExtra(json) {
+    this.extras.push(new Extra(json))
+  }
+
+  // TODO index on IDs, only add if ID is not present.
+  @action.bound
   addReservation(data) {
     this.reservations.push(data)
+  }
+
+  // TODO index on IDs, only add if ID is not present.
+  @action.bound
+  addService(json) {
+    this.services.push(new Service(json))
   }
 
   lineItemForExtra(extra) {
@@ -60,14 +80,6 @@ class Store {
     lineItem.quantity = lineItem.quantity + amount
 
     this.persistExtra({ quantity: lineItem.quantity }, extra.name)
-  }
-
-  parseService(json) {
-    return new Service(json)
-  }
-
-  parseExtra(json) {
-    return new Extra(json)
   }
 
   ensureEndTime() {
