@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import { observer } from "mobx-react"
-import { action, observable, computed } from "mobx"
 
 const blue = "#4a90e2"
 
@@ -15,9 +14,6 @@ const blue = "#4a90e2"
  */
 @observer
 class Timepicker extends React.Component {
-  @observable time = null
-  @observable open = false
-
   constructor(props) {
     super(props)
     this.acceptProps(props)
@@ -28,7 +24,10 @@ class Timepicker extends React.Component {
   }
 
   acceptProps(props) {
-    this.time = props.initialValue
+    this.state = {
+      time: props.initialValue,
+      open: false,
+    }
   }
 
   hourOptions() {
@@ -41,16 +40,16 @@ class Timepicker extends React.Component {
       Array.apply(null, {length: 60}).map(Number.call, Number)
   }
 
-  @computed get displayText() {
-    if(this.time)
-      return this.time.format("HH:mm")
+  displayText() {
+    if(this.state.time)
+      return this.state.time.format("HH:mm")
     else
       return ""
   }
 
   render() {
-    let selectedHour = this.time && this.time.hour()
-    let selectedMinute = this.time && this.time.minute()
+    let selectedHour = this.state.time && this.state.time.hour()
+    let selectedMinute = this.state.time && this.state.time.minute()
 
     return (
       <Wrapper>
@@ -58,10 +57,10 @@ class Timepicker extends React.Component {
           onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
           placeholder="--:--"
-          value={this.displayText}
+          value={this.displayText()}
         />
 
-        { this.open &&
+        { this.state.open &&
           <TouchInput>
             <Scroll>
               {this.hourOptions().map((hour) => (
@@ -90,12 +89,13 @@ class Timepicker extends React.Component {
     )
   }
 
-  @action
   focused(event) {
     event.target.select()
 
-    this.open = true
-    this.time = this.time || moment()
+    this.setState({
+      open: true,
+      time: this.time || moment()
+    })
   }
 
   enter(event) {
@@ -104,23 +104,24 @@ class Timepicker extends React.Component {
   }
 
   hourSelected(hour) {
-    let minute = (this.time && this.time.minute()) || 0
+    let minute = (this.state.time && this.state.time.minute()) || 0
     let newTime = moment(`${hour}:${minute}`, "HH:mm")
     this.timeChanged(newTime, true)
   }
 
   minuteSelected(minute) {
-    let hour = this.time.hour()
+    let hour = this.state.time.hour()
     let newTime = moment(`${hour}:${minute}`, "HH:mm")
     this.timeChanged(newTime)
   }
 
-  @action
   timeChanged(newTime, leaveOpen = false) {
     this.props.onChange(newTime)
 
-    this.open = leaveOpen
-    this.time = newTime
+    this.setState({
+      open: leaveOpen,
+      time: newTime,
+    })
   }
 }
 

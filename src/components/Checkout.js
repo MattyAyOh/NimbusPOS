@@ -2,7 +2,6 @@ import React from "react"
 import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
-import { observable } from "mobx"
 import { observer } from "mobx-react"
 import { createViewModel } from "mobx-utils"
 
@@ -13,8 +12,6 @@ const blue = "#4a90e2"
 
 @observer
 class Checkout extends React.Component {
-  @observable order = null
-
   constructor(props) {
     super(props)
 

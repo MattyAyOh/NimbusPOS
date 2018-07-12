@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
 import moment from "moment"
-import { observable } from "mobx"
 import { observer } from "mobx-react"
 
 import Table from "./Table"
@@ -14,16 +13,18 @@ const service_icons = {
 
 @observer
 class Lobby extends React.Component {
-  @observable current_time = moment()
-
   constructor(props) {
     super(props)
 
     this.timer = null
+
+    this.state = {
+      current_time: moment()
+    }
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.current_time = moment(), 1000)
+    this.timer = setInterval(() => this.setState({ current_time: moment() }), 1000)
   }
 
   componentWillUnmount() {
@@ -41,7 +42,7 @@ class Lobby extends React.Component {
               {this.props.store.services.filter(s => s.service === service_name).map((table) => (
                 <Table
                   store={this.props.store}
-                  current_time={this.current_time}
+                  current_time={this.state.current_time}
                   key={table.position}
                   service={table}
                 />
