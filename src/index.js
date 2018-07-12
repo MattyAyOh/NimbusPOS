@@ -8,11 +8,12 @@ import Assemble from "./Assemble"
 
 import Extra from "./data/Extra"
 import Order from "./data/Extra"
+import Reservation from "./data/Reservation"
 import Service from "./data/Service"
 
 let assemble = new Assemble("https://localhost:3000")
 
-window.store = new Store(assemble, [Extra, Order, Service])
+window.store = new Store(assemble, [Extra, Order, Reservation, Service])
 
 window.store.addReservation({
   start_time: "2017-05-20 10pm",

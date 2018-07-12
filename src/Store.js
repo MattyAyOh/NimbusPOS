@@ -10,7 +10,6 @@ class Store {
   @observable currentView = observable.map();
 
   @observable loaded = false
-  @observable reservations = []
 
   constructor(assemble, models) {
     this.assemble = assemble
@@ -45,12 +44,6 @@ class Store {
 
     autorun(this.ensureEndTime.bind(this))
     autorun(this.persistOrder.bind(this))
-  }
-
-  // TODO index on IDs, only add if ID is not present.
-  @action.bound
-  addReservation(data) {
-    this.reservations.push(data)
   }
 
   lineItemForExtra(extra) {
