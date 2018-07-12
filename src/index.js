@@ -4,8 +4,15 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import Store from "./Store"
+import Assemble from "./Assemble"
 
-window.store = new Store()
+import Extra from "./data/Extra"
+import Order from "./data/Extra"
+import Service from "./data/Service"
+
+let assemble = new Assemble("https://localhost:3000")
+
+window.store = new Store(assemble, [Extra, Order, Service])
 
 window.store.addReservation({
   start_time: "2017-05-20 10pm",

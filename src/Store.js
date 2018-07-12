@@ -1,26 +1,30 @@
 import { observable, computed, action, autorun, runInAction } from 'mobx';
 import moment from "moment"
-import Assemble from "./Assemble"
 
-import Service from "./data/Service"
 import LineItem from "./data/LineItem"
-import Extra from "./data/Extra"
+import Service from "./data/Service"
 
 class Store {
   assemble = null;
   @observable currentUser = null;
   @observable currentView = observable.map();
 
-  // TODO normalize data models with UUIDs
   @observable loaded = false
   @observable reservations = []
-  @observable services = []
-  @observable extras = []
 
-  @computed get order() { return this.currentView.get("order") }
+  constructor(assemble, models) {
+    this.assemble = assemble
 
-  constructor(assemble) {
-    this.assemble = assemble || new Assemble("https://localhost:3000")
+    models.forEach(model => {
+      let modelList = model.name.toLowerCase() + 's'
+      let store = this
+
+      store[modelList] = observable([])
+
+      store[`add${model.name}`] = data => runInAction(() =>
+        store[modelList].push(new model(data))
+      )
+    })
 
     this.assemble.watch("nimbus")`
     {
@@ -45,20 +49,8 @@ class Store {
 
   // TODO index on IDs, only add if ID is not present.
   @action.bound
-  addExtra(json) {
-    this.extras.push(new Extra(json))
-  }
-
-  // TODO index on IDs, only add if ID is not present.
-  @action.bound
   addReservation(data) {
     this.reservations.push(data)
-  }
-
-  // TODO index on IDs, only add if ID is not present.
-  @action.bound
-  addService(json) {
-    this.services.push(new Service(json))
   }
 
   lineItemForExtra(extra) {
@@ -88,6 +80,10 @@ class Store {
       && this.currentView.get("tab") === "checkout"
       && this.order.end_time === null)
       this.order.end_time = moment()
+  }
+
+  @computed get order() {
+    return this.currentView.get("order")
   }
 
   @computed get start_time() {
