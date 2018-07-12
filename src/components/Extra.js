@@ -8,7 +8,7 @@ class Extra extends React.Component {
     return (
       <Layout>
         <Image
-          src={this.props.image_url}
+          src={this.props.extra.image_url}
           onClick={() => this.props.store.incrementExtraQuantity(this.props.extra, 1)}
         />
 
