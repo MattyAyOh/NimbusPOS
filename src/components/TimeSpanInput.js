@@ -17,8 +17,8 @@ const TimeSpanInput = observer((props) => (
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
-      initialValue={props.startTime}
-      onChange={(chosen_time) => props.onStartTimeChange(chosen_time)}
+      initialValue={props.store.currentView.order.startTime}
+      onChange={(newTime) => props.store.timeUpdated("start_time", newTime)}
     />
 
     <Margin>to</Margin>
@@ -26,8 +26,8 @@ const TimeSpanInput = observer((props) => (
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
-      initialValue={props.endTime}
-      onChange={(chosen_time) => props.onEndTimeChange(chosen_time)}
+      initialValue={props.store.currentView.order.endTime}
+      onChange={(newTime) => props.store.timeUpdated("end_time", newTime)}
     />
 
     { (props.endTime < props.startTime) &&

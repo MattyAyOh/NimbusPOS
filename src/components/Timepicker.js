@@ -16,14 +16,7 @@ const blue = "#4a90e2"
 class Timepicker extends React.Component {
   constructor(props) {
     super(props)
-    this.acceptProps(props)
-  }
 
-  componentWillUpdate(newProps) {
-    this.acceptProps(newProps)
-  }
-
-  acceptProps(props) {
     this.state = {
       time: props.initialValue,
       open: false,
@@ -54,6 +47,7 @@ class Timepicker extends React.Component {
     return (
       <Wrapper>
         <TimeInput
+          readOnly
           onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
           placeholder="--:--"

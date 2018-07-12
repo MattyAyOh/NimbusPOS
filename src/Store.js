@@ -208,6 +208,24 @@ class Store {
       end
     `
   }
+
+  // `field`: `"start_time"` or `"end_time"`
+  // `new_time`: a `moment` object
+  @action
+  timeUpdated(field, new_time) {
+    const current_hour = moment().get("hour")
+    const chosen_hour = new_time.get("hour")
+
+    // Chose a time before this past midnight?
+    if(current_hour < 12 && chosen_hour > 12)
+      new_time.subtract(1, "day")
+
+    // Chose a time after this coming midnight?
+    if(current_hour > 12 && chosen_hour < 12)
+      new_time.add(1, "day")
+
+    this.currentView.order[field] = new_time
+  }
 }
 
 export default Store;

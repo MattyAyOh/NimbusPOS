@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
 import { observer } from "mobx-react"
 
 import TimeSpanInput from "./TimeSpanInput"
@@ -27,11 +26,8 @@ class Order extends React.Component {
           <h2>{this.props.store.currentView.order.service.name} #{this.props.store.currentView.order.service.position}</h2>
 
           <TimeSpanInput
-            startTime={this.props.store.start_time}
-            endTime={this.props.store.end_time}
-            onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
-            onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime)}
             hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
+            store={this.props.store}
           />
 
           <TabView
@@ -45,23 +41,6 @@ class Order extends React.Component {
           />
         </Layout>
     )
-  }
-
-  // `field`: `"start_time"` or `"end_time"`
-  // `new_time`: a `moment` object
-  timeUpdated(field, new_time) {
-    const current_hour = moment().get("hour")
-    const chosen_hour = new_time.get("hour")
-
-    // Chose a time before this past midnight?
-    if(current_hour < 12 && chosen_hour > 12)
-      new_time.subtract(1, "day")
-
-    // Chose a time after this coming midnight?
-    if(current_hour > 12 && chosen_hour < 12)
-      new_time.add(1, "day")
-
-    this.props.store.currentView.order[field] = new_time
   }
 }
 
