@@ -6,6 +6,11 @@ const blue = "#4a90e2"
 
 @observer
 class TabView extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { tab: Object.keys(props.tabs)[0] }
+  }
+
   render() {
     return (
       <div>
@@ -14,15 +19,15 @@ class TabView extends React.Component {
             <Tab
               store={this.props.store}
               key={tab}
-              onClick={() => this.props.store.showTab(tab)}
-              selected={this.props.store.currentView.get("tab") === tab}
+              onClick={(e) => { e.stopPropagation(); this.setState({ tab: tab }) }}
+              selected={this.state.tab === tab}
             >
               {tab}
             </Tab>
           ))}
         </TabSelector>
 
-        { React.createElement(this.props.tabs[this.props.store.currentView.get("tab")]) }
+        { React.createElement(this.props.tabs[this.state.tab]) }
       </div>
     )
   }

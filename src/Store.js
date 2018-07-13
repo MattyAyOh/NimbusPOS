@@ -10,9 +10,12 @@ class Store {
   @observable currentView = observable.map();
 
   @observable loaded = false
+  @observable visor = false
+  @observable dataModels = []
 
   constructor(assemble, models) {
     this.assemble = assemble
+    this.dataModels = models
 
     models.forEach(model => {
       let modelList = model.name.toLowerCase() + 's'
@@ -29,6 +32,7 @@ class Store {
     {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
+      orders: Order.all,
     }
     `(result => {
       // TODO when UUID indexing exists, we should not need to clear the array.
@@ -38,6 +42,10 @@ class Store {
       // TODO when UUID indexing exists, we should not need to clear the array.
       this.extras = []
       result.extras.map(this.addExtra)
+
+      // TODO when UUID indexing exists, we should not need to clear the array.
+      this.orders = []
+      result.orders.map(this.addOrder)
 
       runInAction(() => this.loaded = true)
     });
@@ -57,6 +65,13 @@ class Store {
     }
 
     return lineItem
+  }
+
+  @action
+  toggleVisor() {
+    this.visor
+    ? this.visor = null
+    : this.visor = true
   }
 
   @action

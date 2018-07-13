@@ -7,7 +7,7 @@ import Store from "./Store"
 import Assemble from "./Assemble"
 
 import Extra from "./data/Extra"
-import Order from "./data/Extra"
+import Order from "./data/Order"
 import Reservation from "./data/Reservation"
 import Service from "./data/Service"
 

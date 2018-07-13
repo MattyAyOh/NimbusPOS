@@ -7,6 +7,7 @@ import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
+import Visor from "./Visor"
 
 @observer
 class App extends React.Component {
@@ -14,6 +15,8 @@ class App extends React.Component {
     return (
       <Layout>
         <Header/>
+
+        <Visor store={this.props.store} />
 
         <Layout.Left>
           { this.props.store.loaded
