@@ -19,7 +19,7 @@ class Order extends React.Component {
       .services
       .filter(s =>
         s.service === this.props.params.service &&
-        s.position === this.props.params.number
+        s.position === parseInt(this.props.params.number, 10)
       )[0]
 
     this.order = this.service.current_order
@@ -38,7 +38,7 @@ class Order extends React.Component {
       : <Layout>
           <Links>
             <StyledLink to="/" onClick={this.cancelOrder.bind(this)}>Cancel Order</StyledLink>
-            <StyledLink to="/" onClick={this.props.refresh}>Close</StyledLink>
+            <StyledLink to="/" onClick={() => this.props.refresh()}>Close</StyledLink>
           </Links>
 
           <h2>{this.service.name} #{this.service.position}</h2>
@@ -94,7 +94,7 @@ class Order extends React.Component {
         service_type: ${JSON.stringify(this.props.params.service)},
         position: ${JSON.stringify(this.props.params.number)}
       ).current_order.destroy!
-    `).then(this.props.refresh)
+    `).then(() => this.props.refresh())
   }
 
   ensureEndTime() {
