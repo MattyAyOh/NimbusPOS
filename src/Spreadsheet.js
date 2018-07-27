@@ -5,6 +5,10 @@ import { observer } from "mobx-react"
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 
+import Table from "./components/Table";
+import Extra from "./components/Extra";
+import moment from "moment"
+
 @observer
 class Spreadsheet extends React.Component {
   render() {
@@ -17,10 +21,24 @@ class Spreadsheet extends React.Component {
           columns={[{ Header: this.props.model.name, columns: this.columns() }]}
           defaultPageSize={10}
           className="-striped -highlight"
+          SubComponent={item => React.createElement(this.subComponent(item))}
         />
-        <br />
       </div>
     );
+  }
+
+  subComponent(item) {
+    return {
+      "Service": () => <Table
+        store={this.props.store}
+        current_time={moment()}
+        service={item.original}
+      />,
+      // "Extra": () => <Extra
+      //   store={this.props.store}
+      //   extra={item.original}
+      // />,
+    }[this.props.model.name] || (() => <div/>)
   }
 
   // TODO the data models should be aware of their own columns
@@ -43,6 +61,24 @@ class Spreadsheet extends React.Component {
         { Header: "Position", accessor: "position" },
         { Header: "Service", accessor: "service" },
         { Header: "Current Order", accessor: "current_order" },
+        {
+          expander: true,
+          Header: () => <strong>More</strong>,
+          width: 65,
+          Expander: ({ isExpanded, ...rest }) =>
+          <div>
+          {isExpanded
+            ? <span>&#x2299;</span>
+            : <span>&#x2295;</span>}
+          </div>,
+          style: {
+            cursor: "pointer",
+            fontSize: 25,
+            padding: "0",
+            textAlign: "center",
+            userSelect: "none"
+          },
+        },
       ],
       "LineItem": [
         { Header: "Name", accessor: "name" },
@@ -58,6 +94,5 @@ class Spreadsheet extends React.Component {
     }[this.props.model.name]
   }
 }
-
 
 export default Spreadsheet

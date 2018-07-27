@@ -15,7 +15,6 @@ class Visor extends React.Component {
       tabs[model.name] = () =>
         <Spreadsheet store={this.props.store} model={model} />
     )
-    console.log(tabs)
 
     return (
       <Layout>
@@ -43,10 +42,11 @@ const Layout = styled.div`
 `
 
 const Background = styled.div`
-width: 90vw;
-height: auto;
-background-color: white;
-box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
+  width: 90vw;
+  padding: 1rem;
+  height: auto;
+  background-color: white;
+  box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
 `
 
 const Button = styled.div`
