@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 import { observer } from "mobx-react"
+import { withRouter } from "react-router-dom"
 
 import Service from "../data/Service"
 
@@ -19,18 +20,14 @@ class Table extends React.Component {
             moment(this.props.service.current_order.start_time).format('LT')}
         </Time>
 
-        {this.props.service.current_order
-        ? <Number active>
-            <Link to={this.orderUrl()} >
-              {this.props.service.position}
-            </Link>
-          </Number>
-        : <Number onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
+        <Number
+          onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
             .then(() => this.props.history.push(this.orderUrl()))
-          } >
-            {this.props.service.position}
-          </Number>
-        }
+          }
+          active={Boolean(this.props.service.current_order)}
+        >
+          {this.props.service.position}
+        </Number>
 
         <Price>
           {this.props.service.current_order &&

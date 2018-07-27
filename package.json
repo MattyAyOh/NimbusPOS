@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://web:3001/",
+  "proxy": "http://localhost:3000/",
   "dependencies": {
     "jquery": "^3.3.1",
     "mobx": "^5.0.3",
