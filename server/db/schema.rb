@@ -12,9 +12,6 @@
 
 ActiveRecord::Schema.define(version: 20180207174741) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "extras", force: :cascade do |t|
     t.string "name"
     t.integer "price"
@@ -23,15 +20,15 @@ ActiveRecord::Schema.define(version: 20180207174741) do
   end
 
   create_table "order_extras", force: :cascade do |t|
-    t.bigint "order_id"
-    t.bigint "extra_id"
+    t.integer "order_id"
+    t.integer "extra_id"
     t.integer "quantity"
     t.index ["extra_id"], name: "index_order_extras_on_extra_id"
     t.index ["order_id"], name: "index_order_extras_on_order_id"
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "service_id"
+    t.integer "service_id"
     t.datetime "start_time"
     t.datetime "end_time"
     t.float "previous_cost", default: 0.0
@@ -46,7 +43,4 @@ ActiveRecord::Schema.define(version: 20180207174741) do
     t.integer "service_type", default: 0
   end
 
-  add_foreign_key "order_extras", "extras"
-  add_foreign_key "order_extras", "orders"
-  add_foreign_key "orders", "services"
 end
