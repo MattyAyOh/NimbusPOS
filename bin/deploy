@@ -71,17 +71,19 @@ run "bash nodesource_setup.sh"
 run "apt-get update"
 run "apt-get install -y yarn nodejs"
 
-echo "Installing front-end dependencies..."
+puts "Installing front-end dependencies..."
 run "cd nimbuspos && yarn install"
-echo "Building front-end code..."
+
+puts "Building front-end code..."
 run "cd nimbuspos && yarn build"
 run "mv nimbuspos/build/* nimbuspos/server/public"
-run "cd nimbuspos/server && rails s -b 0.0.0.0 -p 80 -d"
 
-# Bundle install
-echo "Set up back-end"
+# Bundle install, start server.
+puts "Set up back-end"
 run "gem install bundler"
+run "export PASSWORD=foobar"
 run "cd nimbuspos/server && ./bin/setup"
+run "cd nimbuspos/server && ./bin/rails s -b 0.0.0.0 -p 80 -d"
 
 puts server_name
 puts
