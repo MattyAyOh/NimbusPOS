@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+
+require "droplet_kit"
+
+access_token = ARGV[0]
+
+client = DropletKit::Client.new(access_token: access_token)
+ssh_keys = client.ssh_keys.all.collect {|key| key.fingerprint}
+server_name = "nimbuspos-#{Random.rand(9999)}"
+
+puts "Spinning up..."
+puts server_name
+puts
+
+droplet = DropletKit::Droplet.new(
+  name: server_name,
+  region: "nyc1",
+  image: 23219707, # "Docker 17.03.0-ce on 14.04",
+  size: "s-1vcpu-1gb",
+  ssh_keys: ssh_keys,
+)
+
+created = client.droplets.create(droplet)
+
+puts "Waiting for the server to spin up."
+until client.droplets.find(id: created.id).status == "active"
+  sleep 5
+end
+puts "It's up!"
+puts
+
+droplet = client.droplets.find(id: created.id)
+
+IP = droplet.networks.v4.first.ip_address
+
+def run(command)
+  `ssh -o "StrictHostKeyChecking no" root@#{IP} '#{command}'`.
+    tap { |result| puts result }
+end
+
+puts "Waiting for SSH access"
+result = ""
+begin
+  result = run "hostname"
+  sleep 5
+end until result.to_s.strip == server_name
+puts "SSH is up!"
+puts
+
+run "git clone https://github.com/mattyayoh/nimbuspos.git"
+# TODO This should not be necessary once `.sample.env` is included in the repo.
+run "cd nimbuspos && touch .sample.env"
+
+run "apt-add-repository ppa:brightbox/ruby-ng"
+run "apt-get update -qq"
+
+# TODO it's not clear if all of these are necessary.
+# Various internet searches suggested some combination of these
+# as prerequisites of Nokogiri and Postgres.
+# We should verify that each item on the list is necessary.
+run "apt-get install -y ruby2.5 ruby2.5-dev libgmp-dev libxml2-dev libxslt-dev zlib1g-dev g++ make libpq-dev postgresql"
+run "apt-get install -y libsqlite3-dev"
+
+# Install yarn...
+run "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -"
+run "echo 'deb https://dl.yarnpkg.com/debian/ stable main' | sudo tee /etc/apt/sources.list.d/yarn.list"
+# ...and node...
+run "curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh"
+run "bash nodesource_setup.sh"
+# ...through apt-get.
+run "apt-get update"
+run "apt-get install -y yarn nodejs"
+
+echo "Installing front-end dependencies..."
+run "cd nimbuspos && yarn install"
+echo "Building front-end code..."
+run "cd nimbuspos && yarn build"
+run "mv nimbuspos/build/* nimbuspos/server/public"
+run "cd nimbuspos/server && rails s -b 0.0.0.0 -p 80 -d"
+
+# Bundle install
+echo "Set up back-end"
+run "gem install bundler"
+run "cd nimbuspos/server && ./bin/setup"
+
+puts server_name
+puts
+puts "The site is up!"
+puts "Visit http://#{IP} in your browser."
+
+# If on OS X, we can do this automatically
+if(`uname -s`.strip == "Darwin")
+  `open http://#{IP}`
+end
