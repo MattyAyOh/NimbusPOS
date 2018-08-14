@@ -1,16 +1,16 @@
 import { observable } from "mobx"
 
 class Reservation {
-  @observable image_url = null
-  @observable name = null
-  @observable price = null
-  @observable extra_type = null
+  @observable service_name = null
+  @observable service_position = null
+  @observable start_time = null
+  @observable end_time = null
 
   constructor(values) {
-    this.image_url = values.image_url
-    this.name = values.name
-    this.price = values.price
-    this.extra_type = values.extra_type
+    this.service_name = values.service_name
+    this.service_position = values.service_position
+    this.start_time = values.start_time
+    this.end_time = values.end_time
   }
 }
 
