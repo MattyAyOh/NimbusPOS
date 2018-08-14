@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180207174741) do
+ActiveRecord::Schema.define(version: 20180522205018) do
 
   create_table "extras", force: :cascade do |t|
     t.string "name"
@@ -34,6 +34,15 @@ ActiveRecord::Schema.define(version: 20180207174741) do
     t.float "previous_cost", default: 0.0
     t.float "cash_handled"
     t.index ["service_id"], name: "index_orders_on_service_id"
+  end
+
+  create_table "reservations", force: :cascade do |t|
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.integer "service_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_id"], name: "index_reservations_on_service_id"
   end
 
   create_table "services", force: :cascade do |t|

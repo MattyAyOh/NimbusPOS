@@ -13,28 +13,14 @@ import Reservations from "./components/Reservations"
 import Assemble from "./Assemble"
 import Service from "./data/Service"
 import Extra from "./data/Extra"
-
-const reservations = [
-  {
-    start_time: "2017-05-20 10pm",
-    end_time: "2017-05-20 12pm",
-    service: "pool",
-    room: 4,
-  },
-  {
-    start_time: "2017-05-20 12pm",
-    end_time: "2017-05-21 4am",
-    service: "karaoke",
-    room: 1,
-  },
-]
+import Reservation from "./data/Reservation"
 
 @observer
 class App extends React.Component {
   assemble = new Assemble("https://localhost:3000")
 
   @observable loaded = false
-  @observable reservations = reservations
+  @observable reservations = []
   @observable services = []
   @observable extras = []
 
@@ -43,10 +29,12 @@ class App extends React.Component {
     {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
+      reservations: Reservation.all.order(:start_time),
     }
     `((result) => {
       this.loaded = true
       this.services = result.services.map(parseService)
+      this.reservations = result.reservations.map(parseReservation)
       this.extras = result.extras.map(parseExtra)
     });
   }
@@ -95,7 +83,11 @@ class App extends React.Component {
             component={({ match }) =>
               this.loaded
               ? <Layout.Right>
-                  <Reservations reservations={this.reservations} />
+                  <Reservations
+                    assemble={this.assemble}
+                    reservations={this.reservations}
+                    services={this.services}
+                  />
                 </Layout.Right>
               : <Loading />
             } />
@@ -191,6 +183,10 @@ const parseService = (json) => {
 
 const parseExtra = (json) => {
   return new Extra(json)
+}
+
+const parseReservation = (json) => {
+  return new Reservation(json)
 }
 
 export default App
