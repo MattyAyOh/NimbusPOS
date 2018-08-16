@@ -23,12 +23,13 @@ class Extra extends React.Component {
           onClick={() => this.add(1)}
         />
 
-        <Quantity
-          onClick={() => this.add(1)}
-        >{this.state.quantity}
-        </Quantity>
+        <Quantity>{this.props.name}</Quantity>
 
         <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
+
+        <Quantity>{this.state.quantity}</Quantity>
+
+        <Decrement color="green" onClick={() => this.add(1)}>+</Decrement>
       </Layout>
     );
   }
@@ -42,7 +43,7 @@ class Extra extends React.Component {
 
 const Layout = styled.div`
   display: grid;
-  grid-template-rows: 1fr 2rem;
+  grid-template-columns: repeat(5, 1fr);
   align-items: center;
   justify-items: center;
 `
@@ -53,10 +54,7 @@ const Image = styled.img`
 `
 
 const Quantity = styled.div`
-  -webkit-text-stroke: 2px #000;
   color: #fff;
-  font-size: 4rem;
-  grid-area: 1 / 1;
   text-align: center;
   vertical-align: center;
 `
@@ -64,9 +62,12 @@ const Quantity = styled.div`
 const Decrement = styled.div`
   background-color: ${({color}) => color};
   color: white;
-  grid-row: 2;
   text-align: center;
-  width: 100%;
+  width: 3rem;
+  height: 2rem;
+  border-radius: 4px;
+  font-size: 2rem;
+  cursor: pointer;
 `
 
 export default Extra

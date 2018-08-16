@@ -20,9 +20,8 @@ const Extras = observer((props) => (
 
 const Layout = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-column-gap: 2rem;
-  grid-row-gap: 2rem;
+  grid-template-rows: 1fr;
+  grid-row-gap: 1rem;
 `
 
 export default Extras
