@@ -49,21 +49,23 @@ class Checkout extends React.Component {
 
           <LineItem
             key="total"
-            name="Total"
-            rate={total_price / this.state.num_people}
-      quantity={
-        <div>
-          <Button active={this.state.num_people === 1} onClick={() => this.setState({ num_people: 1 }) }>1</Button>
-          <Button active={this.state.num_people === 2} onClick={() => this.setState({ num_people: 2 }) }>2</Button>
-          <Button active={this.state.num_people === 3} onClick={() => this.setState({ num_people: 3 }) }>3</Button>
-          <Button active={this.state.num_people === 4} onClick={() => this.setState({ num_people: 4 }) }>4</Button>
-          <Button active={this.state.num_people === 5} onClick={() => this.setState({ num_people: 5 }) }>5</Button>
-          <Button active={this.state.num_people === 6} onClick={() => this.setState({ num_people: 6 }) }>6</Button>
-          <Button active={this.state.num_people === 7} onClick={() => this.setState({ num_people: 7 }) }>7</Button>
-          <Button active={this.state.num_people === 8} onClick={() => this.setState({ num_people: 8 }) }>8</Button>
-        </div>
-      }
-            amount={total_price}
+            name={<Blue>Total</Blue>}
+            amount={<Blue>{total_price}</Blue>}
+          />
+
+          <LineItem
+            key="people"
+            name="Split by # of people"
+            quantity={
+              <div>
+              {
+                [1,2,3,4,5,6,7,8].map(num => (
+                  <Button active={this.state.num_people === num} onClick={() => this.setState({ num_people: num }) }>{num}</Button>
+                ))
+              }
+              </div>
+            }
+            amount={(total_price / this.state.num_people).toFixed(2)}
           />
         </Bill>
 
@@ -108,11 +110,14 @@ Checkout.propTypes = {
 }
 
 const Button = styled.span`
-  background-color: ${({active}) => active ? "white" : "blue"};
-  color: blue;
-  color: ${({active}) => active ? "blue" : "white"};
-  border: 1px solid blue;
+  background-color: ${({active}) => active ? "white" : blue};
+  color: ${({active}) => active ? blue : "white"};
+  border: 1px solid ${blue};
   padding: 0.5rem;
+`
+
+const Blue = styled.strong`
+  color: ${blue};
 `
 
 export default Checkout
