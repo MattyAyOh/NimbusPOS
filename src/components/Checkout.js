@@ -12,11 +12,17 @@ const blue = "#4a90e2"
 
 @observer
 class Checkout extends React.Component {
+  state = {
+    num_people: 1
+  }
+
   render() {
     const hours_spent = (
       moment(this.props.order.end_time)
         .diff(this.props.order.start_time, "minutes") + 1
     ) / 60.0
+
+    let total_price = this.props.order.bill_amount(this.props.order.service.hourly_rate, moment())
 
     return (
       <Layout>
@@ -44,7 +50,20 @@ class Checkout extends React.Component {
           <LineItem
             key="total"
             name="Total"
-            amount={this.props.order.bill_amount(this.props.order.service.hourly_rate, moment())}
+            rate={total_price / this.state.num_people}
+      quantity={
+        <div>
+          <Button active={this.state.num_people === 1} onClick={() => this.setState({ num_people: 1 }) }>1</Button>
+          <Button active={this.state.num_people === 2} onClick={() => this.setState({ num_people: 2 }) }>2</Button>
+          <Button active={this.state.num_people === 3} onClick={() => this.setState({ num_people: 3 }) }>3</Button>
+          <Button active={this.state.num_people === 4} onClick={() => this.setState({ num_people: 4 }) }>4</Button>
+          <Button active={this.state.num_people === 5} onClick={() => this.setState({ num_people: 5 }) }>5</Button>
+          <Button active={this.state.num_people === 6} onClick={() => this.setState({ num_people: 6 }) }>6</Button>
+          <Button active={this.state.num_people === 7} onClick={() => this.setState({ num_people: 7 }) }>7</Button>
+          <Button active={this.state.num_people === 8} onClick={() => this.setState({ num_people: 8 }) }>8</Button>
+        </div>
+      }
+            amount={total_price}
           />
         </Bill>
 
@@ -87,5 +106,13 @@ const Divider = styled.div`
 Checkout.propTypes = {
   order: PropTypes.instanceOf(Order),
 }
+
+const Button = styled.span`
+  background-color: ${({active}) => active ? "white" : "blue"};
+  color: blue;
+  color: ${({active}) => active ? "blue" : "white"};
+  border: 1px solid blue;
+  padding: 0.5rem;
+`
 
 export default Checkout
