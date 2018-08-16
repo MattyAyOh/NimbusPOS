@@ -15,6 +15,8 @@ import Timepicker from "./Timepicker"
  */
 const TimeSpanInput = observer((props) => (
   <div>
+
+    <Emoji>🕙</Emoji>
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
@@ -24,6 +26,7 @@ const TimeSpanInput = observer((props) => (
 
     <Margin>to</Margin>
 
+    <Emoji>⏳</Emoji>
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
@@ -46,6 +49,11 @@ const Margin = styled.span`
 
 const Warning = styled.div`
   padding: 1rem 0;
+`
+
+const Emoji = styled.span`
+  font-size: 1.6rem;
+  margin-right: 1rem;
 `
 
 export default TimeSpanInput
