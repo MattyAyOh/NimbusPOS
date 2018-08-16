@@ -12,14 +12,6 @@ const blue = "#4a90e2"
 
 @observer
 class Checkout extends React.Component {
-  @observable cash_handled = null
-
-  constructor(props) {
-    super(props)
-
-    this.cash_handled = props.order.cash_handled
-  }
-
   render() {
     const hours_spent = (
       moment(this.props.order.end_time)
@@ -56,19 +48,8 @@ class Checkout extends React.Component {
           />
         </Bill>
 
-        <Register>
-          Cash Handled:
-
-          <input
-            type="number"
-            value={this.cash_handled || ""}
-            onChange={(event) => this.set_cash_handled(event.target.value)}
-          />
-        </Register>
-
         <Confirm
-          onClick={() => this.props.persist({ cash_handled: this.cash_handled })}
-          disabled={this.cash_handled == null}
+          onClick={() => this.props.persist({ cash_handled: 0 })}
         >Confirm</Confirm>
       </Layout>
     )
@@ -76,13 +57,6 @@ class Checkout extends React.Component {
 
   componentDidMount() {
     this.props.onMount()
-  }
-
-  set_cash_handled(value) {
-    if(value === "")
-      this.cash_handled = null
-    else
-      this.cash_handled = value
   }
 }
 
