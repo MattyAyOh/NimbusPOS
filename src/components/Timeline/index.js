@@ -1,10 +1,6 @@
 import React from "react"
-import styled from "styled-components"
 import { observer } from "mobx-react"
-import { observable } from "mobx"
-
 import moment from "moment"
-import interactjs from "interactjs"
 
 import "react-calendar-timeline/lib/Timeline.css"
 import "./styles.css"
@@ -54,6 +50,8 @@ class Timeline extends React.Component {
          year: 1
        }}
        verticalLineClassNamesForTime={this.verticalLineClassNamesForTime}
+        onCanvasClick={this.props.onCanvasClick}
+        onItemClick={this.props.onItemClick}
      >
        <TimelineMarkers>
          <TodayMarker/>

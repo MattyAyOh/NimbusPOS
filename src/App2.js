@@ -1,13 +1,12 @@
 import React from "react"
 import styled from "styled-components"
-import { BrowserRouter as Router, Route } from "react-router-dom"
 import { observer } from "mobx-react"
-import { observable } from "mobx"
 
 import Header from "./components/Header"
+import NewReservationForm from "./components/NewReservationForm"
 import Timeline from "./components/Timeline"
-import Assemble from "./Assemble"
 import moment from "moment"
+import { Overlay, Backdrop } from 'reakit';
 
 const reservables = [
   { id: 11, title: 'Mahjong 1' },
@@ -19,10 +18,14 @@ const reservables = [
   { id: 17, title: 'Mahjong 7' },
   { id: 18, title: 'Mahjong 8' },
 
+  { id: 20, title: '' },
+
   { id: 21, title: 'Pool 1' },
   { id: 22, title: 'Pool 2' },
   { id: 23, title: 'Pool 3' },
   { id: 24, title: 'Pool 4' },
+
+  { id: 30, title: '' },
 
   { id: 31, title: 'KTV 1' },
   { id: 32, title: 'KTV 2' },
@@ -40,18 +43,27 @@ const reservations = [
 @observer
 class App2 extends React.Component {
   render = () => (
-    <Router>
-      <Layout>
-        <Header/>
+    <Overlay.Container>
+      {overlay => (
+        <Layout>
+          <Header/>
 
-        <Timeline
-          reservables={reservables}
-          reservations={reservations}
-          businessHoursOpen={18}
-          businessHoursClose={4}
-        />
-      </Layout>
-    </Router>
+          <Timeline
+            reservables={reservables}
+            reservations={reservations}
+            businessHoursOpen={18}
+            businessHoursClose={4}
+            onCanvasClick={() => overlay.show() }
+            onItemClick={() => overlay.show() }
+          />
+
+          <Backdrop as={Overlay.Hide} fade slide="top" {...overlay} />
+          <Overlay fade slide="top" {...overlay}>
+            <NewReservationForm />
+          </Overlay>
+        </Layout>
+      )}
+    </Overlay.Container>
   )
 }
 
