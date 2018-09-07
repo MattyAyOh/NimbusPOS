@@ -37,38 +37,54 @@ class Timeline extends React.Component {
 
   render = () => (
     <ReactTimeline
-       groups={this.props.reservables}
-       items={this.props.reservations}
-       defaultTimeStart={moment().add(-3, 'hour')}
-       defaultTimeEnd={moment().add(6, 'hour')}
-       timeSteps={{
-         second: 1,
-         minute: 15,
-         hour: 1,
-         day: 1,
-         month: 1,
-         year: 1
-       }}
-       verticalLineClassNamesForTime={this.verticalLineClassNamesForTime}
-        onCanvasClick={this.props.onCanvasClick}
-        onItemClick={this.props.onItemClick}
-     >
-       <TimelineMarkers>
-         <TodayMarker/>
+      // Data from parent.
+      groups={this.props.reservables}
+      items={this.props.reservations}
 
-         <CustomMarker date={this.opening_time} >
-           {marker('4px', nimbusBlue)}
-         </CustomMarker>
+      // Focus the timeline on today's business hours.
+      defaultTimeStart={moment(this.opening_time).subtract(1, 'hour')}
+      defaultTimeEnd={moment(this.closing_time).add(1, 'hour')}
 
-         <CustomMarker date={this.closing_time} >
-           {marker('4px', nimbusBlue)}
-         </CustomMarker>
+      // Used to highlight business hours.
+      verticalLineClassNamesForTime={this.verticalLineClassNamesForTime}
 
-         <CursorMarker>
-           {marker('1px', 'grey')}
-         </CursorMarker>
-       </TimelineMarkers>
-     </ReactTimeline>
+      // Row height in `px`.
+      lineHeight={40}
+
+      // Dragging an element will not change its row.
+      canChangeGroup={false}
+
+      useResizeHandle
+
+      // The mouse scroll wheel will zoom.
+      traditionalZoom
+
+      // By default, the calendar uses 15-minute time intervals.
+      // Uncomment to change the interval.
+      // dragSnap={5*60*1000}
+
+      // Event handlers, passed in from parent
+      onCanvasClick={this.props.onCanvasClick}
+      onItemClick={this.props.onItemClick}
+      onItemMove={this.props.onItemMove}
+      onItemResize={this.props.onItemResize}
+    >
+      <TimelineMarkers>
+        <TodayMarker/>
+
+        <CustomMarker date={this.opening_time} >
+          {marker('4px', nimbusBlue)}
+        </CustomMarker>
+
+        <CustomMarker date={this.closing_time} >
+          {marker('4px', nimbusBlue)}
+        </CustomMarker>
+
+        <CursorMarker>
+          {marker('1px', 'grey')}
+        </CursorMarker>
+      </TimelineMarkers>
+    </ReactTimeline>
   )
 
   verticalLineClassNamesForTime = (timeStart, timeEnd) => {

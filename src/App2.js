@@ -18,14 +18,14 @@ const reservables = [
   { id: 17, title: 'Mahjong 7' },
   { id: 18, title: 'Mahjong 8' },
 
-  { id: 20, title: '' },
+  { id: 20, title: '', height: 80 },
 
   { id: 21, title: 'Pool 1' },
   { id: 22, title: 'Pool 2' },
   { id: 23, title: 'Pool 3' },
   { id: 24, title: 'Pool 4' },
 
-  { id: 30, title: '' },
+  { id: 30, title: '', height: 80 },
 
   { id: 31, title: 'KTV 1' },
   { id: 32, title: 'KTV 2' },
