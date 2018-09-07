@@ -2,3 +2,8 @@
 .react-calendar-timeline .rct-header .rct-label-group {
     background-color: #4a90e2;
 }
+
+.react-calendar-timeline .rct-vertical-lines .open {
+  background-color: #4a90e2;;
+  opacity: 0.2;
+}

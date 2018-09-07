@@ -44,7 +44,12 @@ class App2 extends React.Component {
       <Layout>
         <Header/>
 
-       <Timeline reservables={reservables} reservations={reservations} />
+        <Timeline
+          reservables={reservables}
+          reservations={reservations}
+          businessHoursOpen={18}
+          businessHoursClose={4}
+        />
       </Layout>
     </Router>
   )

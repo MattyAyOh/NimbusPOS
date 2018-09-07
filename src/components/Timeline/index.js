@@ -29,8 +29,8 @@ const marker = (width, color) => ({ styles, date }) =>
 class Timeline extends React.Component {
   componentWillMount() {
     let now = moment()
-    this.opening_time = moment().hour(18).minute(0).second(0)
-    this.closing_time = moment().hour(4).minute(0).second(0)
+    this.opening_time = moment().hour(this.props.businessHoursOpen).minute(0).second(0)
+    this.closing_time = moment().hour(this.props.businessHoursClose).minute(0).second(0)
 
     if(this.closing_time < now)
       this.closing_time.add(1, 'day')
@@ -53,6 +53,7 @@ class Timeline extends React.Component {
          month: 1,
          year: 1
        }}
+       verticalLineClassNamesForTime={this.verticalLineClassNamesForTime}
      >
        <TimelineMarkers>
          <TodayMarker/>
@@ -71,6 +72,17 @@ class Timeline extends React.Component {
        </TimelineMarkers>
      </ReactTimeline>
   )
+
+  verticalLineClassNamesForTime = (timeStart, timeEnd) => {
+    const currentTimeStart = moment(timeStart).add(1, 'second')
+    const currentTimeEnd = moment(timeEnd)
+
+    return (
+      this.opening_time <= currentTimeStart && currentTimeEnd <= this.closing_time
+      ? ['open']
+      : []
+    )
+  }
 }
 
 export default Timeline
