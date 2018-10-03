@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import logo from "../images/logo.png"
+import logo from "../images/logo.svg"
 
 import { observer } from "mobx-react"
 
