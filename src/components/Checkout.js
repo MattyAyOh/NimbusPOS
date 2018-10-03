@@ -22,7 +22,7 @@ class Checkout extends React.Component {
         .diff(this.props.order.start_time, "minutes") + 1
     ) / 60.0
 
-    let total_price = this.props.order.bill_amount(this.props.order.service.hourly_rate, moment())
+    let total_price = this.props.order.bill_amount(this.props.order.service.hourly_rate * this.props.room_pricing_factor, moment())
 
     return (
       <Layout>
@@ -30,9 +30,9 @@ class Checkout extends React.Component {
           <LineItem
             key={this.props.order.service.name}
             name={this.props.order.service.name}
-            rate={`${this.props.order.service.hourly_rate} / hr`}
+            rate={`${this.props.order.service.hourly_rate * this.props.room_pricing_factor} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
-            amount={(this.props.order.service.hourly_rate * hours_spent).toFixed(2)}
+            amount={(this.props.order.service.hourly_rate * this.props.room_pricing_factor * hours_spent).toFixed(2)}
           />
 
           {this.props.extras.map((extra) => (

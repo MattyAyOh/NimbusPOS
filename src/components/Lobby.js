@@ -47,11 +47,22 @@ class Lobby extends React.Component {
                   current_time={this.current_time}
                   key={table.position}
                   service={table}
+                  room_pricing_factor={this.props.room_pricing_factor}
                 />
               ))}
             </Tables>
           </Column>
         ))}
+
+        <Layout.Discount>
+          Room Pricing:
+          <PricingInput
+            type="number"
+            value={this.props.room_pricing_factor * 100}
+            onChange={e => this.props.onRoomPricingFactorChange(e.target.value / 100.0)}
+          />
+          %
+        </Layout.Discount>
 
         <Layout.ReservationLink to="/reservations">
           Reservations
@@ -64,8 +75,17 @@ class Lobby extends React.Component {
 const Layout = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr 5rem;
+  grid-template-rows: 1fr 5rem 5rem;
   height: 100%;
+`
+
+Layout.Discount = styled.div`
+  grid-area: 3 / 2 / 3 / 2;
+`
+
+const PricingInput = styled.input`
+  width: 2rem;
+  margin-left: 1rem;
 `
 
 Layout.ReservationLink = styled(Link)`

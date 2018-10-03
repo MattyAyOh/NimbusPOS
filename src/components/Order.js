@@ -83,6 +83,7 @@ class Order extends React.Component {
                               persist={(state) => this.props.onPersist(state).then((result) => {
                                 if(result.closed) this.props.history.push("/")
                               })}
+                              room_pricing_factor={this.props.room_pricing_factor}
                             />
             }}
           />

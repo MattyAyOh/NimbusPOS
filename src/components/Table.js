@@ -31,7 +31,7 @@ class Table extends React.Component {
 
         <Price>
           {this.props.service.current_order &&
-            "$" + this.props.service.current_order.bill_amount(this.props.service.hourly_rate, this.props.current_time)
+            "$" + this.props.service.current_order.bill_amount(this.props.service.hourly_rate * this.props.room_pricing_factor, this.props.current_time)
           }
         </Price>
       </Layout>

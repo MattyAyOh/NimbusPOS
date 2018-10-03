@@ -23,6 +23,7 @@ class App extends React.Component {
   @observable reservations = []
   @observable services = []
   @observable extras = []
+  @observable room_pricing_factor = 1.0
 
   componentDidMount() {
     this.assemble.watch("nimbus")`
@@ -30,12 +31,14 @@ class App extends React.Component {
       services: Service.order(:service_type, :position),
       extras: Extra.all,
       reservations: Reservation.all.order(:start_time),
+      room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
     }
     `((result) => {
       this.loaded = true
       this.services = result.services.map(parseService)
       this.reservations = result.reservations.map(parseReservation)
       this.extras = result.extras.map(parseExtra)
+      this.room_pricing_factor = result.room_pricing_factor
     });
   }
 
@@ -50,6 +53,10 @@ class App extends React.Component {
             ?  <Lobby
                   services={this.services}
                   onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
+                  room_pricing_factor={this.room_pricing_factor}
+                  onRoomPricingFactorChange={value => this.assemble.run("nimbus")`
+                    RoomPricingEvent.create!(pricing_factor: ${value || 1.0})
+                  `}
                 />
             : <Loading/>
             }
@@ -72,6 +79,7 @@ class App extends React.Component {
                     onCancel={this.cancelOrder}
                     onPersist={(state) => this.persistOrder(state, match.params)}
                     onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
+                    room_pricing_factor={this.room_pricing_factor}
                   />
                 </Layout.Right>
               }
