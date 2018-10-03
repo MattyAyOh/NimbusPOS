@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { BrowserRouter as Router, Route } from "react-router-dom"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { observer } from "mobx-react"
 import { observable } from "mobx"
 
@@ -9,6 +9,7 @@ import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
+import BigScreen from "./components/BigScreen"
 
 import Assemble from "./Assemble"
 import Service from "./data/Service"
@@ -45,61 +46,76 @@ class App extends React.Component {
   render () {
     return (
       <Router>
-        <Layout>
-          <Header/>
-
-          <Layout.Left>
-            { this.loaded
-            ?  <Lobby
-                  services={this.services}
-                  onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
-                  room_pricing_factor={this.room_pricing_factor}
-                  onRoomPricingFactorChange={value => this.assemble.run("nimbus")`
-                    RoomPricingEvent.create!(pricing_factor: ${value || 1.0})
-                  `}
-                />
-            : <Loading/>
-            }
-          </Layout.Left>
-
-          { this.loaded &&
-            <Route
-              path="/table/:service/:number"
-              component={({match}) =>
-                <Layout.Right>
-                  <Order
-                    params={match.params}
-                    match={match}
-                    extras={this.extras}
-                    order={this.services.filter(s =>
-                        s.service === match.params.service &&
-                        s.position === parseInt(match.params.number, 10)
-                      )[0].current_order
-                    }
-                    onCancel={this.cancelOrder}
-                    onPersist={(state) => this.persistOrder(state, match.params)}
-                    onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
-                    room_pricing_factor={this.room_pricing_factor}
-                  />
-                </Layout.Right>
-              }
-            />
-          }
-
+        <Switch>
           <Route
-            path="/reservations"
-            component={({ match }) =>
-              this.loaded
-              ? <Layout.Right>
-                  <Reservations
-                    assemble={this.assemble}
-                    reservations={this.reservations}
+            path="/bigscreen"
+            component={observer(() =>
+              <BigScreen
+                extras={this.extras}
+                services={this.services}
+                room_pricing_factor={this.room_pricing_factor}
+              />
+            )}
+          />
+
+          <Route path="/" component={() => (
+          <Layout>
+            <Header/>
+
+            <Layout.Left>
+              { this.loaded
+              ?  <Lobby
                     services={this.services}
+                    onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
+                    room_pricing_factor={this.room_pricing_factor}
+                    onRoomPricingFactorChange={value => this.assemble.run("nimbus")`
+                      RoomPricingEvent.create!(pricing_factor: ${value || 1.0})
+                    `}
                   />
-                </Layout.Right>
-              : <Loading />
-            } />
-        </Layout>
+              : <Loading/>
+              }
+            </Layout.Left>
+
+            { this.loaded &&
+              <Route
+                path="/table/:service/:number"
+                component={({match}) =>
+                  <Layout.Right>
+                    <Order
+                      params={match.params}
+                      match={match}
+                      extras={this.extras}
+                      order={this.services.filter(s =>
+                          s.service === match.params.service &&
+                          s.position === parseInt(match.params.number, 10)
+                        )[0].current_order
+                      }
+                      onCancel={this.cancelOrder}
+                      onPersist={(state) => this.persistOrder(state, match.params)}
+                      onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
+                      room_pricing_factor={this.room_pricing_factor}
+                    />
+                  </Layout.Right>
+                }
+              />
+            }
+
+            <Route
+              path="/reservations"
+              component={({ match }) =>
+                this.loaded
+                ? <Layout.Right>
+                    <Reservations
+                      assemble={this.assemble}
+                      reservations={this.reservations}
+                      services={this.services}
+                    />
+                  </Layout.Right>
+                : <Loading />
+              } />
+          </Layout>
+          )} />
+        </Switch>
       </Router>
     );
   }
