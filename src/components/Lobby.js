@@ -9,11 +9,7 @@ import { observer } from "mobx-react"
 import Table from "./Table"
 import Service from "../data/Service"
 
-const service_icons = {
-  mahjong: "🀄️ ",
-  pool: "🎱 ",
-  ktv: "🎤 ",
-}
+import service_icons from "../Emojis"
 
 @observer
 class Lobby extends React.Component {

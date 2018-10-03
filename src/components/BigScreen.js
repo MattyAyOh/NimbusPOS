@@ -2,10 +2,11 @@ import React from "react"
 import { observer } from "mobx-react"
 import styled from "styled-components"
 import Header from "./Header"
+import emojis from "../Emojis"
 
 const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>
-    <Header/>
+    <Layout.Header><Header/></Layout.Header>
 
     { room_pricing_factor < 1.0 &&
       <Banner>
@@ -13,10 +14,70 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
       </Banner>
     }
 
-    <iframe
-      alt="Video of Bub the cat yawning and stretching in front of a warm fire"
-      src="https://www.youtube.com/embed/ZuHZSbPJhaY?autoplay=1&loop=1&modestbranding=1&fs=0&controls=0&iv_load_policy=3"
-    />
+    <Layout.Section>
+      <Heading>Drinks</Heading>
+
+      {extras.filter(e => e.extra_type == 'drink').map(extra =>
+        <Extra key={extra.name}>
+          <Extra.Image src={extra.image_url} alt={extra.name} />
+          <Extra.Name>{extra.name}</Extra.Name>
+          <Price>{extra.price}</Price>
+        </Extra>
+      )}
+    </Layout.Section>
+
+    <Layout.Section>
+        <Embed
+          alt="Video of Bub the cat yawning and stretching in front of a warm fire"
+          src="https://www.youtube.com/embed/ZuHZSbPJhaY?autoplay=1&loop=1&modestbranding=1&fs=0&controls=0&iv_load_policy=3"
+        />
+
+      <Heading>Services</Heading>
+
+        <Service>
+          <Info>{emojis.mahjong}</Info>
+          <Info>Mahjong</Info>
+          <RentalPrice>
+            {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
+          </RentalPrice>
+        </Service>
+
+        <Service>
+          <Info>{emojis.pool}</Info>
+          <Info>Pool</Info>
+          <RentalPrice>
+            {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
+          </RentalPrice>
+        </Service>
+
+        <Service>
+          <Info>{emojis.ktv}</Info>
+          <Info>KTV</Info>
+          <RentalPrice>
+            {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
+          </RentalPrice>
+        </Service>
+
+        <Service>
+          <Info>{emojis.ktv}</Info>
+          <Info>KTV (large)</Info>
+          <RentalPrice>
+            {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
+          </RentalPrice>
+        </Service>
+    </Layout.Section>
+
+    <Layout.Section>
+      <Heading>Snacks</Heading>
+
+      {extras.filter(e => e.extra_type == 'snack').map(extra =>
+        <Extra key={extra.name}>
+          <Extra.Image src={extra.image_url} alt={extra.name} />
+          <Extra.Name>{extra.name}</Extra.Name>
+          <Price>{extra.price}</Price>
+        </Extra>
+      )}
+    </Layout.Section>
   </Layout>
 ))
 
@@ -24,6 +85,23 @@ const Layout = styled.div`
   background-color: black;
   color: white;
   height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 4rem;
+`
+
+Layout.Header = styled.div`
+  grid-area: 1 / 1 / 1 / -1;
+`
+
+Layout.Section = styled.div`
+  position: relative
+`
+
+const Heading = styled.h2`
+  text-align: center;
+  color: rgb(74,144,226);
 `
 
 const Banner = styled.div`
@@ -31,6 +109,45 @@ const Banner = styled.div`
 
 const Info = styled.span`
   margin-left: 1rem;
+`
+
+const Extra = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem;
+  border-top: 1px solid rgb(74,144,226);
+`
+
+const Price = styled(Info)`
+  &:before {
+    content: '$';
+  }
+`
+
+const RentalPrice = styled(Price)`
+  &:after {
+    content: ' / hr';
+  }
+`
+
+Extra.Name = Info
+
+Extra.Image = styled.img`
+  height: 3rem;
+`
+
+const Embed = styled.iframe`
+  height: 18rem;
+  margin-top:4rem;
+  margin-bottom:4rem;
+  width: 100%;
+`
+
+const Service = styled.div`
+  font-size: 2rem;
+  display: flex;
+  justify-content: space-between;
 `
 
 export default BigScreen
