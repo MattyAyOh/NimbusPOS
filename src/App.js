@@ -58,7 +58,7 @@ class App extends React.Component {
             )}
           />
 
-          <Route path="/" component={() => (
+          <Route path="/" component={observer(() => (
           <Layout>
             <Header/>
 
@@ -114,7 +114,7 @@ class App extends React.Component {
                 : <Loading />
               } />
           </Layout>
-          )} />
+          ))} />
         </Switch>
       </Router>
     );
