@@ -8,4 +8,5 @@ Rails.application.routes.draw do
   end
 
   post "/evaluate", to: "code#evaluate"
+  get "*path", to: static("index.html")
 end
