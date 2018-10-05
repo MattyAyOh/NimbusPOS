@@ -60,13 +60,11 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
           </RentalPrice>
         </Service>
 
-        { room_pricing_factor < 1.0 &&
-            <Banner>
-              Discount!
-              Rooms are {100 - room_pricing_factor * 100} % off,
-              Mon - Thurs
-            </Banner>
-        }
+        <Banner>
+          Discount!
+          Rooms are {100 - room_pricing_factor * 100} % off,
+          Mon - Thurs
+        </Banner>
       </Layout.Section>
 
     <Layout.Section>
