@@ -8,12 +8,6 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>
     <Layout.Header><Header/></Layout.Header>
 
-    { room_pricing_factor < 1.0 &&
-      <Banner>
-        Discount! Rooms are {100 - room_pricing_factor * 100} % off!
-      </Banner>
-    }
-
     <Layout.Section>
       <Heading>Drinks</Heading>
 
@@ -65,7 +59,13 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
             {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
           </RentalPrice>
         </Service>
-    </Layout.Section>
+
+        { room_pricing_factor < 1.0 &&
+            <Banner>
+              Discount! Rooms are {100 - room_pricing_factor * 100} % off!
+            </Banner>
+        }
+      </Layout.Section>
 
     <Layout.Section>
       <Heading>Snacks</Heading>
@@ -105,6 +105,31 @@ const Heading = styled.h2`
 `
 
 const Banner = styled.div`
+  background-color: red;
+  padding: 1em;
+  text-align: center;
+  margin-top: 2em;
+  position: relative;
+  font-size: 1.4rem;
+
+  &:before, &:after {
+    content: "";
+    top: 0;
+    position: absolute;
+    display: block;
+    border: 1.5em solid transparent;
+    z-index: 1;
+  }
+
+  &:before {
+    left: 0;
+    border-left-color: black;
+  }
+
+  &:after {
+    right: 0;
+    border-right-color: black;
+  }
 `
 
 const Info = styled.span`
