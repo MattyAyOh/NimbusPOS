@@ -62,7 +62,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
         <Banner>
           Discount!
-          Rooms are {100 - room_pricing_factor * 100} % off,
+          Rooms are 20% off,
           Mon - Thurs
         </Banner>
       </Layout.Section>
