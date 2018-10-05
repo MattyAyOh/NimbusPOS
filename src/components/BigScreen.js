@@ -62,7 +62,9 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
         { room_pricing_factor < 1.0 &&
             <Banner>
-              Discount! Rooms are {100 - room_pricing_factor * 100} % off!
+              Discount!
+              Rooms are {100 - room_pricing_factor * 100} % off,
+              Mon - Thurs
             </Banner>
         }
       </Layout.Section>
@@ -105,7 +107,7 @@ const Heading = styled.h2`
 `
 
 const Banner = styled.div`
-  background-color: red;
+  background-color: #c44;
   padding: 1em;
   text-align: center;
   margin-top: 2em;
