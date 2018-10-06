@@ -11,7 +11,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
     <Layout.Section>
       <Heading>Drinks</Heading>
 
-      {extras.filter(e => e.extra_type == 'drink').map(extra =>
+      {extras.filter(e => e.extra_type === 'drink').map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
@@ -70,7 +70,17 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
     <Layout.Section>
       <Heading>Snacks</Heading>
 
-      {extras.filter(e => e.extra_type == 'snack').map(extra =>
+      {extras.filter(e => e.extra_type === 'snack').map(extra =>
+        <Extra key={extra.name}>
+          <Extra.Image src={extra.image_url} alt={extra.name} />
+          <Extra.Name>{extra.name}</Extra.Name>
+          <Price>{extra.price}</Price>
+        </Extra>
+      )}
+
+      <Heading>Misc</Heading>
+
+      {extras.filter(e => e.name === 'Playing Cards').map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
