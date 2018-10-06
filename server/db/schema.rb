@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181003033633) do
+ActiveRecord::Schema.define(version: 20181006000106) do
 
   create_table "extras", force: :cascade do |t|
     t.string "name"
     t.integer "price"
     t.integer "extra_type", default: 0
     t.string "image_url"
+    t.boolean "active", default: true
   end
 
   create_table "order_extras", force: :cascade do |t|

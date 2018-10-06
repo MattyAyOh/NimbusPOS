@@ -30,7 +30,7 @@ class App extends React.Component {
     this.assemble.watch("nimbus")`
     {
       services: Service.order(:service_type, :position),
-      extras: Extra.all,
+      extras: Extra.where(active: true),
       reservations: Reservation.all.order(:start_time),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
     }
