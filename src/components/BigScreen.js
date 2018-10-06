@@ -6,8 +6,6 @@ import emojis from "../Emojis"
 
 const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>
-    <Layout.Header><Header/></Layout.Header>
-
     <Layout.Section>
       <Heading>Drinks</Heading>
 
@@ -21,10 +19,12 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
     </Layout.Section>
 
     <Layout.Section>
-        <Embed
-          alt="Video of Bub the cat yawning and stretching in front of a warm fire"
-          src="https://www.youtube.com/embed/ZuHZSbPJhaY?autoplay=1&loop=1&modestbranding=1&fs=0&controls=0&iv_load_policy=3"
-        />
+      <Header/>
+
+      <Embed
+        alt="Video of Bub the cat yawning and stretching in front of a warm fire"
+        src="https://www.youtube.com/embed/ZuHZSbPJhaY?autoplay=1&loop=1&modestbranding=1&fs=0&controls=0&iv_load_policy=3"
+      />
 
       <Heading>Services</Heading>
 
@@ -120,7 +120,6 @@ const Banner = styled.div`
   text-align: center;
   margin-top: 2em;
   position: relative;
-  font-size: 1.4rem;
 
   &:before, &:after {
     content: "";
@@ -174,13 +173,13 @@ Extra.Image = styled.img`
 
 const Embed = styled.iframe`
   height: 18rem;
-  margin-top:4rem;
-  margin-bottom:4rem;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
   width: 100%;
 `
 
 const Service = styled.div`
-  font-size: 2rem;
+  font-size: 1.6rem;
   display: flex;
   justify-content: space-between;
 `
