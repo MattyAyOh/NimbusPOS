@@ -162,6 +162,10 @@ const Extra = styled.div`
   align-items: center;
   padding: 0.25rem;
   border-top: 1px solid rgb(74,144,226);
+
+  & > ${Info} {
+    font-size: 1.4rem;
+  }
 `
 
 const Price = styled(Info)`
