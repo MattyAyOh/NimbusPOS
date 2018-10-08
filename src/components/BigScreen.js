@@ -5,7 +5,7 @@ import Header from "./Header"
 import emojis from "../Emojis"
 
 import Icon, { Stack } from "@mdi/react"
-import { mdiSmoking, mdiBlockHelper } from "@mdi/js"
+import { mdiWifi, mdiLock, mdiSmoking, mdiBlockHelper } from "@mdi/js"
 
 const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>
@@ -23,6 +23,12 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
     <Layout.Section>
       <Header/>
+
+      <Wifi>
+        <Info>Nimbus</Info>
+        <Icon size="2rem" color="white" path={mdiWifi} />
+        <Info>01234567890</Info>
+      </Wifi>
 
       <Embed
         alt="Video of Bub the cat yawning and stretching in front of a warm fire"
@@ -42,45 +48,45 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
       <NoSmoking>
         {[1,2,3].map((i) => (
-          <Stack size="3rem" key={i}>
-            <Icon path={mdiSmoking} color="white" size={0.7} />
-            <Icon path={mdiBlockHelper} color="red"/>
+          <Stack key={i}>
+            <Icon path={mdiSmoking} color="white" />
+            <Icon path={mdiBlockHelper} color="red" />
           </Stack>
         ))}
       </NoSmoking>
 
-      <Heading>Services</Heading>
+      <Heading>Services</Heading>                                                                                                                                                                                                 [115/207]
 
-        <Service>
-          <Info>{emojis.mahjong}</Info>
-          <Info>Mahjong</Info>
-          <RentalPrice>
-            {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
-          </RentalPrice>
-        </Service>
+      <Service>
+        <Info>{emojis.mahjong}</Info>
+        <Info>Mahjong</Info>
+        <Price>
+          {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
+        </Price>
+      </Service>
 
-        <Service>
-          <Info>{emojis.pool}</Info>
-          <Info>Pool</Info>
-          <RentalPrice>
-            {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
-          </RentalPrice>
-        </Service>
+      <Service>
+        <Info>{emojis.pool}</Info>
+        <Info>Pool</Info>
+        <Price>
+          {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
+        </Price>
+      </Service>
 
         <Service>
           <Info>{emojis.ktv}</Info>
           <Info>KTV</Info>
-          <RentalPrice>
+          <Price>
             {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
-          </RentalPrice>
+          </Price>
         </Service>
 
         <Service>
           <Info>{emojis.ktv}</Info>
           <Info>KTV (large)</Info>
-          <RentalPrice>
+          <Price>
             {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
-          </RentalPrice>
+          </Price>
         </Service>
 
         <Banner>
@@ -90,28 +96,28 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         </Banner>
       </Layout.Section>
 
-    <Layout.Section>
-      <Heading>Snacks</Heading>
+      <Layout.Section>
+        <Heading>Snacks</Heading>
 
-      {extras.filter(e => e.extra_type === 'snack').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
-      )}
+        {extras.filter(e => e.extra_type === 'snack').map(extra =>
+          <Extra key={extra.name}>
+            <Extra.Image src={extra.image_url} alt={extra.name} />
+            <Extra.Name>{extra.name}</Extra.Name>
+            <Price>{extra.price}</Price>
+          </Extra>
+        )}
 
-      <Heading>Misc</Heading>
+        <Heading>Misc</Heading>
 
-      {extras.filter(e => e.name === 'Playing Cards').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
-      )}
-    </Layout.Section>
-  </Layout>
+        {extras.filter(e => e.name === 'Playing Cards').map(extra =>
+          <Extra key={extra.name}>
+            <Extra.Image src={extra.image_url} alt={extra.name} />
+            <Extra.Name>{extra.name}</Extra.Name>
+            <Price>{extra.price}</Price>
+          </Extra>
+        )}
+      </Layout.Section>
+    </Layout>
 ))
 
 const Layout = styled.div`
@@ -166,6 +172,8 @@ const Banner = styled.div`
 
 const Info = styled.span`
   margin-left: 1rem;
+  margin-right: 1rem;
+  font-size: 1.4rem;
 `
 
 const Extra = styled.div`
@@ -174,21 +182,11 @@ const Extra = styled.div`
   align-items: center;
   padding: 0.25rem;
   border-top: 1px solid rgb(74,144,226);
-
-  & > ${Info} {
-    font-size: 1.4rem;
-  }
 `
 
 const Price = styled(Info)`
   &:before {
     content: '$';
-  }
-`
-
-const RentalPrice = styled(Price)`
-  &:after {
-    content: ' / hr';
   }
 `
 
@@ -199,7 +197,7 @@ Extra.Image = styled.img`
 `
 
 const Embed = styled.iframe`
-  height: 18rem;
+  height: 14rem;
   margin-top: 2rem;
   margin-bottom: 2rem;
   width: 100%;
@@ -209,11 +207,28 @@ const Service = styled.div`
   font-size: 1.6rem;
   display: flex;
   justify-content: space-around;
+
+  & > ${Info} {
+    font-size: 1.6rem;
+  }
+
+  & > ${Price}:after {
+    content: ' / hr';
+  }
 `
 
 const NoSmoking = styled.div`
   display: flex;
   justify-content: space-around;
+  height: 3rem;
+`
+
+const Wifi = styled.div`
+  align-items: center;
+  display: flex;
+  font-size: 1.2rem;
+  justify-content: center;
+  margin-top: 1rem;
 `
 
 export default BigScreen
