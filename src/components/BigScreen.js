@@ -4,6 +4,9 @@ import styled from "styled-components"
 import Header from "./Header"
 import emojis from "../Emojis"
 
+import Icon, { Stack } from "@mdi/react"
+import { mdiSmoking, mdiBlockHelper } from "@mdi/js"
+
 const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>
     <Layout.Section>
@@ -36,6 +39,15 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
           ].join("&")
         }`}
       />
+
+      <NoSmoking>
+        {[1,2,3].map(() => (
+          <Stack size="4rem">
+            <Icon path={mdiSmoking} color="white" size={0.7} />
+            <Icon path={mdiBlockHelper} color="red"/>
+          </Stack>
+        ))}
+      </NoSmoking>
 
       <Heading>Services</Heading>
 
@@ -195,6 +207,11 @@ const Embed = styled.iframe`
 
 const Service = styled.div`
   font-size: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+`
+
+const NoSmoking = styled.div`
   display: flex;
   justify-content: space-between;
 `
