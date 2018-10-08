@@ -41,8 +41,8 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
       />
 
       <NoSmoking>
-        {[1,2,3].map(() => (
-          <Stack size="4rem">
+        {[1,2,3].map((i) => (
+          <Stack size="3rem" key={i}>
             <Icon path={mdiSmoking} color="white" size={0.7} />
             <Icon path={mdiBlockHelper} color="red"/>
           </Stack>
@@ -200,7 +200,7 @@ Extra.Image = styled.img`
 
 const Embed = styled.iframe`
   height: 18rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
   margin-bottom: 2rem;
   width: 100%;
 `
@@ -208,12 +208,12 @@ const Embed = styled.iframe`
 const Service = styled.div`
   font-size: 1.6rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 `
 
 const NoSmoking = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 `
 
 export default BigScreen
