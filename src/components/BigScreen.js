@@ -55,7 +55,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         ))}
       </NoSmoking>
 
-      <Heading>Services</Heading>                                                                                                                                                                                                 [115/207]
+      <Heading>Services</Heading>
 
       <Service>
         <Info>{emojis.mahjong}</Info>
@@ -73,51 +73,51 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         </Price>
       </Service>
 
-        <Service>
-          <Info>{emojis.ktv}</Info>
-          <Info>KTV</Info>
-          <Price>
-            {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
-          </Price>
-        </Service>
+      <Service>
+        <Info>{emojis.ktv}</Info>
+        <Info>KTV</Info>
+        <Price>
+          {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
+        </Price>
+      </Service>
 
-        <Service>
-          <Info>{emojis.ktv}</Info>
-          <Info>KTV (large)</Info>
-          <Price>
-            {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
-          </Price>
-        </Service>
+      <Service>
+        <Info>{emojis.ktv}</Info>
+        <Info>KTV (large)</Info>
+        <Price>
+          {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
+        </Price>
+      </Service>
 
-        <Banner>
-          Discount!
-          Rooms are 20% off,
-          Mon - Thurs
-        </Banner>
-      </Layout.Section>
+      <Banner>
+        Discount!
+        Rooms are 20% off,
+        Mon - Thurs
+      </Banner>
+    </Layout.Section>
 
-      <Layout.Section>
-        <Heading>Snacks</Heading>
+    <Layout.Section>
+      <Heading>Snacks</Heading>
 
-        {extras.filter(e => e.extra_type === 'snack').map(extra =>
-          <Extra key={extra.name}>
-            <Extra.Image src={extra.image_url} alt={extra.name} />
-            <Extra.Name>{extra.name}</Extra.Name>
-            <Price>{extra.price}</Price>
-          </Extra>
-        )}
+      {extras.filter(e => e.extra_type === 'snack').map(extra =>
+        <Extra key={extra.name}>
+          <Extra.Image src={extra.image_url} alt={extra.name} />
+          <Extra.Name>{extra.name}</Extra.Name>
+          <Price>{extra.price}</Price>
+        </Extra>
+      )}
 
-        <Heading>Misc</Heading>
+      <Heading>Misc</Heading>
 
-        {extras.filter(e => e.name === 'Playing Cards').map(extra =>
-          <Extra key={extra.name}>
-            <Extra.Image src={extra.image_url} alt={extra.name} />
-            <Extra.Name>{extra.name}</Extra.Name>
-            <Price>{extra.price}</Price>
-          </Extra>
-        )}
-      </Layout.Section>
-    </Layout>
+      {extras.filter(e => e.name === 'Playing Cards').map(extra =>
+        <Extra key={extra.name}>
+          <Extra.Image src={extra.image_url} alt={extra.name} />
+          <Extra.Name>{extra.name}</Extra.Name>
+          <Price>{extra.price}</Price>
+        </Extra>
+      )}
+    </Layout.Section>
+  </Layout>
 ))
 
 const Layout = styled.div`

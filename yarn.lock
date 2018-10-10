@@ -4321,6 +4321,10 @@ lodash.uniq@^4.5.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
+lodash@^4.16.2:
+  version "4.17.11"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
+
 loglevel@^1.4.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
@@ -5756,6 +5760,14 @@ react-select@^1.2.1:
     prop-types "^15.5.8"
     react-input-autosize "^2.1.2"
 
+react-twemoji@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-twemoji/-/react-twemoji-0.1.0.tgz#f96f0cf50498827cf1ebed4d2f67a8493bf68026"
+  dependencies:
+    lodash "^4.16.2"
+    prop-types "^15.6.2"
+    twemoji "^11.0.1"
+
 react@^16.3.2:
   version "16.3.2"
   resolved "https://registry.yarnpkg.com/react/-/react-16.3.2.tgz#fdc8420398533a1e58872f59091b272ce2f91ea9"
@@ -6795,6 +6807,10 @@ tunnel-agent@^0.6.0:
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
+
+twemoji@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.yarnpkg.com/twemoji/-/twemoji-11.0.1.tgz#e3c115a9795bb26cab6ea48d22821b0a4be08e5b"
 
 type-check@~0.3.2:
   version "0.3.2"
