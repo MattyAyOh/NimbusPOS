@@ -48,7 +48,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
       <NoSmoking>
         {[1,2,3].map((i) => (
-          <Stack key={i}>
+          <Stack size="3rem" key={i}>
             <Icon path={mdiSmoking} color="white" />
             <Icon path={mdiBlockHelper} color="red" />
           </Stack>
