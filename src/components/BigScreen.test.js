@@ -21,18 +21,96 @@ describe("<BigScreen/>", () => {
     expect(video.prop("alt")).toBeDefined()
   })
 
-  xit("Displays snack information", () => {
-    let component = mount(<BigScreen />)
+  it("Displays snack pricing", () => {
+    let component = mount(<BigScreen
+      extras={[
+        {
+          image_url: "https://jpg.cool/instant.ramen",
+          name: "Instant Ramen",
+          price: 5,
+          extra_type: "snack",
+        }
+      ]}
+      services={[]}
+      room_pricing_factor={1}
+    />)
+
+    let price = component
+      .find(BigScreen.Extra)
+      .find(BigScreen.Price)
+      .filterWhere(e => e.text() !== "")
+      .text()
+
+    expect(price).toBe("5")
   });
 
-  xit("Displays drink information", () => {
-    let component = mount(<BigScreen />)
+  it("Displays drink pricing", () => {
+    let component = mount(<BigScreen
+      extras={[
+        {
+          image_url: "https://jpg.cool/water",
+          name: "Water",
+          price: 1,
+          extra_type: "drink",
+        }
+      ]}
+      services={[]}
+      room_pricing_factor={1}
+    />)
+
+    let price = component
+      .find(BigScreen.Extra)
+      .find(BigScreen.Price)
+      .filterWhere(e => e.text() !== "")
+      .text()
+
+    expect(price).toBe("1")
   });
 
-  xit("Displays service information", () => {
-    let component = mount(<BigScreen />)
+  it("Displays service pricing", () => {
+    let component = mount(<BigScreen
+      extras={[]}
+      services={[
+        {
+          current_order: null,
+          hourly_rate: 20,
+          name: "Mahjong",
+          position: 1,
+          service: "mahjong",
+        }
+      ]}
+      room_pricing_factor={1}
+    />)
+
+
+    let price = component
+      .find(BigScreen.Price)
+      .filterWhere(e => e.text() !== "")
+      .text()
+
+    expect(price).toBe("20")
   });
 
   xit("Adjusts the prices of rooms depending on the discount", () => {
+    let component = mount(<BigScreen
+      extras={[]}
+      services={[
+        {
+          current_order: null,
+          hourly_rate: 20,
+          name: "Mahjong",
+          position: 1,
+          service: "mahjong",
+        }
+      ]}
+      room_pricing_factor={0.5}
+    />)
+
+    let price = component
+      .find(BigScreen.Price)
+      .filterWhere(e => e.text() !== "")
+      .text()
+
+    expect(price).toBe("10")
   })
 })

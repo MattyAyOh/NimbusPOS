@@ -13,11 +13,11 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
       <Heading>Drinks</Heading>
 
       {extras.filter(e => e.extra_type === 'drink').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
+        <BigScreen.Extra key={extra.name}>
+          <BigScreen.Extra.Image src={extra.image_url} alt={extra.name} />
+          <BigScreen.Extra.Name>{extra.name}</BigScreen.Extra.Name>
+          <BigScreen.Price>{extra.price}</BigScreen.Price>
+        </BigScreen.Extra>
       )}
     </Layout.Section>
 
@@ -60,33 +60,33 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
       <Service>
         <Info>{emojis.mahjong}</Info>
         <Info>Mahjong</Info>
-        <Price>
+        <BigScreen.Price>
           {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
-        </Price>
+        </BigScreen.Price>
       </Service>
 
       <Service>
         <Info>{emojis.pool}</Info>
         <Info>Pool</Info>
-        <Price>
+        <BigScreen.Price>
           {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
-        </Price>
+        </BigScreen.Price>
       </Service>
 
       <Service>
         <Info>{emojis.ktv}</Info>
         <Info>KTV</Info>
-        <Price>
+        <BigScreen.Price>
           {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
-        </Price>
+        </BigScreen.Price>
       </Service>
 
       <Service>
         <Info>{emojis.ktv}</Info>
         <Info>KTV (large)</Info>
-        <Price>
+        <BigScreen.Price>
           {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
-        </Price>
+        </BigScreen.Price>
       </Service>
 
       <Banner>
@@ -100,21 +100,21 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
       <Heading>Snacks</Heading>
 
       {extras.filter(e => e.extra_type === 'snack').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
+        <BigScreen.Extra key={extra.name}>
+          <BigScreen.Extra.Image src={extra.image_url} alt={extra.name} />
+          <BigScreen.Extra.Name>{extra.name}</BigScreen.Extra.Name>
+          <BigScreen.Price>{extra.price}</BigScreen.Price>
+        </BigScreen.Extra>
       )}
 
       <Heading>Misc</Heading>
 
       {extras.filter(e => e.name === 'Playing Cards').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
+        <BigScreen.Extra key={extra.name}>
+          <BigScreen.Extra.Image src={extra.image_url} alt={extra.name} />
+          <BigScreen.Extra.Name>{extra.name}</BigScreen.Extra.Name>
+          <BigScreen.Price>{extra.price}</BigScreen.Price>
+        </BigScreen.Extra>
       )}
     </Layout.Section>
   </Layout>
@@ -176,7 +176,7 @@ const Info = styled.span`
   font-size: 1.4rem;
 `
 
-const Extra = styled.div`
+BigScreen.Extra = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -184,15 +184,15 @@ const Extra = styled.div`
   border-top: 1px solid rgb(74,144,226);
 `
 
-const Price = styled(Info)`
+BigScreen.Price = styled(Info)`
   &:before {
     content: '$';
   }
 `
 
-Extra.Name = Info
+BigScreen.Extra.Name = Info
 
-Extra.Image = styled.img`
+BigScreen.Extra.Image = styled.img`
   height: 3rem;
 `
 
@@ -212,7 +212,7 @@ const Service = styled.div`
     font-size: 1.6rem;
   }
 
-  & > ${Price}:after {
+  & > ${BigScreen.Price}:after {
     content: ' / hr';
   }
 `
