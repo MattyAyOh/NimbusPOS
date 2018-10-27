@@ -34,13 +34,15 @@ class App extends React.Component {
       reservations: Reservation.all.order(:start_time),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
     }
-    `((result) => {
-      this.loaded = true
-      this.services = result.services.map(parseService)
-      this.reservations = result.reservations.map(parseReservation)
-      this.extras = result.extras.map(parseExtra)
-      this.room_pricing_factor = result.room_pricing_factor
-    });
+    `((response) => {
+      response.json().then(result => {
+        this.loaded = true
+        this.services = result.services.map(parseService)
+        this.reservations = result.reservations.map(parseReservation)
+        this.extras = result.extras.map(parseExtra)
+        this.room_pricing_factor = result.room_pricing_factor
+      });
+    })
   }
 
   render () {
