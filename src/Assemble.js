@@ -1,4 +1,3 @@
-import jquery from "jquery"
 import { runInAction } from "mobx"
 
 class Assemble {
@@ -14,13 +13,13 @@ class Assemble {
         return accumulator + expressions[i - 1] + part
       })
 
-      jquery.ajax({
-        url: "/evaluate",
-        type: "POST",
-        data: { system, code },
-        success: resolve,
-        error: resolve,
-      })
+      fetch("/evaluate", {
+        method: "POST",
+        body: JSON.stringify({ system, code }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }).then(resolve)
     }).then((result) => {
       let watches = this.watches[system]
       if(this.active && watches !== undefined) {
@@ -43,13 +42,16 @@ class Assemble {
 
       return (callback) => {
         let watch = () =>
-          jquery.ajax({
-            url: "/evaluate",
-            type: "POST",
-            data: { system, code },
-            success: (result) => { if(this.active) { runInAction(() => callback(result)) } },
-            error: (result) => { if(this.active) { runInAction(() => callback(result)) } },
+          fetch("/evaluate", {
+            method: "POST",
+            body: JSON.stringify({ system, code }),
+            headers: {
+              "Content-Type": "application/json",
+            },
           })
+            .then(result => {
+              if(this.active) { runInAction(() => callback(result)) }
+            })
 
         this.watches[system].push(watch)
         watch()
