@@ -2,31 +2,14 @@
 
 ## Start the app (development):
 
+```shell
+docker-compose up -d
+```
+
 Set up the database:
 
 ```shell
-cd server
-bundle exec rake db:create db:migrate db:seed
-```
-
-Run the server
-```shell
-cd server
-rails s -p 3000
-```
-
-You'll need to edit `package.json`,
-and change the `"proxy" option to match the server's port.
-
-```
-  "proxy": "http://localhost:3000/",
-```
-
-Finally...
-
-```shell
-yarn install
-yarn start
+docker-compose run web rake db:create db:migrate db:seed
 ```
 
 ## View application logs:
