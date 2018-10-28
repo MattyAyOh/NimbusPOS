@@ -4,8 +4,8 @@
   "private": true,
   "proxy": "http://web:3000/",
   "dependencies": {
-    "@mdi/js": "^2.8.94",
-    "@mdi/react": "^1.0.1",
+    "@mdi/js": "^3.0.39",
+    "@mdi/react": "^1.1.0",
     "enzyme": "^3.7.0",
     "enzyme-adapter-react-16": "^1.6.0",
     "jquery": "^3.3.1",
