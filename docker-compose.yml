@@ -24,9 +24,15 @@ services:
       - 3000:3000
     volumes:
       - ./server:/app
+    depends_on:
+      - selenium
     working_dir: /app
 
-  spec:
-    build: ./server
+  selenium:
+    image: selenium/standalone-firefox
+    expose:
+      - 4444
     volumes:
-      - ./spec:/spec
+      - /tmp:/tmp
+    # - /dev/shm:/dev/shm
+    # - ./selenium:/selenium
