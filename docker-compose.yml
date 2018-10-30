@@ -25,3 +25,8 @@ services:
     volumes:
       - ./server:/app
     working_dir: /app
+
+  spec:
+    build: ./server
+    volumes:
+      - ./spec:/spec
