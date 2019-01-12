@@ -91,10 +91,10 @@ class App extends React.Component {
                       params={match.params}
                       match={match}
                       extras={this.extras}
-                      order={this.services.filter(s =>
+                      order={(this.services.filter(s =>
                           s.service === match.params.service &&
                           s.position === parseInt(match.params.number, 10)
-                        )[0].current_order
+                        )[0] || {current_order: null}).current_order
                       }
                       onCancel={this.cancelOrder}
                       onPersist={(state) => this.persistOrder(state, match.params)}
