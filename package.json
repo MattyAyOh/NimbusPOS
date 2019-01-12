@@ -27,7 +27,6 @@
     "eject": "react-app-rewired eject"
   },
   "devDependencies": {
-    "mobx-react-devtools": "^5.0.1",
     "react-app-rewired": "^1.5.2"
   }
 }
