@@ -33,7 +33,7 @@ class Order extends React.Component {
     return (
       this.props.order == null
       ? <Loading />
-      : <Layout>
+      : <Layout className="orderLayout">
           <Links>
             <StyledLink
               to="/"

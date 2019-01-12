@@ -37,6 +37,9 @@ class Extra extends React.Component {
   add(value) {
     const quantity = this.state.quantity + value
 
+    const layout = document.querySelector(".orderLayout")
+    window.assemble.scroll = layout.scrollTop
+
     this.props.onPersist({ quantity: quantity }, this.props.name)
   }
 }
