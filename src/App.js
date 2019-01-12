@@ -41,7 +41,10 @@ class App extends React.Component {
         this.reservations = result.reservations.map(parseReservation)
         this.extras = result.extras.map(parseExtra)
         this.room_pricing_factor = result.room_pricing_factor
-      });
+      })
+      .then(() => {
+        document.querySelector(".orderLayout").scroll(0, window.assemble.scroll)
+      })
     })
   }
 
