@@ -1,10 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
+import { DateTime } from "luxon"
 import { observer } from "mobx-react"
 import { withRouter } from "react-router-dom"
-
-import Service from "../data/Service"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -15,8 +13,11 @@ class Table extends React.Component {
     return (
       <Layout>
         <Time>
-          {this.props.service.current_order &&
-            moment(this.props.service.current_order.start_time).format('LT')}
+          { this.props.service.current_order &&
+            DateTime
+            .fromISO(this.props.service.current_order.start_time)
+            .toLocaleString(DateTime.TIME_24_SIMPLE)
+          }
         </Time>
 
         <Number
@@ -30,7 +31,10 @@ class Table extends React.Component {
 
         <Price>
           {this.props.service.current_order &&
-            "$" + this.props.service.current_order.bill_amount(this.props.service.hourly_rate * this.props.room_pricing_factor, this.props.current_time)
+            "$" + this.props.service.current_order.bill_amount(
+              this.props.service.hourly_rate * this.props.room_pricing_factor,
+              this.props.current_time,
+            )
           }
         </Price>
       </Layout>

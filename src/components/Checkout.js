@@ -1,10 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
+import { DateTime } from "luxon"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
-
-import Order from "../data/Order"
 import LineItem from "./LineItem"
 
 const blue = "#4a90e2"
@@ -15,11 +13,14 @@ class Checkout extends React.Component {
 
   render() {
     const hours_spent = (
-      moment(this.props.order.end_time)
-        .diff(this.props.order.start_time, "minutes") + 1
+      DateTime.fromISO(this.props.order.end_time)
+        .diff(this.props.order.start_time, "minutes").minutes + 1
     ) / 60.0
 
-    let total_price = this.props.order.bill_amount(this.props.order.service.hourly_rate * this.props.room_pricing_factor, moment())
+    let total_price = this.props.order.bill_amount(
+      this.props.order.service.hourly_rate * this.props.room_pricing_factor,
+      DateTime.local()
+    )
 
     return (
       <Layout>

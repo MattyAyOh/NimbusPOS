@@ -1,18 +1,15 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
+import { DateTime } from "luxon"
 import { Link } from "react-router-dom"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
-
 import Table from "./Table"
-import Service from "../data/Service"
-
 import service_icons from "../Emojis"
 
 @observer
 class Lobby extends React.Component {
-  @observable current_time = moment()
+  @observable current_time = DateTime.local()
 
   constructor(props) {
     super(props)
@@ -21,7 +18,7 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.current_time = moment(), 1000)
+    this.timer = setInterval(() => this.current_time = DateTime.local(), 1000)
   }
 
   componentWillUnmount() {

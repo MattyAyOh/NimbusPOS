@@ -139,11 +139,11 @@ class Assembly extends React.Component {
   }
 
   // takes a `state` object, with:
-  // `start_time`: `null` | `moment` object
-  // `end_time`: `null` | `moment` object
+  // `start_time`: `null` | `DateTime` object
+  // `end_time`: `null` | `DateTime` object
   persistOrder = (state, params) => {
-    if(state.start_time) state.start_time = state.start_time.format()
-    if(state.end_time) state.end_time = state.end_time.format()
+    if(state.start_time) state.start_time = state.start_time.toISO()
+    if(state.end_time) state.end_time = state.end_time.toISO()
 
     return this.network.run`
       service = Service.find_by(
@@ -196,8 +196,8 @@ class Assembly extends React.Component {
   createReservation() {
     this.network.run`
       Reservation.create!(
-        start_time: ${JSON.stringify(this.new_reservation.start_time.format())},
-        end_time: ${JSON.stringify(this.new_reservation.end_time.format())},
+        start_time: ${JSON.stringify(this.new_reservation.start_time.toISO())},
+        end_time: ${JSON.stringify(this.new_reservation.end_time.toISO())},
         service: Service.find_by(
           name: ${JSON.stringify(this.new_reservation.service)},
           position: ${JSON.stringify(this.new_reservation.position)},

@@ -1,5 +1,5 @@
 import { observable } from "mobx"
-import moment from "moment"
+import { DateTime } from "luxon"
 
 // JSON from server:
 //
@@ -17,9 +17,10 @@ class Order {
 
   constructor(values) {
     this.cash_handled = values.cash_handled
-    this.end_time = values.end_time
     this.extras = values.extras
-    this.start_time = values.start_time
+
+    this.start_time = DateTime.fromISO(values.start_time)
+    this.end_time = DateTime.fromISO(values.end_time)
   }
 
   bill_amount(rate, current_time) {
@@ -31,11 +32,11 @@ class Order {
   }
 
   timeComponent(rate, current_time) {
-    let start_time = this.start_time ? moment(this.start_time) : moment(current_time)
-    let end_time   = this.end_time   ? moment(this.end_time)   : moment(current_time)
+    let start_time = this.start_time ? this.start_time : current_time
+    let end_time   = this.end_time   ? this.end_time   : current_time
 
     // Bill with minute-level granularity
-    return (end_time.diff(start_time, "minutes") + 1) * rate / 60.0
+    return (end_time.diff(start_time, "minutes").minutes + 1) * rate / 60.0
   }
 
   extrasComponent() {

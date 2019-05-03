@@ -6,9 +6,9 @@
   "dependencies": {
     "@mdi/js": "^2.8.94",
     "@mdi/react": "^1.0.1",
+    "luxon": "^1.12.1",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.3",
-    "moment": "^2.22.1",
     "react": "^16.3.2",
     "react-app-rewire-mobx": "^1.0.8",
     "react-dom": "^16.3.2",

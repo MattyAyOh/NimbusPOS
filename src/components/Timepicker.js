@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import moment from "moment"
+import { DateTime } from "luxon"
 import { observer } from "mobx-react"
 import { action, observable } from "mobx"
 
@@ -8,8 +8,8 @@ const blue = "#4a90e2"
 
 /*
  * Props:
- * `initialValue`: a `moment` object
- * `onChange`: a callback function that takes a `moment` object.
+ * `initialValue`: a `DateTime` object
+ * `onChange`: a callback function that takes a `DateTime` object.
  * `hourOptions`: a list of allowed values for the hour
  * `minuteOptions`: a list of allowed values for the minute
  */
@@ -22,8 +22,8 @@ class Timepicker extends React.Component {
   constructor(props) {
     super(props)
 
-    this.time = this.props.initialValue
-    this.enteredText = this.props.initialValue ? this.props.initialValue.format("HH:mm") : ""
+    this.time = this.props.initialValue || DateTime.local()
+    this.enteredText = this.props.initialValue ? this.props.initialValue.toLocaleString(DateTime.TIME_24_SIMPLE) : ""
   }
 
   hourOptions() {
@@ -37,8 +37,8 @@ class Timepicker extends React.Component {
   }
 
   render() {
-    let selectedHour = this.time && this.time.hour()
-    let selectedMinute = this.time && this.time.minute()
+    let selectedHour = this.time && this.time.hour
+    let selectedMinute = this.time && this.time.minute
 
     return (
       <Wrapper>
@@ -84,26 +84,26 @@ class Timepicker extends React.Component {
     event.target.select()
 
     this.open = true
-    this.time = this.time || moment()
+    this.time = this.time || DateTime.local()
   }
 
   enter(event) {
     event.target.blur()
-    this.timeChanged(moment(event.target.value, "HH:mm"))
+    this.timeChanged(DateTime.fromISO(event.target.value))
   }
 
   @action
   hourSelected(hour) {
-    let minute = this.time.minute()
-    let newTime = moment(`${hour}:${minute}`, "HH:mm")
+    let minute = this.time.minute
+    let newTime = DateTime.fromObject({ hour, minute: minute || 0 })
 
     this.time = newTime
-    this.enteredText = newTime.format("HH:mm")
+    this.enteredText = newTime.toLocaleString(DateTime.TIME_24_SIMPLE)
   }
 
   minuteSelected(minute) {
-    let hour = this.time.hour()
-    let newTime = moment(`${hour}:${minute}`, "HH:mm")
+    let hour = this.time.hour
+    let newTime = DateTime.fromObject({ hour, minute })
     this.timeChanged(newTime)
   }
 
@@ -111,7 +111,7 @@ class Timepicker extends React.Component {
   timeChanged(newTime) {
     this.props.onChange(newTime)
 
-    this.enteredText = newTime.format("HH:mm")
+    this.enteredText = newTime.toLocaleString(DateTime.TIME_24_SIMPLE)
     this.open = false
     this.time = newTime
   }

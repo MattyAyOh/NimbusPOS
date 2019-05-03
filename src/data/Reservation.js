@@ -16,8 +16,4 @@ class Reservation {
   }
 }
 
-// Create a new Reservation object with:
-//
-// var extra = new Reservation({ start_time: moment(), ... })
-
 export default Reservation;

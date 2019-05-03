@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Link, withRouter } from "react-router-dom"
-import moment from "moment"
+import { DateTime } from "luxon"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
 
@@ -10,9 +10,6 @@ import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
 import Loading from "./Loading"
-
-import OrderModel from "../data/Order"
-import ExtraModel from "../data/Extra"
 
 @observer
 class Order extends React.Component {
@@ -23,8 +20,8 @@ class Order extends React.Component {
     super(props)
 
     if(this.props.order) {
-      this.start_time = this.props.order.start_time && moment(this.props.order.start_time)
-      this.end_time = this.props.order.end_time && moment(this.props.order.end_time)
+      this.start_time = this.props.order.start_time && DateTime.fromISO(this.props.order.start_time)
+      this.end_time = this.props.order.end_time && DateTime.fromISO(this.props.order.end_time)
     }
   }
 
@@ -92,30 +89,30 @@ class Order extends React.Component {
 
   ensureEndTime() {
     if(this.end_time == null) {
-      this.props.onPersist({end_time: moment()}).then((result) => {
+      this.props.onPersist({end_time: DateTime.local()}).then((result) => {
         if(result.closed) this.props.history.push("/")
       })
     }
   }
 
   // `field`: `"start_time"` or `"end_time"`
-  // `new_time`: a `moment` object
+  // `new_time`: a `DateTime` object
   timeUpdated(field, new_time) {
     let new_timestamps = {
       start_time: this.start_time,
       end_time: this.end_time,
     }
 
-    const current_hour = moment().get("hour")
-    const chosen_hour = new_time.get("hour")
+    const current_hour = DateTime.local().hour
+    const chosen_hour = new_time.hour
 
     // Chose a time before this past midnight?
     if(current_hour < 12 && chosen_hour > 12)
-      new_time.subtract(1, "day")
+      new_time = new_time.minus({ days: 1 })
 
     // Chose a time after this coming midnight?
     if(current_hour > 12 && chosen_hour < 12)
-      new_time.add(1, "day")
+      new_time = new_time.plus({ days: 1 })
 
     new_timestamps[field] = new_time
     this.props.onPersist(new_timestamps)
