@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
-import { observer } from "mobx-react"
+import { observer, Observer } from "mobx-react"
 import { observable } from "mobx"
 
 import Header from "./components/Header"
@@ -17,11 +17,14 @@ import Extra from "./data/Extra"
 import Reservation from "./data/Reservation"
 
 @observer
-class App extends React.Component {
+class Assembly extends React.Component {
   constructor(props) {
     super(props)
 
     this.network = new Network(process.env.REACT_APP_URL_API)
+
+    if(props.afterCreation)
+      props.afterCreation(this)
   }
 
   @observable loaded = false
@@ -29,6 +32,7 @@ class App extends React.Component {
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
+  @observable new_reservation = {}
 
   componentDidMount() {
     this.network.watch`
@@ -117,11 +121,13 @@ class App extends React.Component {
               component={({ match }) =>
                 this.loaded
                 ? <Layout.Right>
-                    <Reservations
-                      assembly={this}
-                      reservations={this.reservations}
-                      services={this.services}
-                    />
+                    <Observer>{() =>
+                      <Reservations
+                        assembly={this}
+                        reservations={this.reservations}
+                        services={this.services}
+                      />
+                    }</Observer>
                   </Layout.Right>
                 : <Loading />
               } />
@@ -187,6 +193,19 @@ class App extends React.Component {
     `
   }
 
+  createReservation() {
+    this.network.run`
+      Reservation.create!(
+        start_time: ${JSON.stringify(this.new_reservation.start_time.format())},
+        end_time: ${JSON.stringify(this.new_reservation.end_time.format())},
+        service: Service.find_by(
+          name: ${JSON.stringify(this.new_reservation.service)},
+          position: ${JSON.stringify(this.new_reservation.position)},
+        )
+      )
+    `.then(() => this.new_reservation = {})
+  }
+
   cancelOrder = (service) => {
     this.network.run`
       Service.find_by(
@@ -225,4 +244,4 @@ const parseReservation = (json) => {
   return new Reservation(json)
 }
 
-export default App
+export default Assembly

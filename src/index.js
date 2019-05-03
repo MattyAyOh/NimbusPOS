@@ -1,9 +1,10 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import './index.css';
 import Assembly from "./Assembly"
 
 ReactDOM.render(
-  <Assembly />,
+  <Assembly
+    afterCreation={(assembly) => window.assembly = assembly}
+  />,
   document.getElementById('root'),
 );

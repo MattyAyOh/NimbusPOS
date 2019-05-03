@@ -5,7 +5,7 @@ import Header from "./Header"
 import emojis from "../Emojis"
 
 import Icon, { Stack } from "@mdi/react"
-import { mdiWifi, mdiLock, mdiSmoking, mdiBlockHelper } from "@mdi/js"
+import { mdiWifi, mdiSmoking, mdiBlockHelper } from "@mdi/js"
 
 const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
   <Layout>

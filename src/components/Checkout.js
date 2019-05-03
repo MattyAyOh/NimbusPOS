@@ -12,9 +12,7 @@ const blue = "#4a90e2"
 
 @observer
 class Checkout extends React.Component {
-  state = {
-    num_people: 1
-  }
+  @observable num_people = 1
 
   render() {
     const hours_spent = (
@@ -60,12 +58,17 @@ class Checkout extends React.Component {
               <div>
               {
                 [1,2,3,4,5,6,7,8].map(num => (
-                  <Button active={this.state.num_people === num} onClick={() => this.setState({ num_people: num }) }>{num}</Button>
+                  <Button
+                    active={this.num_people === num}
+                    onClick={() => this.num_people = num }
+                  >
+                    {num}
+                  </Button>
                 ))
               }
               </div>
             }
-            amount={(total_price / this.state.num_people).toFixed(2)}
+            amount={(total_price / this.num_people).toFixed(2)}
           />
         </Bill>
 
@@ -87,11 +90,6 @@ const Bill = styled.div`
 
 const Layout = styled.div`
   display: grid;
-`
-
-const Register = styled.div`
-  display: flex;
-  justify-content: space-between;
 `
 
 const Confirm = styled.button`

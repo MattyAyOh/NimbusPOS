@@ -9,13 +9,6 @@ import TimeSpanInput from "./TimeSpanInput"
 
 @observer
 class Reservations extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      new_reservation: {},
-    }
-  }
-
   render() {
     return (
       <Layout>
@@ -23,40 +16,39 @@ class Reservations extends React.Component {
 
         <NewReservation>
           <Select
-            value={this.state.new_reservation.service}
-            options={this.props.services.map(service => service.name).unique().map(service => ({ label: service, value: service }))}
-            onChange={(service) => this.setState({ new_reservation: Object.assign(this.state.new_reservation, { service: service.value }) })}
+            value={this.props.assembly.new_reservation.service}
+            options={
+              this.props.services
+                .map(service => service.name)
+                .unique()
+                .map(service => ({ label: service, value: service }))
+            }
+            onChange={(service) => this.props.assembly.new_reservation.service = service.value }
           />
 
           <Select
-            value={this.state.new_reservation.position}
-            options={this.props.services.map((service) => ({ label: service.position, value: service.position }))}
-            onChange={(position) => this.setState({ new_reservation: Object.assign(this.state.new_reservation, { position: position.value }) })}
+            value={this.props.assembly.new_reservation.position}
+            options={
+              this.props.services
+                .map((service) => ({ label: service.position, value: service.position }))
+            }
+            onChange={(position) => this.props.assembly.new_reservation.position = position.value }
           />
 
           <TimeSpanInput
-            startTime={this.state.new_reservation.start_time}
-            end_time={this.state.new_reservation.end_time}
-            onStartTimeChange={(new_time) => this.setState({ new_reservation: Object.assign(this.state.new_reservation, { start_time: new_time }) })}
-            onEndTimeChange={(new_time) => this.setState({ new_reservation: Object.assign(this.state.new_reservation, { end_time: new_time }) })}
+            startTime={this.props.assembly.new_reservation.start_time}
+            end_time={this.props.assembly.new_reservation.end_time}
+            onStartTimeChange={(new_time) => this.props.assembly.new_reservation.start_time = new_time }
+            onEndTimeChange={(new_time) => this.props.assembly.new_reservation.end_time = new_time }
           />
 
-          <Button onClick={() => this.props.assembly.network.run`
-            Reservation.create!(
-              start_time: ${JSON.stringify(this.state.new_reservation.start_time.format())},
-              end_time: ${JSON.stringify(this.state.new_reservation.end_time.format())},
-              service: Service.find_by(
-                name: ${JSON.stringify(this.state.new_reservation.service)},
-                position: ${JSON.stringify(this.state.new_reservation.position)},
-              )
-            )
-          `}>
+          <Button onClick={() => this.props.assembly.createReservation()} >
             Add reservation
           </Button>
         </NewReservation>
 
         {this.props.reservations.map((reservation) =>
-          <Reservation key={reservation.id} {...reservation}/>
+          <Reservation key={reservation.id} {...reservation} />
         )}
 
         {(this.props.reservations.count === 0) &&
