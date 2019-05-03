@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { observer } from "mobx-react"
-import Select from 'react-select';
+import Select from "react-select"
 import 'react-select/dist/react-select.css';
 
 import Reservation from "./Reservation"
@@ -41,7 +41,7 @@ class Reservations extends React.Component {
             onEndTimeChange={(new_time) => this.setState({ new_reservation: Object.assign(this.state.new_reservation, { end_time: new_time }) })}
           />
 
-          <Button onClick={() => this.props.assemble.run("nimbus")`
+          <Button onClick={() => this.props.assembly.network.run`
             Reservation.create!(
               start_time: ${JSON.stringify(this.state.new_reservation.start_time.format())},
               end_time: ${JSON.stringify(this.state.new_reservation.end_time.format())},

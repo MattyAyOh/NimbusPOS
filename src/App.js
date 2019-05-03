@@ -11,14 +11,18 @@ import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 import BigScreen from "./components/BigScreen"
 
-import Assemble from "./Assemble"
+import Network from "./Network"
 import Service from "./data/Service"
 import Extra from "./data/Extra"
 import Reservation from "./data/Reservation"
 
 @observer
 class App extends React.Component {
-  assemble = new Assemble("https://localhost:3000")
+  constructor(props) {
+    super(props)
+
+    this.network = new Network(process.env.REACT_APP_URL_API)
+  }
 
   @observable loaded = false
   @observable reservations = []
@@ -27,26 +31,28 @@ class App extends React.Component {
   @observable room_pricing_factor = 1.0
 
   componentDidMount() {
-    this.assemble.watch("nimbus")`
+    this.network.watch`
     {
       services: Service.order(:service_type, :position),
       extras: Extra.where(active: true),
       reservations: Reservation.all.order(:start_time),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
     }
-    `((response) => {
-      response.json().then(result => {
-        this.loaded = true
-        this.services = result.services.map(parseService)
-        this.reservations = result.reservations.map(parseReservation)
-        this.extras = result.extras.map(parseExtra)
-        this.room_pricing_factor = result.room_pricing_factor
+    `((response) =>
+      response
+      .json()
+      .then((result) => {
+      this.loaded = true
+      this.services = result.services.map(parseService)
+      this.reservations = result.reservations.map(parseReservation)
+      this.extras = result.extras.map(parseExtra)
+      this.room_pricing_factor = result.room_pricing_factor
       })
       .then(() => {
         document.querySelector(".orderLayout").scroll(0, window.assemble.scroll)
         window.assemble.scroll = 0;
       })
-    })
+    )
   }
 
   render () {
@@ -74,7 +80,7 @@ class App extends React.Component {
                     services={this.services}
                     onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                     room_pricing_factor={this.room_pricing_factor}
-                    onRoomPricingFactorChange={value => this.assemble.run("nimbus")`
+                    onRoomPricingFactorChange={value => this.network.run`
                       RoomPricingEvent.create!(pricing_factor: ${value || 1.0})
                     `}
                   />
@@ -112,7 +118,7 @@ class App extends React.Component {
                 this.loaded
                 ? <Layout.Right>
                     <Reservations
-                      assemble={this.assemble}
+                      assembly={this}
                       reservations={this.reservations}
                       services={this.services}
                     />
@@ -133,7 +139,7 @@ class App extends React.Component {
     if(state.start_time) state.start_time = state.start_time.format()
     if(state.end_time) state.end_time = state.end_time.format()
 
-    return this.assemble.run("nimbus")`
+    return this.network.run`
       service = Service.find_by(
         service_type: ${JSON.stringify(params.service)},
         position: ${JSON.stringify(params.number)},
@@ -147,7 +153,7 @@ class App extends React.Component {
   }
 
   persistExtra(state, extra_name, params) {
-    this.assemble.run("nimbus")`
+    this.network.run`
       service = Service.find_by(
         service_type: ${JSON.stringify(params.service)},
         position: ${JSON.stringify(params.number)},
@@ -171,7 +177,7 @@ class App extends React.Component {
   }
 
   ensureCurrentOrder(service, position) {
-    return this.assemble.run("nimbus")`
+    return this.network.run`
       service = Service.find_by(
         service_type: ${JSON.stringify(service)},
         position: ${JSON.stringify(position)},
@@ -182,7 +188,7 @@ class App extends React.Component {
   }
 
   cancelOrder = (service) => {
-    this.assemble.run("nimbus")`
+    this.network.run`
       Service.find_by(
         service_type: ${JSON.stringify(service.service)},
         position: ${JSON.stringify(service.position)}
