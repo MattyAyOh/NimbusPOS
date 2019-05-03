@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 import { observer } from "mobx-react"
@@ -72,9 +71,5 @@ const Price = styled.span`
   color: ${grey};
   text-align: left;
 `
-
-Table.propTypes = {
-  service: PropTypes.instanceOf(Service)
-}
 
 export default withRouter(Table);

@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import moment from "moment"
 import { Link } from "react-router-dom"
-import PropTypes from "prop-types"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
 
@@ -100,9 +99,5 @@ const Column = styled.div`
 const Tables = styled.div`
   margin-top: 2rem;
 `
-
-Lobby.propTypes = {
-  services: PropTypes.arrayOf(PropTypes.instanceOf(Service)),
-}
 
 export default Lobby

@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import styled from "styled-components"
 import moment from "moment"
 import { observable } from "mobx"
@@ -102,10 +101,6 @@ const Divider = styled.div`
   border-top: 1px solid ${blue};
   height: 1rem;
 `
-
-Checkout.propTypes = {
-  order: PropTypes.instanceOf(Order),
-}
 
 const Button = styled.span`
   background-color: ${({active}) => active ? "white" : blue};

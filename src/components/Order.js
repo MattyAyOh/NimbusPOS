@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import styled from "styled-components"
 import { Link, withRouter } from "react-router-dom"
 import moment from "moment"
@@ -142,10 +141,5 @@ const Links = styled.div`
   display: flex;
   justify-content: space-between;
 `
-
-Order.propTypes = {
-  order: PropTypes.instanceOf(OrderModel),
-  extras: PropTypes.arrayOf(PropTypes.instanceOf(ExtraModel)),
-}
 
 export default withRouter(Order)
