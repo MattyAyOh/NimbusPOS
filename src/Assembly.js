@@ -232,16 +232,4 @@ Layout.Right = styled.div`
   grid-area: 1 / 2 / -1 / 2;
 `
 
-const parseService = (json) => {
-  return new Service(json)
-}
-
-const parseExtra = (json) => {
-  return new Extra(json)
-}
-
-const parseReservation = (json) => {
-  return new Reservation(json)
-}
-
 export default Assembly

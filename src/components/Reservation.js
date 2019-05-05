@@ -2,19 +2,21 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
+import Component from "../principals/Component"
 
-const time_format = "ddd M/DD, h:mm A"
-
-const Reservation = observer(({ start_time, end_time, service_name, service_position }) => (
-  <Layout>
+const Reservation = observer(({ assembly, start_time, end_time, service_name, service_position }) => (
+  <Component
+    assembly={assembly}
+    uuid="8d95acd5-fd55-413d-a98b-7c185b7f2436"
+  >
     <p>{ service_name } { service_position }</p>
 
     <p>
-      { DateTime.fromISO(start_time).format(time_format) }
-      to
-      { DateTime.fromISO(end_time).format(time_format) }
+      { DateTime.fromISO(start_time).toLocaleString(DateTime.DATE_TIME) }
+      &nbsp; to &nbsp;
+      { DateTime.fromISO(end_time).toLocaleString(DateTime.DATE_TIME) }
     </p>
-  </Layout>
+  </Component>
 ))
 
 const Layout = styled.div`

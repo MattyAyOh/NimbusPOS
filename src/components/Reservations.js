@@ -7,56 +7,55 @@ import 'react-select/dist/react-select.css';
 import Reservation from "./Reservation"
 import TimeSpanInput from "./TimeSpanInput"
 
-@observer
-class Reservations extends React.Component {
-  render() {
-    return (
-      <Layout>
-        <Layout.Title>Reservations</Layout.Title>
+const Reservations = observer((props) => (
+  <Layout>
+    <Layout.Title>Reservations</Layout.Title>
 
-        <NewReservation>
-          <Select
-            value={this.props.assembly.new_reservation.service}
-            options={
-              this.props.services
-                .map(service => service.name)
-                .unique()
-                .map(service => ({ label: service, value: service }))
-            }
-            onChange={(service) => this.props.assembly.new_reservation.service = service.value }
-          />
+    <NewReservation>
+      <Select
+        value={props.assembly.new_reservation.service}
+        options={
+          props.services
+            .map(service => service.name)
+            .unique()
+            .map(service => ({ label: service, value: service }))
+        }
+        onChange={(service) => props.assembly.new_reservation.service = service.value }
+      />
 
-          <Select
-            value={this.props.assembly.new_reservation.position}
-            options={
-              this.props.services
-                .map((service) => ({ label: service.position, value: service.position }))
-            }
-            onChange={(position) => this.props.assembly.new_reservation.position = position.value }
-          />
+      <Select
+        value={props.assembly.new_reservation.position}
+        options={
+          props.services
+            .map((service) => ({ label: service.position, value: service.position }))
+        }
+        onChange={(position) => props.assembly.new_reservation.position = position.value }
+      />
 
-          <TimeSpanInput
-            startTime={this.props.assembly.new_reservation.start_time}
-            end_time={this.props.assembly.new_reservation.end_time}
-            onStartTimeChange={(new_time) => this.props.assembly.new_reservation.start_time = new_time }
-            onEndTimeChange={(new_time) => this.props.assembly.new_reservation.end_time = new_time }
-          />
+      <TimeSpanInput
+        startTime={props.assembly.new_reservation.start_time}
+        end_time={props.assembly.new_reservation.end_time}
+        onStartTimeChange={(new_time) => props.assembly.new_reservation.start_time = new_time }
+        onEndTimeChange={(new_time) => props.assembly.new_reservation.end_time = new_time }
+      />
 
-          <Button onClick={() => this.props.assembly.createReservation()} >
-            Add reservation
-          </Button>
-        </NewReservation>
+      <Button onClick={() => props.assembly.createReservation()} >
+        Add reservation
+      </Button>
+    </NewReservation>
 
-        {this.props.reservations.map((reservation) =>
-          <Reservation key={reservation.id} {...reservation} />
-        )}
+    {props.reservations.map((reservation) =>
+      <Reservation
+        key={reservation.id}
+        assembly={props.assembly}
+        {...reservation}
+      />
+    )}
 
-        {(this.props.reservations.count === 0) &&
-          <div>No reservations</div>}
-      </Layout>
-    )
-  }
-}
+    {(props.reservations.count === 0) &&
+      <div>No reservations</div>}
+  </Layout>
+))
 
 const Layout = styled.div`
 `
