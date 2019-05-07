@@ -13,6 +13,8 @@ class Component extends React.Component {
   constructor(props) {
     super(props)
 
+    this.boundary = React.createRef()
+
     this.props.assembly.network.watch`
       JSON.parse(Component.find_or_create_by(id: "${this.props.uuid}").style)
     `(response => {
@@ -36,19 +38,17 @@ class Component extends React.Component {
       <Boundary
         style={JSON.parse(JSON.stringify(this.styles))}
         onClick={() => this.props.assembly.activeComponent = this}
-        onResize={(e) => {
-          debugger;
-        }}
+        innerRef={this.boundary}
       >
-        <ResizeHandle position="nw" positions={["-5px", null, "-5px", null]} />
-        <ResizeHandle position="ne" positions={["-5px", null, null, "-5px"]} />
-        <ResizeHandle position="sw" positions={[null, "-5px", "-5px", null]} />
-        <ResizeHandle position="se" positions={[null, "-5px", null, "-5px"]} />
+        <ResizeHandle position="nw" component={this} positions={["-5px", null, "-5px", null]} />
+        <ResizeHandle position="ne" component={this} positions={["-5px", null, null, "-5px"]} />
+        <ResizeHandle position="sw" component={this} positions={[null, "-5px", "-5px", null]} />
+        <ResizeHandle position="se" component={this} positions={[null, "-5px", null, "-5px"]} />
 
-        <ResizeHandle position="n"  positions={["-5px", null, "calc(50% - 5px)", null]} />
-        <ResizeHandle position="w"  positions={["calc(50% - 5px)", null, "-5px", null]} />
-        <ResizeHandle position="e"  positions={["calc(50% - 5px)", null, null, "-5px"]} />
-        <ResizeHandle position="s"  positions={[null, "-5px", "calc(50% - 5px)", null]} />
+        <ResizeHandle position="n"  component={this} positions={["-5px", null, "calc(50% - 5px)", null]} />
+        <ResizeHandle position="w"  component={this} positions={["calc(50% - 5px)", null, "-5px", null]} />
+        <ResizeHandle position="e"  component={this} positions={["calc(50% - 5px)", null, null, "-5px"]} />
+        <ResizeHandle position="s"  component={this} positions={[null, "-5px", "calc(50% - 5px)", null]} />
 
         {this.props.children}
       </Boundary>
@@ -64,26 +64,54 @@ const Boundary = styled.div`
 `
 
 const ResizeHandle = styled.div.attrs({
-  onMouseDown: ({position}) => ((e) => {
+  onMouseDown: ({position, component}) => ((e) => {
     let handle = e.target
 
-    let shiftX = e.clientX - handle.getBoundingClientRect().left;
-    let shiftY = e.clientY - handle.getBoundingClientRect().top;
+    let { width, height } =
+      component.boundary.current.getBoundingClientRect()
+
+    let padding =
+      accumulatePadding(component.props.container)
 
     handle.style.position = 'absolute';
     handle.style.zIndex = 1000;
 
-    document.body.append(handle)
-    moveTo(e.pageX, e.pageY)
+    let startingPosition = {
+      left: handle.getBoundingClientRect().left + handle.getBoundingClientRect().width / 2 - 1,
+      top: handle.getBoundingClientRect().top  + handle.getBoundingClientRect().height / 2 - 1,
+    }
+    console.log(startingPosition)
+
+    let offset = {
+      left: startingPosition.left - e.pageX,
+      top: startingPosition.top - e.pageY,
+    }
+    console.log(offset)
+
+    moveTo(e.pageX + offset.left, e.pageY + offset.top)
 
     // centers the handle to (x, y) coordinates
     function moveTo(x, y) {
-      handle.style.left = x - shiftX + 'px';
-      handle.style.top = y - shiftY + 'px';
+      if(position.indexOf('n') !== -1) {
+        let shift = y - padding.top
+        component.styles.top = shift + 'px'
+        component.styles.height = height - shift - 2 + 'px'
+      }
+      if(position.indexOf('w') !== -1) {
+        let shift = x - padding.left
+        component.styles.left = shift + 'px'
+        component.styles.width = width - shift - 2 + 'px'
+      }
+      if(position.indexOf('s') !== -1) {
+        component.styles.height = y - padding.top + 'px'
+      }
+      if(position.indexOf('e') !== -1) {
+        component.styles.width = x - padding.left + 'px'
+      }
     }
 
     function onMouseMove(event) {
-      moveTo(event.pageX, event.pageY);
+      moveTo(event.pageX + offset.left, event.pageY + offset.top)
     }
 
     // (3) move the handle on mousemove
@@ -110,5 +138,22 @@ const ResizeHandle = styled.div.attrs({
   left: ${({positions}) => positions[2]};
   right: ${({positions}) => positions[3]};
 `
+
+const accumulatePadding = (container) => {
+  if(!container || !container.current) {
+    return { left: 0, top: 0 }
+  } else {
+    let { left, top } =
+      accumulatePadding(container.current.props.container)
+
+    left = left +
+      parseInt(getComputedStyle(container.current.props.innerRef.current).paddingLeft, 10) || 0
+
+    top = top +
+      parseInt(getComputedStyle(container.current.props.innerRef.current).paddingTop, 10) || 0
+
+    return { left, top }
+  }
+}
 
 export default Component
