@@ -1,16 +1,22 @@
 import React from "react"
 import styled from "styled-components"
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link } from "react-router-dom"
 import { observer } from "mobx-react"
 
 const blue = "#4a90e2"
 
 @observer
 class TabView extends React.Component {
+  layout = React.createRef()
+  tab_selector = React.createRef()
+  switch = React.createRef()
+
   render() {
     return (
-      <div>
-        <TabSelector tabCount={Object.keys(this.props.tabs).length}>
+      <div container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+        <TabSelector tabCount={Object.keys(this.props.tabs).length}
+          container={this.layout} ref={this.tab_selector} innerRef={React.createRef()}
+        >
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
               key={tab}
@@ -22,7 +28,7 @@ class TabView extends React.Component {
           ))}
         </TabSelector>
 
-        <Switch>
+        <Switch container={this.layout} ref={this.switch} innerRef={React.createRef()} >
           { Object.keys(this.props.tabs).map((tab) => (
             <Route
               key={tab}

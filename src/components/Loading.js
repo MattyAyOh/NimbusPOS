@@ -2,10 +2,15 @@ import React from "react"
 
 import { observer } from "mobx-react"
 
-const Loading = observer((props) => (
-  <div>
-    Loading...
-  </div>
-))
+@observer
+class Loading extends React.Component {
+  layout = React.createRef()
+
+  render = () => (
+    <div container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+      Loading...
+    </div>
+  )
+}
 
 export default Loading

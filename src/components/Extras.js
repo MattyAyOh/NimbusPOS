@@ -5,18 +5,23 @@ import Extra from "./Extra"
 
 import { observer } from "mobx-react"
 
-const Extras = observer((props) => (
-  <Layout>
-    {props.items.map((item) => (
-      <Extra
-        onPersist={props.onPersist}
-        key={item.name}
-        order={props.order}
-        {...item}
-      />
-    ))}
-  </Layout>
-))
+@observer
+class Extras extends React.Component {
+  layout = React.createRef()
+
+  render = () => (
+    <Layout contaainer={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+      {this.props.items.map((item) => (
+        <Extra
+          onPersist={this.props.onPersist}
+          key={item.name}
+          order={this.props.order}
+          {...item}
+        />
+      ))}
+    </Layout>
+  )
+}
 
 const Layout = styled.div`
   display: grid;

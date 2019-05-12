@@ -11,6 +11,14 @@ const blue = "#4a90e2"
 class Checkout extends React.Component {
   @observable num_people = 1
 
+  layout = React.createRef()
+  bill = React.createRef()
+  room_charge = React.createRef()
+  divider = React.createRef()
+  total_price = React.createRef()
+  split = React.createRef()
+  confirm = React.createRef()
+
   render() {
     const hours_spent = (
       DateTime.fromISO(this.props.order.end_time)
@@ -23,14 +31,15 @@ class Checkout extends React.Component {
     )
 
     return (
-      <Layout>
-        <Bill>
+      <Layout container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+        <Bill container={this.layout} ref={this.bill} innerRef = {React.createRef()} >
           <LineItem
             key={this.props.order.service.name}
             name={this.props.order.service.name}
             rate={`${this.props.order.service.hourly_rate * this.props.room_pricing_factor} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
             amount={(this.props.order.service.hourly_rate * this.props.room_pricing_factor * hours_spent).toFixed(2)}
+            container={this.bill} ref={this.room_charge} innerRef = {React.createRef()}
           />
 
           {this.props.extras.map((extra) => (
@@ -43,17 +52,19 @@ class Checkout extends React.Component {
             />
           ))}
 
-          <Divider />
+          <Divider container={this.bill} ref={this.divider} innerRef = {React.createRef()} />
 
           <LineItem
             key="total"
             name={<Blue>Total</Blue>}
             amount={<Blue>{total_price}</Blue>}
+            container={this.bill} ref={this.total_price} innerRef = {React.createRef()}
           />
 
           <LineItem
             key="people"
             name="Split by # of people"
+            container={this.bill} ref={this.split} innerRef = {React.createRef()}
             quantity={
               <div>
               {
@@ -74,6 +85,7 @@ class Checkout extends React.Component {
 
         <Confirm
           onClick={() => this.props.persist({ cash_handled: 0 })}
+          container={this.bill} ref={this.confirm} innerRef = {React.createRef()}
         >Confirm</Confirm>
       </Layout>
     )

@@ -16,6 +16,18 @@ class Order extends React.Component {
   @observable start_time = null
   @observable end_time = null
 
+  loading = React.createRef()
+  layout = React.createRef()
+  loading = React.createRef()
+  links = React.createRef()
+  cancel = React.createRef()
+  close = React.createRef()
+  heading = React.createRef()
+  time_span = React.createRef()
+  tabs = React.createRef()
+  extras = React.createRef()
+  checkout = React.createRef()
+
   constructor(props) {
     super(props)
 
@@ -28,22 +40,29 @@ class Order extends React.Component {
   render() {
     return (
       this.props.order == null
-      ? <Loading />
-      : <Layout className="orderLayout">
-          <Links>
+      ? <Loading container={this.props.container} ref={this.loading} innerRef={React.createRef()} />
+      : <Layout className="orderLayout" container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+          <Links container={this.layout} ref={this.links} innerRef={React.createRef()} >
             <StyledLink
+              container={this.layout} ref={this.cancel} innerRef={React.createRef()}
               to="/"
               onClick={() => this.props.onCancel(this.props.order.service)}
             >
               Cancel Order
             </StyledLink>
 
-            <StyledLink to="/">Close</StyledLink>
+            <StyledLink
+              container={this.layout} ref={this.close} innerRef={React.createRef()}
+              to="/"
+            >Close</StyledLink>
           </Links>
 
-          <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
+          <h2 container={this.layout} ref={this.heading} innerRef={React.createRef()} >
+            {this.props.order.service.name} #{this.props.order.service.position}
+          </h2>
 
           <TimeSpanInput
+            container={this.layout} ref={this.time_span} innerRef={React.createRef()}
             startTime={this.start_time}
             endTime={this.end_time}
             onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
@@ -52,27 +71,32 @@ class Order extends React.Component {
           />
 
           <TabView
+            container={this.layout} ref={this.tabs} innerRef={React.createRef()}
             match={this.props.match}
             tabs={{
               snacks: () => <Extras
+                              container={this.tabs} ref={this.extras} innerRef={React.createRef()}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "snack")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               drinks: () => <Extras
+                              container={this.tabs} ref={this.extras} innerRef={React.createRef()}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "drink")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               other: () => <Extras
+                              container={this.tabs} ref={this.extras} innerRef={React.createRef()}
                               extras={this.props.order.extras}
                               items={this.props.extras.filter(s => s.extra_type === "other")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                             />,
               checkout: () => <Checkout
+                              container={this.tabs} ref={this.checkout} innerRef={React.createRef()}
                               extras={this.props.order.extras}
                               order={this.props.order}
                               onMount={() => this.ensureEndTime()}

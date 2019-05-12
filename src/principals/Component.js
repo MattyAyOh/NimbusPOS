@@ -70,8 +70,7 @@ const ResizeHandle = styled.div.attrs({
     let { width, height } =
       component.boundary.current.getBoundingClientRect()
 
-    let padding =
-      accumulatePadding(component.props.container)
+    let containerPosition = calculateContainerPosition(component.props.container)
 
     handle.style.position = 'absolute';
     handle.style.zIndex = 1000;
@@ -93,20 +92,20 @@ const ResizeHandle = styled.div.attrs({
     // centers the handle to (x, y) coordinates
     function moveTo(x, y) {
       if(position.indexOf('n') !== -1) {
-        let shift = y - padding.top
+        let shift = y - containerPosition.top
         component.styles.top = shift + 'px'
         component.styles.height = height - shift - 2 + 'px'
       }
       if(position.indexOf('w') !== -1) {
-        let shift = x - padding.left
+        let shift = x - containerPosition.left
         component.styles.left = shift + 'px'
         component.styles.width = width - shift - 2 + 'px'
       }
       if(position.indexOf('s') !== -1) {
-        component.styles.height = y - padding.top + 'px'
+        component.styles.height = y - containerPosition.top + 'px'
       }
       if(position.indexOf('e') !== -1) {
-        component.styles.width = x - padding.left + 'px'
+        component.styles.width = x - containerPosition.left + 'px'
       }
     }
 
@@ -139,7 +138,7 @@ const ResizeHandle = styled.div.attrs({
   right: ${({positions}) => positions[3]};
 `
 
-const accumulatePadding = (container) => {
+const calculateContainerPosition = (container) => {
   if(!container || !container.current) {
     return { left: 0, top: 0 }
   } else {

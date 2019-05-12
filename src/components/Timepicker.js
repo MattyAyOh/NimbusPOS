@@ -19,6 +19,12 @@ class Timepicker extends React.Component {
   @observable enteredText = ""
   @observable open = false
 
+  layout = React.createRef()
+  time_input = React.createRef()
+  touch_input = React.createRef()
+  scroll_1 = React.createRef()
+  scroll_2 = React.createRef()
+
   constructor(props) {
     super(props)
 
@@ -41,8 +47,9 @@ class Timepicker extends React.Component {
     let selectedMinute = this.time && this.time.minute
 
     return (
-      <Wrapper>
+      <Layout container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
         <TimeInput
+          container={this.layout} ref={this.time_input} innerRef={React.createRef()}
           onChange={(e) => this.enteredText = e.target.value }
           onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
@@ -51,8 +58,8 @@ class Timepicker extends React.Component {
         />
 
         { this.open &&
-          <TouchInput>
-            <Scroll>
+          <TouchInput container={this.layout} ref={this.touch_input} innerRef={React.createRef()} >
+            <Scroll container={this.touch_input} ref={this.scroll_1} innerRef={React.createRef()} >
               {this.hourOptions().map((hour) => (
                 <TimeOption
                   innerRef={(node) => node && (hour === selectedHour) && node.scrollIntoView()}
@@ -63,7 +70,7 @@ class Timepicker extends React.Component {
               ))}
             </Scroll>
 
-            <Scroll>
+            <Scroll container={this.touch_input} ref={this.scroll_2} innerRef={React.createRef()} >
               {this.minuteOptions().map((minute) => (
                 <TimeOption
                   innerRef={(node) => node && (minute === selectedMinute) && node.scrollIntoView()}
@@ -75,7 +82,7 @@ class Timepicker extends React.Component {
             </Scroll>
           </TouchInput>
         }
-      </Wrapper>
+      </Layout>
     )
   }
 
@@ -127,7 +134,7 @@ const TimeInput = styled.input`
   padding: 0.5rem;
 `
 
-const Wrapper = styled.div`
+const Layout = styled.div`
   display: inline-block;
 `
 

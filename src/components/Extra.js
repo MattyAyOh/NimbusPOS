@@ -15,21 +15,35 @@ class Extra extends React.Component {
     }
   }
 
+  layout = React.createRef()
+  image = React.createRef()
+  name = React.createRef()
+  decrement = React.createRef()
+  quantity = React.createRef()
+  increment = React.createRef()
+
   render () {
     return (
-      <Layout>
+      <Layout container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
         <Image
           src={this.props.image_url}
           onClick={() => this.add(1)}
+          container={this.props.layout} ref={this.image} innerRef={React.createRef()}
         />
 
-        <Quantity>{this.props.name}</Quantity>
+        <Quantity container={this.props.layout} ref={this.name} innerRef={React.createRef()} >{this.props.name}</Quantity>
 
-        <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
+        <Decrement color="red" onClick={() => this.add(-1)}
+          container={this.props.layout} ref={this.decrement} innerRef={React.createRef()}
+        >-</Decrement>
 
-        <Quantity>{this.state.quantity}</Quantity>
+      <Quantity container={this.props.layout} ref={this.quantity} innerRef={React.createRef()} >
+        {this.state.quantity}
+      </Quantity>
 
-        <Decrement color="green" onClick={() => this.add(1)}>+</Decrement>
+        <Decrement color="green" onClick={() => this.add(1)}
+          container={this.props.layout} ref={this.increment} innerRef={React.createRef()}
+        >+</Decrement>
       </Layout>
     );
   }

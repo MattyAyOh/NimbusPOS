@@ -7,118 +7,153 @@ import emojis from "../Emojis"
 import Icon, { Stack } from "@mdi/react"
 import { mdiWifi, mdiSmoking, mdiBlockHelper } from "@mdi/js"
 
-const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
-  <Layout>
-    <Layout.Section>
-      <Heading>Drinks</Heading>
+@observer
+class BigScreen extends React.Component {
+  layout = React.createRef()
+  left = React.createRef()
+  leftHeading = React.createRef()
+  center = React.createRef()
+  centerHeading = React.createRef()
+  wifi = React.createRef()
+  wifiName = React.createRef()
+  wifiIcon = React.createRef()
+  wifiPassword = React.createRef()
+  video = React.createRef()
+  no_smoking = React.createRef()
+  servicesHeading = React.createRef()
+  serviceMahjong = React.createRef()
+  serviceMahjongEmoji = React.createRef()
+  serviceMahjongTitle = React.createRef()
+  serviceMahjongPrice = React.createRef()
+  servicePool = React.createRef()
+  servicePoolEmoji = React.createRef()
+  servicePoolTitle = React.createRef()
+  servicePoolPrice = React.createRef()
+  serviceKaraoke = React.createRef()
+  serviceKaraokeEmoji = React.createRef()
+  serviceKaraokeTitle = React.createRef()
+  serviceKaraokePrice = React.createRef()
+  discount = React.createRef()
+  right = React.createRef()
+  snacks_heading = React.createRef()
+  misc_heading = React.createRef()
 
-      {extras.filter(e => e.extra_type === 'drink').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
-      )}
-    </Layout.Section>
+  render = () => (
+    <Layout container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
+      <Layout.Section container={this.layout} ref={this.left} innerRef={React.createRef()} >
+        <Heading container={this.left} ref={this.leftHeading} innerRef={React.createRef()} >
+          Drinks
+        </Heading>
 
-    <Layout.Section>
-      <Header/>
+        {this.props.extras.filter(e => e.extra_type === 'drink').map(extra =>
+          <Extra key={extra.name}>
+            <Extra.Image src={extra.image_url} alt={extra.name} />
+            <Extra.Name>{extra.name}</Extra.Name>
+            <Price>{extra.price}</Price>
+          </Extra>
+        )}
+      </Layout.Section>
 
-      <Wifi>
-        <Info>Nimbus</Info>
-        <Icon size="2rem" color="white" path={mdiWifi} />
-        <Info>01234567890</Info>
-      </Wifi>
+      <Layout.Section container={this.layout} ref={this.center} innerRef={React.createRef()} >
+        <Header container={this.center} ref={this.centerHeading} innerRef={React.createRef()} />
 
-      <Embed
-        alt="Video of Bub the cat yawning and stretching in front of a warm fire"
-        src={`https://www.youtube.com/embed/ZuHZSbPJhaY?${
-          [
-            "autoplay=1",
-            "loop=1",
-            "playlist=ZuHZSbPJhaY",
+        <Wifi container={this.center} ref={this.wifi} innerRef={React.createRef()} >
+          <Info container={this.wifi} ref={this.wifiName} innerRef={React.createRef()} >Nimbus</Info>
+          <Icon container={this.wifi} ref={this.wifiIcon} innerRef={React.createRef()} size="2rem" color="white" path={mdiWifi} />
+          <Info container={this.wifi} ref={this.wifiPassword} innerRef={React.createRef()} >01234567890</Info>
+        </Wifi>
 
-            "controls=0",
-            "fs=0",
-            "iv_load_policy=3",
-            "modestbranding=1",
-          ].join("&")
-        }`}
-      />
+        <Embed
+          container={this.center} ref={this.video} innerRef={React.createRef()}
+          alt="Video of Bub the cat yawning and stretching in front of a warm fire"
+          src={`https://www.youtube.com/embed/ZuHZSbPJhaY?${
+            [
+              "autoplay=1",
+              "loop=1",
+              "playlist=ZuHZSbPJhaY",
 
-      <NoSmoking>
-        {[1,2,3].map((i) => (
-          <Stack size="3rem" key={i}>
-            <Icon path={mdiSmoking} color="white" />
-            <Icon path={mdiBlockHelper} color="red" />
-          </Stack>
-        ))}
-      </NoSmoking>
+              "controls=0",
+              "fs=0",
+              "iv_load_policy=3",
+              "modestbranding=1",
+            ].join("&")
+          }`}
+        />
 
-      <Heading>Services</Heading>
+        <NoSmoking container={this.center} ref={this.no_smoking} innerRef={React.createRef()} >
+          {[1,2,3].map((i) => (
+            <Stack size="3rem" key={i}>
+              <Icon path={mdiSmoking} color="white" />
+              <Icon path={mdiBlockHelper} color="red" />
+            </Stack>
+          ))}
+        </NoSmoking>
 
-      <Service>
-        <Info>{emojis.mahjong}</Info>
-        <Info>Mahjong</Info>
-        <Price>
-          {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
-        </Price>
-      </Service>
+        <Heading container={this.center} ref={this.servicesHeading} innerRef={React.createRef()} >Services</Heading>
 
-      <Service>
-        <Info>{emojis.pool}</Info>
-        <Info>Pool</Info>
-        <Price>
-          {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
-        </Price>
-      </Service>
+        <Service container={this.center} ref={this.serviceMahjong} innerRef={React.createRef()} >
+          <Info container={this.center} ref={this.serviceMahjongEmoji} innerRef={React.createRef()} >{emojis.mahjong}</Info>
+          <Info container={this.center} ref={this.serviceMahjongTitle} innerRef={React.createRef()} >Mahjong</Info>
+          <Price container={this.center} ref={this.serviceMahjongPrice} innerRef={React.createRef()} >
+            {this.props.services.filter(s => s.service === 'mahjong')[0] && this.props.services.filter(s => s.service === 'mahjong')[0].hourly_rate}
+          </Price>
+        </Service>
 
-      <Service>
-        <Info>{emojis.ktv}</Info>
-        <Info>KTV</Info>
-        <Price>
-          {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
-        </Price>
-      </Service>
+        <Service container={this.center} ref={this.servicePool} innerRef={React.createRef()} >
+          <Info container={this.center} ref={this.servicePoolEmoji} innerRef={React.createRef()} >{emojis.pool}</Info>
+          <Info container={this.center} ref={this.servicePoolTitle} innerRef={React.createRef()} >Pool</Info>
+          <Price container={this.center} ref={this.servicePoolPrice} innerRef={React.createRef()} >
+            {this.props.services.filter(s => s.service === 'pool')[0] && this.props.services.filter(s => s.service === 'pool')[0].hourly_rate}
+          </Price>
+        </Service>
 
-      <Service>
-        <Info>{emojis.ktv}</Info>
-        <Info>KTV (large)</Info>
-        <Price>
-          {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
-        </Price>
-      </Service>
+        <Service container={this.center} ref={this.serviceKaraoke} innerRef={React.createRef()} >
+          <Info container={this.center} ref={this.serviceKaraokeEmoji} innerRef={React.createRef()} >{emojis.ktv}</Info>
+          <Info container={this.center} ref={this.serviceKaraokeTitle} innerRef={React.createRef()} >KTV</Info>
+          <Price container={this.center} ref={this.serviceKaraokePrice} innerRef={React.createRef()} >
+            {this.props.services.filter(s => s.service === 'ktv')[0] && this.props.services.filter(s => s.service === 'ktv')[0].hourly_rate}
+          </Price>
+        </Service>
 
-      <Banner>
-        Discount!
-        Rooms are 20% off,
-        Mon - Thurs
-      </Banner>
-    </Layout.Section>
+        <Service container={this.center} ref={this.serviceKaraokeLarge} innerRef={React.createRef()} >
+          <Info container={this.center} ref={this.serviceKaraokeLargeEmoji} innerRef={React.createRef()} >{emojis.ktv}</Info>
+          <Info container={this.center} ref={this.serviceKaraokeLargeTitle} innerRef={React.createRef()} >KTV (large)</Info>
+          <Price container={this.center} ref={this.serviceKaraokeLargePrice} innerRef={React.createRef()} >
+            {this.props.services.filter(s => s.service === 'ktv' && s.position === 4)[0] && this.props.services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
+          </Price>
+        </Service>
 
-    <Layout.Section>
-      <Heading>Snacks</Heading>
+        <Banner container={this.center} ref={this.discount} innerRef={React.createRef()} >
+          Discount!
+          Rooms are 20% off,
+          Mon - Thurs
+        </Banner>
+      </Layout.Section>
 
-      {extras.filter(e => e.extra_type === 'snack').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
-      )}
+      <Layout.Section container={this.layout} ref={this.right} innerRef={React.createRef()} >
+        <Heading container={this.right} ref={this.snacks_heading} innerRef={React.createRef()} >Snacks</Heading>
 
-      <Heading>Misc</Heading>
+        {this.props.extras.filter(e => e.extra_type === 'snack').map(extra =>
+          <Extra key={extra.name}>
+            <Extra.Image src={extra.image_url} alt={extra.name} />
+            <Extra.Name>{extra.name}</Extra.Name>
+            <Price>{extra.price}</Price>
+          </Extra>
+        )}
 
-      {extras.filter(e => e.name === 'Playing Cards').map(extra =>
-        <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url} alt={extra.name} />
-          <Extra.Name>{extra.name}</Extra.Name>
-          <Price>{extra.price}</Price>
-        </Extra>
-      )}
-    </Layout.Section>
-  </Layout>
-))
+        <Heading container={this.right} ref={this.misc_heading} innerRef={React.createRef()} >Misc</Heading>
+
+        {this.props.extras.filter(e => e.name === 'Playing Cards').map(extra =>
+          <Extra key={extra.name}>
+            <Extra.Image src={extra.image_url} alt={extra.name} />
+            <Extra.Name>{extra.name}</Extra.Name>
+            <Price>{extra.price}</Price>
+          </Extra>
+        )}
+      </Layout.Section>
+    </Layout>
+  )
+}
 
 const Layout = styled.div`
   background-color: black;

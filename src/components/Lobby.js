@@ -11,6 +11,11 @@ import service_icons from "../Emojis"
 class Lobby extends React.Component {
   @observable current_time = DateTime.local()
 
+  layout = React.createRef()
+  discount = React.createRef()
+  pricing = React.createRef()
+  reservation_link = React.createRef()
+
   constructor(props) {
     super(props)
 
@@ -27,7 +32,7 @@ class Lobby extends React.Component {
 
   render() {
     return (
-      <Layout>
+      <Layout container={this.props.container} ref={this.layout} innerRef={React.createRef()} >
         { Object.keys(service_icons).map((service_name) => (
           <Column key={service_name}>
             <Emoji>{ service_icons[service_name] }</Emoji>
@@ -46,9 +51,10 @@ class Lobby extends React.Component {
           </Column>
         ))}
 
-        <Layout.Discount>
+        <Layout.Discount container={this.layout} ref={this.discount} innerRef={React.createRef()} >
           Room Pricing:
           <PricingInput
+            container={this.discount} ref={this.pricing} innerRef={React.createRef()}
             type="number"
             value={this.props.room_pricing_factor * 100}
             onChange={e => this.props.onRoomPricingFactorChange(e.target.value / 100.0)}
@@ -56,7 +62,10 @@ class Lobby extends React.Component {
           %
         </Layout.Discount>
 
-        <Layout.ReservationLink to="/reservations">
+        <Layout.ReservationLink
+          to="/reservations"
+          container={this.layout} ref={this.reservation_link} innerRef={React.createRef()}
+        >
           Reservations
         </Layout.ReservationLink>
       </Layout>
