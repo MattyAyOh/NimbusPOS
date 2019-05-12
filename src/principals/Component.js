@@ -142,14 +142,8 @@ const calculateContainerPosition = (container) => {
   if(!container || !container.current) {
     return { left: 0, top: 0 }
   } else {
-    let { left, top } =
-      accumulatePadding(container.current.props.container)
-
-    left = left +
-      parseInt(getComputedStyle(container.current.props.innerRef.current).paddingLeft, 10) || 0
-
-    top = top +
-      parseInt(getComputedStyle(container.current.props.innerRef.current).paddingTop, 10) || 0
+    let left = (parseInt(getComputedStyle(container.current.props.innerRef.current).paddingLeft, 10) || 0) + container.current.props.innerRef.current.getBoundingClientRect().left
+    let top =  (parseInt(getComputedStyle(container.current.props.innerRef.current).paddingTop, 10) || 0) + container.current.props.innerRef.current.getBoundingClientRect().top
 
     return { left, top }
   }
