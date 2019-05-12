@@ -37,8 +37,9 @@ class Extra extends React.Component {
   add(value) {
     const quantity = this.state.quantity + value
 
+    // TODO remove the ".orderLayout" DOM class from the application
     const layout = document.querySelector(".orderLayout")
-    window.assemble.scroll = layout.scrollTop
+    this.props.assembly.scroll = layout.scrollTop
 
     this.props.onPersist({ quantity: quantity }, this.props.name)
   }

@@ -27,6 +27,7 @@ class Assembly extends React.Component {
       props.afterCreation(this)
   }
 
+  @observable scroll = 0
   @observable loaded = false
   @observable reservations = []
   @observable services = []
@@ -53,8 +54,8 @@ class Assembly extends React.Component {
       this.room_pricing_factor = result.room_pricing_factor
       })
       .then(() => {
-        document.querySelector(".orderLayout").scroll(0, window.assemble.scroll)
-        window.assemble.scroll = 0;
+        document.querySelector(".orderLayout").scroll(0, this.scroll)
+        this.scroll = 0;
       })
     )
   }
@@ -110,6 +111,7 @@ class Assembly extends React.Component {
                       onPersist={(state) => this.persistOrder(state, match.params)}
                       onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
                       room_pricing_factor={this.room_pricing_factor}
+                      assembly={this}
                     />
                   </Layout.Right>
                 }

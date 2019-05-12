@@ -19,8 +19,8 @@ class Order {
     this.cash_handled = values.cash_handled
     this.extras = values.extras
 
-    this.start_time = DateTime.fromISO(values.start_time)
-    this.end_time = DateTime.fromISO(values.end_time)
+    this.start_time = values.start_time && DateTime.fromISO(values.start_time)
+    this.end_time = values.end_time && DateTime.fromISO(values.end_time)
   }
 
   bill_amount(rate, current_time) {

@@ -13,6 +13,7 @@ const Extras = observer((props) => (
         key={item.name}
         order={props.order}
         {...item}
+        assembly={props.assembly}
       />
     ))}
   </Layout>
