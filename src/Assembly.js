@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { observer, Observer } from "mobx-react"
-import { observable } from "mobx"
+import { observable, reaction } from "mobx"
 
 import Header from "./components/Header"
 import Loading from "./components/Loading"
@@ -36,6 +36,11 @@ class Assembly extends React.Component {
   @observable new_reservation = {}
 
   componentDidMount() {
+    reaction(
+      () => this.room_pricing_factor,
+      value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
+    )
+
     this.network.watch`
     {
       services: Service.order(:service_type, :position),
@@ -82,12 +87,9 @@ class Assembly extends React.Component {
             <Layout.Left>
               { this.loaded
               ?  <Lobby
+                    assembly={this}
                     services={this.services}
                     onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
-                    room_pricing_factor={this.room_pricing_factor}
-                    onRoomPricingFactorChange={value => this.network.run`
-                      RoomPricingEvent.create!(pricing_factor: ${value || 1.0})
-                    `}
                   />
               : <Loading/>
               }

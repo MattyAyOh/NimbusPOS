@@ -6,6 +6,7 @@ import { observable } from "mobx"
 import { observer } from "mobx-react"
 import Table from "./Table"
 import service_icons from "../Emojis"
+import Selection from "../principals/Selection"
 
 @observer
 class Lobby extends React.Component {
@@ -39,7 +40,7 @@ class Lobby extends React.Component {
                   current_time={this.current_time}
                   key={table.position}
                   service={table}
-                  room_pricing_factor={this.props.room_pricing_factor}
+                  room_pricing_factor={this.props.assembly.room_pricing_factor}
                 />
               ))}
             </Tables>
@@ -47,13 +48,13 @@ class Lobby extends React.Component {
         ))}
 
         <Layout.Discount>
-          Room Pricing:
-          <PricingInput
-            type="number"
-            value={this.props.room_pricing_factor * 100}
-            onChange={e => this.props.onRoomPricingFactorChange(e.target.value / 100.0)}
+          <p>Room Pricing:</p>
+          <Selection
+            update={() => this.props.assembly.room_pricing_factor}
+            options={[0.5, 0.6, 0.75, 0.8, 0.9, 1]}
+            render ={option => option * 100 + "%"}
+            onChange={(selection) => this.props.assembly.room_pricing_factor  = selection}
           />
-          %
         </Layout.Discount>
 
         <Layout.ReservationLink to="/reservations">
@@ -69,19 +70,17 @@ const Layout = styled.div`
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr 5rem 5rem;
   height: 100%;
+  grid-row-gap: 2rem;
 `
 
 Layout.Discount = styled.div`
-  grid-area: 3 / 2 / 3 / 2;
-`
-
-const PricingInput = styled.input`
-  width: 2rem;
-  margin-left: 1rem;
+  grid-area: 2 / 1 / 2 / 4;
+  text-align: center;
 `
 
 Layout.ReservationLink = styled(Link)`
-  grid-area: 2 / 2 / 2 / 2;
+  grid-area: 3 / 1 / 3 / 4;
+  text-align: center;
 `
 
 const Emoji = styled.span`
