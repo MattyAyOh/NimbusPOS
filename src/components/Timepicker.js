@@ -46,6 +46,7 @@ class Timepicker extends React.Component {
           onChange={(e) => this.enteredText = e.target.value }
           onFocus={(e) => this.focused(e)}
           onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
+          onSelect={(e) => e.target.selectionStart = e.target.selectionEnd }
           placeholder="--:--"
           value={this.enteredText}
         />
