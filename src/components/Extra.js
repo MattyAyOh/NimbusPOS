@@ -1,20 +1,10 @@
 import React from "react"
 import styled from "styled-components"
 import { observer } from "mobx-react"
+import { computed } from "mobx"
 
 @observer
 class Extra extends React.Component {
-  constructor(props) {
-    super(props)
-
-    const extra = props.order.extras.filter((x) => x.extra.name === props.name)[0]
-    const quantity = (extra && extra.quantity) || 0
-
-    this.state = {
-      quantity: quantity,
-    }
-  }
-
   render () {
     return (
       <Layout>
@@ -27,15 +17,21 @@ class Extra extends React.Component {
 
         <Decrement color="red" onClick={() => this.add(-1)}>-</Decrement>
 
-        <Quantity>{this.state.quantity}</Quantity>
+        <Quantity>{this.quantity}</Quantity>
 
         <Decrement color="green" onClick={() => this.add(1)}>+</Decrement>
       </Layout>
     );
   }
 
+  @computed get quantity() {
+    const extra = this.props.assembly.visible_order.extras
+      .filter((x) => x.extra.name === this.props.name)[0]
+    return (extra && extra.quantity) || 0
+  }
+
   add(value) {
-    const quantity = this.state.quantity + value
+    const quantity = this.quantity + value
 
     // TODO remove the ".orderLayout" DOM class from the application
     const layout = document.querySelector(".orderLayout")

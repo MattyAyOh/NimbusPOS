@@ -11,7 +11,6 @@ const Extras = observer((props) => (
       <Extra
         onPersist={props.onPersist}
         key={item.name}
-        order={props.order}
         {...item}
         assembly={props.assembly}
       />

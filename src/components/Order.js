@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { Link, withRouter } from "react-router-dom"
 import { DateTime } from "luxon"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
@@ -32,13 +31,14 @@ class Order extends React.Component {
       : <Layout className="orderLayout">
           <Links>
             <StyledLink
-              to="/"
               onClick={() => this.props.onCancel(this.props.order.service)}
             >
               Cancel Order
             </StyledLink>
 
-            <StyledLink to="/">Close</StyledLink>
+            <StyledLink onClick={() => this.props.assembly.right_half = null} >
+              Close
+            </StyledLink>
           </Links>
 
           <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
@@ -52,26 +52,21 @@ class Order extends React.Component {
           />
 
           <TabView
+            assembly={this.props.assembly}
             url={this.props.url}
             tabs={{
               snacks: () => <Extras
-                              extras={this.props.order.extras}
-                              items={this.props.assembly.extras.filter(s => s.extra_type === "snack")}
-                              order={this.props.order}
+                              items={this.props.assembly.snacks}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
                             />,
               drinks: () => <Extras
-                              extras={this.props.order.extras}
-                              items={this.props.assembly.extras.filter(s => s.extra_type === "drink")}
-                              order={this.props.order}
+                              items={this.props.assembly.drinks}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
                             />,
               other: () => <Extras
-                              extras={this.props.order.extras}
-                              items={this.props.assembly.extras.filter(s => s.extra_type === "other")}
-                              order={this.props.order}
+                              items={this.props.assembly.others}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
                             />,
@@ -80,7 +75,7 @@ class Order extends React.Component {
                               order={this.props.order}
                               onMount={() => this.ensureEndTime()}
                               persist={(state) => this.props.onPersist(state).then((result) => {
-                                if(result.closed) this.props.history.push("/")
+                                if(result.closed) this.props.assembly.right_half = "/"
                               })}
                               assembly={this.props.assembly}
                             />
@@ -93,7 +88,7 @@ class Order extends React.Component {
   ensureEndTime() {
     if(this.end_time == null) {
       this.props.onPersist({end_time: DateTime.local()}).then((result) => {
-        if(result.closed) this.props.history.push("/")
+        if(result.closed) this.props.assembly.right_half = "/"
       })
     }
   }
@@ -122,7 +117,7 @@ class Order extends React.Component {
   }
 }
 
-const StyledLink = styled(Link)`
+const StyledLink = styled.span`
   color: #fff;
 `
 
@@ -142,4 +137,4 @@ const Links = styled.div`
   justify-content: space-between;
 `
 
-export default withRouter(Order)
+export default Order

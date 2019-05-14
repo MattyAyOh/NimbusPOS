@@ -1,8 +1,8 @@
 import React from "react"
 import styled from "styled-components"
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
 import { observer, Observer } from "mobx-react"
-import { observable, reaction } from "mobx"
+import { observable, reaction, computed } from "mobx"
+import Aviator from "aviator"
 
 import Header from "./components/Header"
 import Loading from "./components/Loading"
@@ -23,9 +23,14 @@ class Assembly extends React.Component {
 
     this.network = new Network(process.env.REACT_APP_URL_API)
 
+    Aviator.setRoutes({ "/bigscreen": () => this.current_page = BigScreen })
+    Aviator.dispatch()
+
     if(props.afterCreation)
       props.afterCreation(this)
   }
+
+  @observable current_page = Lobby
 
   @observable scroll = 0
   @observable loaded = false
@@ -66,69 +71,70 @@ class Assembly extends React.Component {
     )
   }
 
+  @observable right_half = null
+
   render () {
+    if(this.current_page === BigScreen)
+      return <BigScreen assembly={this} />
+
     return (
-      <Router>
-        <Switch>
-          <Route
-            path="/bigscreen"
-            component={observer(() =>
-              <BigScreen assembly={this} />
-            )}
-          />
+      <Layout>
+        <Header/>
 
-          <Route path="/" component={observer(() => (
-          <Layout>
-            <Header/>
+        <Layout.Left>
+          { this.loaded
+          ?  <Lobby
+                assembly={this}
+                onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
+              />
+          : <Loading/>
+          }
+        </Layout.Left>
 
-            <Layout.Left>
-              { this.loaded
-              ?  <Lobby
-                    assembly={this}
-                    onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
-                  />
-              : <Loading/>
-              }
-            </Layout.Left>
-
-            { this.loaded &&
-              <Route
-                path="/table/:service/:number"
-                component={({match}) =>
-                  <Layout.Right>
+        <Layout.Right>
+          { this.loaded && this.right_half &&
+            ( this.visible_order
+              ?
+                  <Observer>{() =>
                     <Order
-                      url={match.url}
-                      order={(this.services.filter(s =>
-                          s.service === match.params.service &&
-                          s.position === parseInt(match.params.number, 10)
-                        )[0] || {current_order: null}).current_order
-                      }
+                      url={this.right_half}
+                      order={this.visible_order}
                       onCancel={this.cancelOrder}
-                      onPersist={(state) => this.persistOrder(state, match.params)}
-                      onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
+                      onPersist={(state) => this.persistOrder(state, { service: "ktv", number: "1" })}
+                      onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name)}
                       assembly={this}
                     />
-                  </Layout.Right>
-                }
-              />
-            }
-
-            <Route
-              path="/reservations"
-              component={() =>
-                this.loaded
-                ? <Layout.Right>
-                    <Observer>{() =>
-                      <Reservations assembly={this} />
-                    }</Observer>
-                  </Layout.Right>
-                : <Loading />
-              } />
-          </Layout>
-          ))} />
-        </Switch>
-      </Router>
+                  }</Observer>
+              :
+                <Observer>{() =>
+                  <Reservations assembly={this} />
+                }</Observer>
+            )
+          }
+        </Layout.Right>
+      </Layout>
     );
+  }
+
+  @computed get visible_order() {
+    return (
+      this.services.filter(s =>
+        s.service === this.right_half.split("/")[2] &&
+        s.position === parseInt(this.right_half.split("/")[3], 10)
+      )[0] || {current_order: null}
+    ).current_order
+  }
+
+  @computed get snacks() {
+    return this.extras.filter(s => s.extra_type === "snack")
+  }
+
+  @computed get drinks() {
+    return this.extras.filter(s => s.extra_type === "drink")
+  }
+
+  @computed get others() {
+    return this.extras.filter(s => s.extra_type === "other")
   }
 
   // takes a `state` object, with:
@@ -151,7 +157,12 @@ class Assembly extends React.Component {
     `
   }
 
-  persistExtra(state, extra_name, params) {
+  persistExtra(state, extra_name) {
+    let params = {
+      service: this.right_half.split("/")[2],
+      number: this.right_half.split("/")[3],
+    }
+
     this.network.run`
       service = Service.find_by(
         service_type: ${JSON.stringify(params.service)},
@@ -205,7 +216,7 @@ class Assembly extends React.Component {
         service_type: ${JSON.stringify(service.service)},
         position: ${JSON.stringify(service.position)}
       ).current_order.destroy!
-    `
+    `.then(() => this.right_half = null)
   }
 }
 

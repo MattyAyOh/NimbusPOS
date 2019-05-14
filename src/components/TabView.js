@@ -1,9 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { Switch, Route, Link } from "react-router-dom"
-import { observer } from "mobx-react"
-
-const blue = "#4a90e2"
+import { primary as blue } from "colors"
+import { observer, Observer } from "mobx-react"
 
 @observer
 class TabView extends React.Component {
@@ -14,23 +12,17 @@ class TabView extends React.Component {
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
               key={tab}
-              to={this.props.url + "/" + tab}
-              selected={window.location.pathname === this.props.url + "/" + tab}
+              onClick={() => this.props.assembly.right_half = this.props.assembly.right_half.split("/").splice(0, 4).concat(tab).join("/")}
+              selected={window.location.pathname === this.props.assembly.right_half + "/" + tab}
             >
               {tab}
             </Tab>
           ))}
         </TabSelector>
 
-        <Switch>
-          { Object.keys(this.props.tabs).map((tab) => (
-            <Route
-              key={tab}
-              path={this.props.url + "/" + tab}
-              component={this.props.tabs[tab]}
-            />
-          ))}
-        </Switch>
+        <Observer>
+          {this.props.tabs[this.props.assembly.right_half.split("/")[4]]}
+        </Observer>
       </div>
     )
   }
@@ -45,7 +37,7 @@ const TabSelector = styled.div`
   font-size: 1.2rem;
 `
 
-const Tab = styled(Link)`
+const Tab = styled.span`
   text-align: right;
   text-transform: capitalize;
   color: ${(p) => p.selected ? blue : "inherit"};

@@ -1,12 +1,12 @@
 import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
-import { Link } from "react-router-dom"
 import { observable } from "mobx"
 import { observer } from "mobx-react"
 import Table from "./Table"
 import service_icons from "../Emojis"
 import Selection from "../principals/Selection"
+import { primary } from "../colors"
 
 @observer
 class Lobby extends React.Component {
@@ -42,7 +42,7 @@ class Lobby extends React.Component {
                     current_time={this.current_time}
                     key={table.position}
                     service={table}
-                    room_pricing_factor={this.props.assembly.room_pricing_factor}
+                    assembly={this.props.assembly}
                   />
               ))}
             </Tables>
@@ -59,7 +59,9 @@ class Lobby extends React.Component {
           />
         </Layout.Discount>
 
-        <Layout.ReservationLink to="/reservations">
+        <Layout.ReservationLink
+          onClick={() => this.props.assembly.right_half = "reservations"}
+        >
           Reservations
         </Layout.ReservationLink>
       </Layout>
@@ -80,9 +82,10 @@ Layout.Discount = styled.div`
   text-align: center;
 `
 
-Layout.ReservationLink = styled(Link)`
+Layout.ReservationLink = styled.span`
   grid-area: 3 / 1 / 3 / 4;
   text-align: center;
+  color: ${primary}
 `
 
 const Emoji = styled.span`

@@ -2,7 +2,6 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
-import { withRouter } from "react-router-dom"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -22,7 +21,7 @@ class Table extends React.Component {
 
         <Number
           onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
-            .then(() => this.props.history.push(this.orderUrl()))
+            .then(() => this.props.assembly.right_half = this.orderUrl())
           }
           active={Boolean(this.props.service.current_order)}
         >
@@ -32,7 +31,7 @@ class Table extends React.Component {
         <Price>
           {this.props.service.current_order &&
             "$" + this.props.service.current_order.bill_amount(
-              this.props.service.hourly_rate * this.props.room_pricing_factor,
+              this.props.service.hourly_rate * this.props.assembly.room_pricing_factor,
               this.props.current_time,
             )
           }
@@ -76,4 +75,4 @@ const Price = styled.span`
   text-align: left;
 `
 
-export default withRouter(Table);
+export default Table
