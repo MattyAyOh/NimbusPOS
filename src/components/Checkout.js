@@ -73,6 +73,7 @@ class Checkout extends React.Component {
         </Bill>
 
         <Confirm
+          disabled={this.props.order.end_time < this.props.order.start_time}
           onClick={() => this.props.persist({ closed_at: DateTime.local().toISO() })}
         >Confirm</Confirm>
       </Layout>
