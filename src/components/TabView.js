@@ -1,6 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route, Link } from "react-router-dom"
 import { observer } from "mobx-react"
 
 const blue = "#4a90e2"
@@ -14,8 +14,8 @@ class TabView extends React.Component {
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
               key={tab}
-              to={this.props.match.url + "/" + tab}
-              selected={window.location.pathname === this.props.match.url + "/" + tab}
+              to={this.props.url + "/" + tab}
+              selected={window.location.pathname === this.props.url + "/" + tab}
             >
               {tab}
             </Tab>
@@ -26,7 +26,7 @@ class TabView extends React.Component {
           { Object.keys(this.props.tabs).map((tab) => (
             <Route
               key={tab}
-              path={this.props.match.url + "/" + tab}
+              path={this.props.url + "/" + tab}
               component={this.props.tabs[tab]}
             />
           ))}

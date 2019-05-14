@@ -72,11 +72,7 @@ class Assembly extends React.Component {
           <Route
             path="/bigscreen"
             component={observer(() =>
-              <BigScreen
-                extras={this.extras}
-                services={this.services}
-                room_pricing_factor={this.room_pricing_factor}
-              />
+              <BigScreen assembly={this} />
             )}
           />
 
@@ -88,7 +84,6 @@ class Assembly extends React.Component {
               { this.loaded
               ?  <Lobby
                     assembly={this}
-                    services={this.services}
                     onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
                   />
               : <Loading/>
@@ -101,9 +96,7 @@ class Assembly extends React.Component {
                 component={({match}) =>
                   <Layout.Right>
                     <Order
-                      params={match.params}
-                      match={match}
-                      extras={this.extras}
+                      url={match.url}
                       order={(this.services.filter(s =>
                           s.service === match.params.service &&
                           s.position === parseInt(match.params.number, 10)
@@ -112,7 +105,6 @@ class Assembly extends React.Component {
                       onCancel={this.cancelOrder}
                       onPersist={(state) => this.persistOrder(state, match.params)}
                       onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name, match.params)}
-                      room_pricing_factor={this.room_pricing_factor}
                       assembly={this}
                     />
                   </Layout.Right>
@@ -122,15 +114,11 @@ class Assembly extends React.Component {
 
             <Route
               path="/reservations"
-              component={({ match }) =>
+              component={() =>
                 this.loaded
                 ? <Layout.Right>
                     <Observer>{() =>
-                      <Reservations
-                        assembly={this}
-                        reservations={this.reservations}
-                        services={this.services}
-                      />
+                      <Reservations assembly={this} />
                     }</Observer>
                   </Layout.Right>
                 : <Loading />

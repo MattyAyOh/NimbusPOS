@@ -52,25 +52,25 @@ class Order extends React.Component {
           />
 
           <TabView
-            match={this.props.match}
+            url={this.props.url}
             tabs={{
               snacks: () => <Extras
                               extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "snack")}
+                              items={this.props.assembly.extras.filter(s => s.extra_type === "snack")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
                             />,
               drinks: () => <Extras
                               extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "drink")}
+                              items={this.props.assembly.extras.filter(s => s.extra_type === "drink")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
                             />,
               other: () => <Extras
                               extras={this.props.order.extras}
-                              items={this.props.extras.filter(s => s.extra_type === "other")}
+                              items={this.props.assembly.extras.filter(s => s.extra_type === "other")}
                               order={this.props.order}
                               onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
@@ -82,7 +82,7 @@ class Order extends React.Component {
                               persist={(state) => this.props.onPersist(state).then((result) => {
                                 if(result.closed) this.props.history.push("/")
                               })}
-                              room_pricing_factor={this.props.room_pricing_factor}
+                              assembly={this.props.assembly}
                             />
             }}
           />

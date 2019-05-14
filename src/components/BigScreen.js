@@ -7,12 +7,12 @@ import emojis from "../Emojis"
 import Icon, { Stack } from "@mdi/react"
 import { mdiWifi, mdiSmoking, mdiBlockHelper } from "@mdi/js"
 
-const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
+const BigScreen = observer(({ assembly }) => (
   <Layout>
     <Layout.Section>
       <Heading>Drinks</Heading>
 
-      {extras.filter(e => e.extra_type === 'drink').map(extra =>
+      {assembly.extras.filter(e => e.extra_type === 'drink').map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
@@ -61,7 +61,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         <Info>{emojis.mahjong}</Info>
         <Info>Mahjong</Info>
         <Price>
-          {services.filter(s => s.service === 'mahjong')[0] && services.filter(s => s.service === 'mahjong')[0].hourly_rate}
+          {assembly.services.filter(s => s.service === 'mahjong')[0] && assembly.services.filter(s => s.service === 'mahjong')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -69,7 +69,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         <Info>{emojis.pool}</Info>
         <Info>Pool</Info>
         <Price>
-          {services.filter(s => s.service === 'pool')[0] && services.filter(s => s.service === 'pool')[0].hourly_rate}
+          {assembly.services.filter(s => s.service === 'pool')[0] && assembly.services.filter(s => s.service === 'pool')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -77,7 +77,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         <Info>{emojis.ktv}</Info>
         <Info>KTV</Info>
         <Price>
-          {services.filter(s => s.service === 'ktv')[0] && services.filter(s => s.service === 'ktv')[0].hourly_rate}
+          {assembly.services.filter(s => s.service === 'ktv')[0] && assembly.services.filter(s => s.service === 'ktv')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -85,7 +85,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
         <Info>{emojis.ktv}</Info>
         <Info>KTV (large)</Info>
         <Price>
-          {services.filter(s => s.service === 'ktv' && s.position === 4)[0] && services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
+          {assembly.services.filter(s => s.service === 'ktv' && s.position === 4)[0] && assembly.services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
         </Price>
       </Service>
 
@@ -99,7 +99,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
     <Layout.Section>
       <Heading>Snacks</Heading>
 
-      {extras.filter(e => e.extra_type === 'snack').map(extra =>
+      {assembly.extras.filter(e => e.extra_type === 'snack').map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
@@ -109,7 +109,7 @@ const BigScreen = observer(({ extras, services, room_pricing_factor }) => (
 
       <Heading>Misc</Heading>
 
-      {extras.filter(e => e.name === 'Playing Cards').map(extra =>
+      {assembly.extras.filter(e => e.name === 'Playing Cards').map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>

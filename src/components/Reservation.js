@@ -3,16 +3,16 @@ import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
 
-const time_format = "ddd M/DD, h:mm A"
-
 const Reservation = observer(({ start_time, end_time, service_name, service_position }) => (
   <Layout>
     <p>{ service_name } { service_position }</p>
 
     <p>
-      { DateTime.fromISO(start_time).format(time_format) }
-      to
-      { DateTime.fromISO(end_time).format(time_format) }
+      {
+        DateTime.fromISO(start_time).toLocaleString(DateTime.DATETIME_SHORT)
+      } to {
+        DateTime.fromISO(end_time).toLocaleString(DateTime.DATETIME_SHORT)
+      }
     </p>
   </Layout>
 ))

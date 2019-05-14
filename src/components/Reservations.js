@@ -18,7 +18,7 @@ class Reservations extends React.Component {
           <Select
             value={this.props.assembly.new_reservation.service}
             options={
-              this.props.services
+              this.props.assembly.services
                 .map(service => service.name)
                 .unique()
                 .map(service => ({ label: service, value: service }))
@@ -29,7 +29,7 @@ class Reservations extends React.Component {
           <Select
             value={this.props.assembly.new_reservation.position}
             options={
-              this.props.services
+              this.props.assembly.services
                 .map((service) => ({ label: service.position, value: service.position }))
             }
             onChange={(position) => this.props.assembly.new_reservation.position = position.value }
@@ -47,11 +47,11 @@ class Reservations extends React.Component {
           </Button>
         </NewReservation>
 
-        {this.props.reservations.map((reservation) =>
+        {this.props.assembly.reservations.map((reservation) =>
           <Reservation key={reservation.id} {...reservation} />
         )}
 
-        {(this.props.reservations.count === 0) &&
+        {(this.props.assembly.reservations.count === 0) &&
           <div>No reservations</div>}
       </Layout>
     )

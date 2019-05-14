@@ -18,7 +18,7 @@ class Checkout extends React.Component {
     ) / 60.0
 
     let total_price = this.props.order.bill_amount(
-      this.props.order.service.hourly_rate * this.props.room_pricing_factor,
+      this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor,
       DateTime.local()
     )
 
@@ -28,9 +28,9 @@ class Checkout extends React.Component {
           <LineItem
             key={this.props.order.service.name}
             name={this.props.order.service.name}
-            rate={`${this.props.order.service.hourly_rate * this.props.room_pricing_factor} / hr`}
+            rate={`${this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
-            amount={(this.props.order.service.hourly_rate * this.props.room_pricing_factor * hours_spent).toFixed(2)}
+            amount={(this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor * hours_spent).toFixed(2)}
           />
 
           {this.props.extras.map((extra) => (
