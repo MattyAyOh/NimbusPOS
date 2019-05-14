@@ -4,19 +4,19 @@ import { DateTime } from "luxon"
 // JSON from server:
 //
 // order:
-//   cash_handled: null
+//   closed_at: null
 //   end_time: 2018-07-06T23:44:32.000Z
 //   extras: []
 //   start_time: 2018-07-06T21:26:37.894Z
 
 class Order {
-  @observable cash_handled = null
+  @observable closed_at = null
   @observable end_time = null
   @observable extras = null
   @observable start_time = null
 
   constructor(values) {
-    this.cash_handled = values.cash_handled
+    this.closed_at = values.closed_at
     this.extras = values.extras
 
     this.start_time = values.start_time && DateTime.fromISO(values.start_time)
@@ -48,6 +48,6 @@ class Order {
 
 // Create a new Order object with:
 //
-// var order = new Order({ cash_handled: 20, end_time: "Mahjong", ... })
+// var order = new Order({ closed_at: ..., end_time: "Mahjong", ... })
 
 export default Order;

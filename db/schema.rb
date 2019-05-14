@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181006000106) do
+ActiveRecord::Schema.define(version: 20190514000013) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,8 +35,7 @@ ActiveRecord::Schema.define(version: 20181006000106) do
     t.bigint "service_id"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.float "previous_cost", default: 0.0
-    t.float "cash_handled"
+    t.datetime "closed_at"
     t.index ["service_id"], name: "index_orders_on_service_id"
   end
 

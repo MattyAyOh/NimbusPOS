@@ -7,16 +7,16 @@ class Order < ApplicationRecord
   validates :start_time, presence: true
 
   def self.open
-    where(end_time: nil).or(where(cash_handled: nil))
+    where(closed_at: nil)
   end
 
   def open?
-    start_time.nil? || end_time.nil? || cash_handled.nil?
+    closed_at.nil?
   end
 
   def as_json(*args)
     {
-      cash_handled: cash_handled,
+      closed_at: closed_at,
       end_time: end_time,
       extras: order_extras.map(&:as_json),
       start_time: start_time,

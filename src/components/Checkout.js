@@ -73,7 +73,7 @@ class Checkout extends React.Component {
         </Bill>
 
         <Confirm
-          onClick={() => this.props.persist({ cash_handled: 0 })}
+          onClick={() => this.props.persist({ closed_at: DateTime.local().toISO() })}
         >Confirm</Confirm>
       </Layout>
     )

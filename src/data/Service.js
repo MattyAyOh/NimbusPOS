@@ -9,7 +9,7 @@ import Order from "./Order"
 //   position: 1
 //   service: mahjong
 //   current_order:
-//     cash_handled: null
+//     closed_at: null
 //     end_time: 2018-07-06T23:44:32.000Z
 //     extras: []
 //     start_time: 2018-07-06T21:26:37.894Z
