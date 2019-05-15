@@ -59,7 +59,8 @@ class Assembly extends React.Component {
       this.room_pricing_factor = result.room_pricing_factor
       })
       .then(() => {
-        document.querySelector(".orderLayout").scroll(0, this.scroll)
+        if(this.scroll !== 0)
+          document.querySelector(".orderLayout").scroll(0, this.scroll)
         this.scroll = 0;
       })
     )
