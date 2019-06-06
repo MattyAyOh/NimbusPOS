@@ -32,7 +32,7 @@ const BigScreen = observer(({ assembly }) => (
 
       <Embed
         alt="Video of Bub the cat yawning and stretching in front of a warm fire"
-        src={`https://www.youtube.com/embed/ZuHZSbPJhaY?${
+        src={`https://www.youtube.com/embed/NVb5GV6lntU?${
           [
             "autoplay=1",
             "loop=1",
