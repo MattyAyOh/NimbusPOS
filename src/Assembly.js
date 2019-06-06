@@ -13,8 +13,6 @@ import BigScreen from "./components/BigScreen"
 
 import Network from "./Network"
 import Service from "./data/Service"
-import Extra from "./data/Extra"
-import Reservation from "./data/Reservation"
 
 @observer
 class Assembly extends React.Component {
@@ -58,9 +56,9 @@ class Assembly extends React.Component {
       .json()
       .then((result) => {
       this.loaded = true
-      this.services = result.services.map(parseService)
-      this.reservations = result.reservations.map(parseReservation)
-      this.extras = result.extras.map(parseExtra)
+      this.services = result.services.map(json => new Service(json))
+      this.reservations = result.reservations
+      this.extras = result.extras
       this.room_pricing_factor = result.room_pricing_factor
       })
       .then(() => {
@@ -235,17 +233,5 @@ Layout.Left = styled.div`
 Layout.Right = styled.div`
   grid-area: 1 / 2 / -1 / 2;
 `
-
-const parseService = (json) => {
-  return new Service(json)
-}
-
-const parseExtra = (json) => {
-  return new Extra(json)
-}
-
-const parseReservation = (json) => {
-  return new Reservation(json)
-}
 
 export default Assembly
