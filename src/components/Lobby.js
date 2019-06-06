@@ -58,12 +58,6 @@ class Lobby extends React.Component {
             onChange={(selection) => this.props.assembly.room_pricing_factor  = selection}
           />
         </Layout.Discount>
-
-        <Layout.ReservationLink
-          onClick={() => this.props.assembly.right_half = "reservations"}
-        >
-          Reservations
-        </Layout.ReservationLink>
       </Layout>
     )
   }
@@ -80,12 +74,6 @@ const Layout = styled.div`
 Layout.Discount = styled.div`
   grid-area: 2 / 1 / 2 / 4;
   text-align: center;
-`
-
-Layout.ReservationLink = styled.span`
-  grid-area: 3 / 1 / 3 / 4;
-  text-align: center;
-  color: ${primary}
 `
 
 const Emoji = styled.span`

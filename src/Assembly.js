@@ -30,6 +30,10 @@ class Assembly extends React.Component {
 
   @observable current_page = Lobby
 
+  @observable visible_tab = null
+  @observable visible_service = null
+  @observable visible_position = null
+
   @observable scroll = 0
   @observable loaded = false
   @observable reservations = []
@@ -55,11 +59,11 @@ class Assembly extends React.Component {
       response
       .json()
       .then((result) => {
-      this.loaded = true
-      this.services = result.services.map(json => new Service(json))
-      this.reservations = result.reservations
-      this.extras = result.extras
-      this.room_pricing_factor = result.room_pricing_factor
+        this.loaded = true
+        this.services = result.services.map(json => new Service(json))
+        this.reservations = result.reservations
+        this.extras = result.extras
+        this.room_pricing_factor = result.room_pricing_factor
       })
       .then(() => {
         if(this.scroll !== 0)
@@ -68,8 +72,6 @@ class Assembly extends React.Component {
       })
     )
   }
-
-  @observable right_half = null
 
   render () {
     if(this.current_page === BigScreen)
@@ -90,24 +92,15 @@ class Assembly extends React.Component {
         </Layout.Left>
 
         <Layout.Right>
-          { this.loaded && this.right_half &&
-            ( this.visible_order
-              ?
-                  <Observer>{() =>
-                    <Order
-                      url={this.right_half}
-                      order={this.visible_order}
-                      onCancel={this.cancelOrder}
-                      onPersist={(state) => this.persistOrder(state, { service: "ktv", number: "1" })}
-                      onPersistExtra={(state, extra_name) => this.persistExtra(state, extra_name)}
-                      assembly={this}
-                    />
-                  }</Observer>
-              :
-                <Observer>{() =>
-                  <Reservations assembly={this} />
-                }</Observer>
-            )
+          { this.loaded &&
+            <Observer>{() =>
+              this.visible_order
+                ? <Order
+                    assembly={this}
+                    key={this.visible_service + this.visible_position}
+                  />
+              : <Reservations assembly={this} />
+            }</Observer>
           }
         </Layout.Right>
       </Layout>
@@ -117,8 +110,8 @@ class Assembly extends React.Component {
   @computed get visible_order() {
     return (
       this.services.filter(s =>
-        s.service === this.right_half.split("/")[2] &&
-        s.position === parseInt(this.right_half.split("/")[3], 10)
+        s.service === this.visible_service &&
+        s.position === this.visible_position
       )[0] || {current_order: null}
     ).current_order
   }
@@ -138,33 +131,30 @@ class Assembly extends React.Component {
   // takes a `state` object, with:
   // `start_time`: `null` | `DateTime` object
   // `end_time`: `null` | `DateTime` object
-  persistOrder = (state, params) => {
+  persistVisibleOrder = (state) => {
     if(state.start_time) state.start_time = state.start_time.toISO()
     if(state.end_time) state.end_time = state.end_time.toISO()
 
     return this.network.run`
       service = Service.find_by(
-        service_type: ${JSON.stringify(params.service)},
-        position: ${JSON.stringify(params.number)},
+        service_type: ${JSON.stringify(this.visible_service)},
+        position: ${JSON.stringify(this.visible_position)},
       )
 
       order = service.current_order || Order.create!(service: service)
       result = order.update!(JSON.parse('${JSON.stringify(state)}'))
 
       { persisted: result, closed: !order.open? }
-    `
+    `.then((result) => {
+      if(result.closed) this.props.assembly.set_visible_order(null, null)
+    })
   }
 
   persistExtra(state, extra_name) {
-    let params = {
-      service: this.right_half.split("/")[2],
-      number: this.right_half.split("/")[3],
-    }
-
     this.network.run`
       service = Service.find_by(
-        service_type: ${JSON.stringify(params.service)},
-        position: ${JSON.stringify(params.number)},
+        service_type: ${JSON.stringify(this.visible_service)},
+        position: ${JSON.stringify(this.visible_position)},
       )
 
       order = service.current_order || Order.create!(service: service)
@@ -185,7 +175,10 @@ class Assembly extends React.Component {
   }
 
   ensureCurrentOrder(service, position) {
-    return this.network.run`
+    this.visible_service = service
+    this.visible_position = position
+
+    this.network.run`
       service = Service.find_by(
         service_type: ${JSON.stringify(service)},
         position: ${JSON.stringify(position)},
@@ -208,13 +201,20 @@ class Assembly extends React.Component {
     `.then(() => this.new_reservation = {})
   }
 
-  cancelOrder = (service) => {
+  set_visible_order(service, position) {
+    this.visible_service = service
+    this.visible_position = position
+  }
+
+  cancelVisibleOrder = () => {
     this.network.run`
       Service.find_by(
-        service_type: ${JSON.stringify(service.service)},
-        position: ${JSON.stringify(service.position)}
+        service_type: ${JSON.stringify(this.visible_service)},
+        position: ${JSON.stringify(this.visible_position)}
       ).current_order.destroy!
-    `.then(() => this.right_half = null)
+    `
+
+    this.set_visible_order(null, null)
   }
 }
 

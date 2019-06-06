@@ -11,14 +11,18 @@ const blue = "#4a90e2"
 class Checkout extends React.Component {
   @observable num_people = 1
 
+  get order() {
+    return this.props.assembly.visible_order
+  }
+
   render() {
     const hours_spent = (
-      DateTime.fromISO(this.props.order.end_time)
-        .diff(this.props.order.start_time, "minutes").minutes + 1
+      DateTime.fromISO(this.order.end_time)
+        .diff(this.order.start_time, "minutes").minutes + 1
     ) / 60.0
 
-    let total_price = this.props.order.bill_amount(
-      this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor,
+    let total_price = this.order.bill_amount(
+      this.order.service.hourly_rate * this.props.assembly.room_pricing_factor,
       DateTime.local()
     )
 
@@ -26,14 +30,14 @@ class Checkout extends React.Component {
       <Layout>
         <Bill>
           <LineItem
-            key={this.props.order.service.name}
-            name={this.props.order.service.name}
-            rate={`${this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor} / hr`}
+            key={this.order.service.name}
+            name={this.order.service.name}
+            rate={`${this.order.service.hourly_rate * this.props.assembly.room_pricing_factor} / hr`}
             quantity={`${hours_spent.toFixed(1)} hr`}
-            amount={(this.props.order.service.hourly_rate * this.props.assembly.room_pricing_factor * hours_spent).toFixed(2)}
+            amount={(this.order.service.hourly_rate * this.props.assembly.room_pricing_factor * hours_spent).toFixed(2)}
           />
 
-          {this.props.extras.map((extra) => (
+          {this.order.extras.map((extra) => (
             <LineItem
               key={extra.extra.name}
               name={extra.extra.name}
@@ -73,8 +77,8 @@ class Checkout extends React.Component {
         </Bill>
 
         <Confirm
-          disabled={this.props.order.end_time < this.props.order.start_time}
-          onClick={() => this.props.persist({ closed_at: DateTime.local().toISO() })}
+          disabled={this.order.end_time < this.order.start_time}
+          onClick={() => this.props.assembly.persistVisibleOrder({ closed_at: DateTime.local().toISO() })}
         >Confirm</Confirm>
       </Layout>
     )

@@ -9,7 +9,6 @@ const Extras = observer((props) => (
   <Layout>
     {props.items.map((item) => (
       <Extra
-        onPersist={props.onPersist}
         key={item.name}
         {...item}
         assembly={props.assembly}

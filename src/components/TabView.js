@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { primary as blue } from "colors"
 import { observer, Observer } from "mobx-react"
+import { computed } from "mobx"
 
 @observer
 class TabView extends React.Component {
@@ -12,8 +13,8 @@ class TabView extends React.Component {
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
               key={tab}
-              onClick={() => this.props.assembly.right_half = this.props.assembly.right_half.split("/").splice(0, 4).concat(tab).join("/")}
-              selected={window.location.pathname === this.props.assembly.right_half + "/" + tab}
+              onClick={() => this.props.assembly.visible_tab = tab}
+              selected={this.props.assembly.visible_tab === tab}
             >
               {tab}
             </Tab>
@@ -21,10 +22,19 @@ class TabView extends React.Component {
         </TabSelector>
 
         <Observer>
-          {this.props.tabs[this.props.assembly.right_half.split("/")[4]]}
+          {this.visible_tab}
         </Observer>
       </div>
     )
+  }
+
+  @computed
+  get visible_tab() {
+    let tab_name =
+      this.props.assembly.visible_tab ||
+      Object.keys(this.props.tabs)[0]
+
+    return this.props.tabs[tab_name]
   }
 }
 

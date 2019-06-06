@@ -18,30 +18,37 @@ class Order extends React.Component {
   constructor(props) {
     super(props)
 
-    if(this.props.order) {
-      this.start_time = this.props.order.start_time && DateTime.fromISO(this.props.order.start_time)
-      this.end_time = this.props.order.end_time && DateTime.fromISO(this.props.order.end_time)
-    }
+    let start_time = this.order.start_time
+    let end_time = this.order.end_time
+
+    this.start_time = start_time && DateTime.fromISO(start_time)
+    this.end_time = end_time && DateTime.fromISO(end_time)
+  }
+
+  get order() {
+    return this.props.assembly.visible_order
   }
 
   render() {
     return (
-      this.props.order == null
-      ? <Loading />
-      : <Layout className="orderLayout">
+      this.order
+      ? <Layout className="orderLayout">
           <Links>
             <StyledLink
-              onClick={() => this.props.onCancel(this.props.order.service)}
+              onClick={() => this.props.assembly.cancelVisibleOrder()}
             >
               Cancel Order
             </StyledLink>
 
-            <StyledLink onClick={() => this.props.assembly.right_half = null} >
+            <StyledLink onClick={() => this.props.assembly.set_visible_order(null, null)} >
               Close
             </StyledLink>
           </Links>
 
-          <h2>{this.props.order.service.name} #{this.props.order.service.position}</h2>
+          <h2>
+            {this.order.service.name}
+            #{this.order.service.position}
+          </h2>
 
           <TimeSpanInput
             startTime={this.start_time}
@@ -53,43 +60,33 @@ class Order extends React.Component {
 
           <TabView
             assembly={this.props.assembly}
-            url={this.props.url}
             tabs={{
               snacks: () => <Extras
-                              items={this.props.assembly.snacks}
-                              onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
+                              items={this.props.assembly.snacks}
                             />,
               drinks: () => <Extras
-                              items={this.props.assembly.drinks}
-                              onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
+                              items={this.props.assembly.drinks}
                             />,
               other: () => <Extras
-                              items={this.props.assembly.others}
-                              onPersist={this.props.onPersistExtra}
                               assembly={this.props.assembly}
+                              items={this.props.assembly.others}
                             />,
               checkout: () => <Checkout
-                              extras={this.props.order.extras}
-                              order={this.props.order}
-                              onMount={() => this.ensureEndTime()}
-                              persist={(state) => this.props.onPersist(state).then((result) => {
-                                if(result.closed) this.props.assembly.right_half = "/"
-                              })}
                               assembly={this.props.assembly}
+                              onMount={() => this.ensureEndTime()}
                             />
             }}
           />
         </Layout>
+      : <Loading />
     )
   }
 
   ensureEndTime() {
     if(this.end_time == null) {
-      this.props.onPersist({end_time: DateTime.local()}).then((result) => {
-        if(result.closed) this.props.assembly.right_half = "/"
-      })
+      this.props.assembly.persistVisibleOrder({end_time: DateTime.local()})
     }
   }
 
@@ -113,7 +110,7 @@ class Order extends React.Component {
       new_time = new_time.plus({ days: 1 })
 
     new_timestamps[field] = new_time
-    this.props.onPersist(new_timestamps)
+    this.props.assembly.persistVisibleOrder(new_timestamps)
   }
 }
 

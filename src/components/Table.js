@@ -20,9 +20,7 @@ class Table extends React.Component {
         </Time>
 
         <Number
-          onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position)
-            .then(() => this.props.assembly.right_half = this.orderUrl())
-          }
+          onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position) }
           active={Boolean(this.props.service.current_order)}
         >
           {this.props.service.position}
@@ -38,10 +36,6 @@ class Table extends React.Component {
         </Price>
       </Layout>
     )
-  }
-
-  orderUrl() {
-    return `/table/${this.props.service.service}/${this.props.service.position}/snacks`
   }
 }
 
