@@ -20,7 +20,7 @@ class Table extends React.Component {
         </Time>
 
         <Number
-          onClick={() => this.props.onEnsureCurrentOrder(this.props.service.service, this.props.service.position) }
+          onClick={() => this.props.assembly.ensureCurrentOrder(this.props.service.service, this.props.service.position) }
           active={Boolean(this.props.service.current_order)}
         >
           {this.props.service.position}

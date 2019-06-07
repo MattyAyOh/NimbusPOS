@@ -84,10 +84,7 @@ class Assembly extends React.Component {
 
         <Layout.Left>
           { this.loaded
-          ?  <Lobby
-                assembly={this}
-                onEnsureCurrentOrder={(service, number) => this.ensureCurrentOrder(service, number)}
-              />
+          ? <Lobby assembly={this} />
           : <Loading/>
           }
         </Layout.Left>

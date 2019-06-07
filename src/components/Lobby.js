@@ -38,7 +38,6 @@ class Lobby extends React.Component {
                 .filter(s => s.service === service_name)
                 .map((table) => (
                   <Table
-                    onEnsureCurrentOrder={this.props.onEnsureCurrentOrder}
                     current_time={this.current_time}
                     key={table.position}
                     service={table}
