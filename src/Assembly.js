@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { observer, Observer } from "mobx-react"
+import { DateTime } from "luxon"
 import { observable, reaction, computed } from "mobx"
 import Aviator from "aviator"
 
@@ -59,7 +60,7 @@ class Assembly extends React.Component {
       response
       .json()
       .then((result) => {
-        this.loaded = true
+        this.loaded = DateTime.local().toISO()
         this.services = result.services.map(json => new Service(json))
         this.reservations = result.reservations
         this.extras = result.extras
@@ -97,7 +98,7 @@ class Assembly extends React.Component {
               this.visible_order
                 ? <Order
                     assembly={this}
-                    key={this.visible_service + this.visible_position}
+                    key={this.visible_service + this.visible_position + this.loaded}
                   />
               : <Reservations assembly={this} />
             }</Observer>
@@ -177,6 +178,7 @@ class Assembly extends React.Component {
   ensureCurrentOrder(service, position) {
     this.visible_service = service
     this.visible_position = position
+    this.visible_tab = "snacks"
 
     this.network.run`
       service = Service.find_by(

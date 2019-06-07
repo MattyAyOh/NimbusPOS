@@ -85,7 +85,7 @@ class Order extends React.Component {
   }
 
   ensureEndTime() {
-    if(this.end_time == null) {
+    if(this.end_time === null) {
       this.props.assembly.persistVisibleOrder({end_time: DateTime.local()})
     }
   }
