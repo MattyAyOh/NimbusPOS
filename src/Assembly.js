@@ -19,14 +19,10 @@ import Service from "./data/Service"
 class Assembly extends React.Component {
   constructor(props) {
     super(props)
-
     this.network = new Network(process.env.REACT_APP_URL_API)
 
     Aviator.setRoutes({ "/bigscreen": () => this.current_page = BigScreen })
     Aviator.dispatch()
-
-    if(props.afterCreation)
-      props.afterCreation(this)
   }
 
   @observable current_page = Lobby
@@ -93,10 +89,10 @@ class Assembly extends React.Component {
           { this.loaded &&
             <Observer>{() =>
               this.visible_order
-                ? <Order
-                    assembly={this}
-                    key={this.visible_service + this.visible_position + this.loaded}
-                  />
+              ? <Order
+                  assembly={this}
+                  key={this.visible_service + this.visible_position + this.loaded}
+                />
               : <Reservations assembly={this} />
             }</Observer>
           }
