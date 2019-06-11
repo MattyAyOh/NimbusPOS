@@ -27,7 +27,7 @@ const BigScreen = observer(({ assembly }) => (
       <Wifi>
         <Info>Nimbus</Info>
         <Icon size="2rem" color="white" path={mdiWifi} />
-        <Info>01234567890</Info>
+        <Info>1234567890</Info>
       </Wifi>
 
       <Embed
@@ -92,7 +92,7 @@ const BigScreen = observer(({ assembly }) => (
       <Banner>
         Discount!
         Rooms are 20% off,
-        Mon - Thurs
+        Sun - Wed
       </Banner>
     </Layout.Section>
 
@@ -220,7 +220,7 @@ const Service = styled.div`
 const NoSmoking = styled.div`
   display: flex;
   justify-content: space-around;
-  height: 3rem;
+  height: 2rem;
 `
 
 const Wifi = styled.div`
