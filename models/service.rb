@@ -3,13 +3,9 @@ class Service < ApplicationRecord
 
   has_many :orders
 
-  def current_order
-    orders.open.first
-  end
-
   def as_json(*args)
     {
-      current_order: current_order.as_json,
+      id: id,
       hourly_rate: hourly_rate,
       name: name,
       position: position,

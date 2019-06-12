@@ -16,6 +16,8 @@ class Order < ApplicationRecord
 
   def as_json(*args)
     {
+      id: id,
+      service_id: service_id,
       closed_at: closed_at,
       end_time: end_time,
       extras: order_extras.map(&:as_json),

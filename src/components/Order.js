@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
-import { observable } from "mobx"
+import { observable, computed } from "mobx"
 import { observer } from "mobx-react"
 
 import TimeSpanInput from "./TimeSpanInput"
@@ -25,7 +25,7 @@ class Order extends React.Component {
     this.end_time = end_time && DateTime.fromISO(end_time)
   }
 
-  get order() {
+  @computed get order() {
     return this.props.assembly.visible_order
   }
 
@@ -46,8 +46,8 @@ class Order extends React.Component {
           </Links>
 
           <h2>
-            {this.order.service.name}
-            #{this.order.service.position}
+            {this.props.assembly.visible_service.name}
+            #{this.props.assembly.visible_service.position}
           </h2>
 
           <TimeSpanInput

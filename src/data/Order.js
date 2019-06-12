@@ -14,8 +14,12 @@ class Order {
   @observable end_time = null
   @observable extras = null
   @observable start_time = null
+  @observable id = null
+  @observable service_id = null
 
   constructor(values) {
+    this.id = values.id
+    this.service_id = values.service_id
     this.closed_at = values.closed_at
     this.extras = values.extras
 

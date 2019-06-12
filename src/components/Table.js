@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
+import { computed } from "mobx"
 
 const blue = "#4a90e2"
 const grey = "#afb5bd"
@@ -12,29 +13,36 @@ class Table extends React.Component {
     return (
       <Layout>
         <Time>
-          { this.props.service.current_order &&
+          { this.current_order &&
             DateTime
-            .fromISO(this.props.service.current_order.start_time)
+            .fromISO(this.current_order.start_time)
             .toLocaleString(DateTime.TIME_24_SIMPLE)
           }
         </Time>
 
         <Number
           onClick={() => this.props.assembly.ensureCurrentOrder(this.props.service.service, this.props.service.position) }
-          active={Boolean(this.props.service.current_order)}
+          active={Boolean(this.current_order)}
         >
           {this.props.service.position}
         </Number>
 
         <Price>
-          {this.props.service.current_order &&
-            "$" + this.props.service.current_order.bill_amount(
+          {this.current_order &&
+            "$" + this.current_order.bill_amount(
               this.props.service.hourly_rate * this.props.assembly.room_pricing_factor,
               this.props.current_time,
             )
           }
         </Price>
       </Layout>
+    )
+  }
+
+  @computed get current_order() {
+    return (
+      this.props.assembly.active_orders
+      .filter(o => o.service_id === this.props.service.id)[0]
     )
   }
 }

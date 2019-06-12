@@ -11,9 +11,9 @@ import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import Reservations from "./components/Reservations"
 import BigScreen from "./components/BigScreen"
+import OrderData from "./data/Order"
 
 import Network from "./Network"
-import Service from "./data/Service"
 
 @observer
 class Assembly extends React.Component {
@@ -28,7 +28,7 @@ class Assembly extends React.Component {
   @observable current_page = Lobby
 
   @observable visible_tab = null
-  @observable visible_service = null
+  @observable visible_service_type = null
   @observable visible_position = null
 
   @observable scroll = 0
@@ -37,6 +37,8 @@ class Assembly extends React.Component {
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
+  @observable active_orders = []
+  @observable order_archive = []
   @observable new_reservation = {}
 
   componentDidMount() {
@@ -51,16 +53,20 @@ class Assembly extends React.Component {
       extras: Extra.where(active: true),
       reservations: Reservation.all.order(:start_time),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
+      active_orders: Order.open,
+      order_archive: Order.all,
     }
     `((response) =>
       response
       .json()
       .then((result) => {
         this.loaded = DateTime.local().toISO()
-        this.services = result.services.map(json => new Service(json))
+        this.services = result.services
         this.reservations = result.reservations
         this.extras = result.extras
         this.room_pricing_factor = result.room_pricing_factor
+        this.active_orders = result.active_orders.map(o => new OrderData(o))
+        this.order_archive = result.order_archive.map(o => new OrderData(o))
       })
       .then(() => {
         if(this.scroll !== 0)
@@ -103,11 +109,17 @@ class Assembly extends React.Component {
 
   @computed get visible_order() {
     return (
-      this.services.filter(s =>
-        s.service === this.visible_service &&
-        s.position === this.visible_position
-      )[0] || {current_order: null}
-    ).current_order
+      this.visible_service
+      ? this.active_orders.filter(o => o.service_id === this.visible_service.id)[0]
+      : null
+    )
+  }
+
+  @computed get visible_service() {
+    return this.services.filter(s =>
+      s.service === this.visible_service_type &&
+      s.position === this.visible_position
+    )[0]
   }
 
   @computed get snacks() {
@@ -130,12 +142,7 @@ class Assembly extends React.Component {
     if(state.end_time) state.end_time = state.end_time.toISO()
 
     return this.network.run`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(this.visible_service)},
-        position: ${JSON.stringify(this.visible_position)},
-      )
-
-      order = service.current_order || Order.create!(service: service)
+      order = Order.find(${this.visible_order.id})
       result = order.update!(JSON.parse('${JSON.stringify(state)}'))
 
       { persisted: result, closed: !order.open? }
@@ -146,12 +153,7 @@ class Assembly extends React.Component {
 
   persistExtra(state, extra_name) {
     this.network.run`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(this.visible_service)},
-        position: ${JSON.stringify(this.visible_position)},
-      )
-
-      order = service.current_order || Order.create!(service: service)
+      order = Order.find(${this.visible_order.id})
       extra = Extra.find_by(name: ${JSON.stringify(extra_name)})
 
       order_extra =
@@ -169,7 +171,7 @@ class Assembly extends React.Component {
   }
 
   ensureCurrentOrder(service, position) {
-    this.visible_service = service
+    this.visible_service_type = service
     this.visible_position = position
     this.visible_tab = "snacks"
 
@@ -179,7 +181,7 @@ class Assembly extends React.Component {
         position: ${JSON.stringify(position)},
       )
 
-      service.current_order || service.orders.create!(start_time: Time.current)
+      service.orders.open.first || service.orders.create!(start_time: Time.current)
     `
   }
 
@@ -197,16 +199,13 @@ class Assembly extends React.Component {
   }
 
   set_visible_order(service, position) {
-    this.visible_service = service
+    this.visible_service_type = service
     this.visible_position = position
   }
 
   cancelVisibleOrder = () => {
     this.network.run`
-      Service.find_by(
-        service_type: ${JSON.stringify(this.visible_service)},
-        position: ${JSON.stringify(this.visible_position)}
-      ).current_order.destroy!
+      Order.find(${this.visible_order.id}).destroy!
     `
 
     this.set_visible_order(null, null)

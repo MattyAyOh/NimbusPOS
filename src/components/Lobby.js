@@ -36,11 +36,11 @@ class Lobby extends React.Component {
             <Tables>
               { this.props.assembly.services
                 .filter(s => s.service === service_name)
-                .map((table) => (
+                .map((service) => (
                   <Table
                     current_time={this.current_time}
-                    key={table.position}
-                    service={table}
+                    key={service.id}
+                    service={service}
                     assembly={this.props.assembly}
                   />
               ))}
