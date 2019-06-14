@@ -10,6 +10,8 @@ import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
 import BigScreen from "./components/BigScreen"
+import Admin from "./components/Admin"
+
 import OrderData from "./data/Order"
 
 import Network from "./Network"
@@ -21,6 +23,7 @@ class Assembly extends React.Component {
     this.network = new Network(process.env.REACT_APP_URL_API)
 
     Aviator.setRoutes({ "/bigscreen": () => this.current_page = BigScreen })
+    Aviator.setRoutes({ "/admin": () => this.current_page = Admin })
     Aviator.dispatch()
   }
 
@@ -75,6 +78,9 @@ class Assembly extends React.Component {
   render () {
     if(this.current_page === BigScreen)
       return <BigScreen assembly={this} />
+
+    if(this.current_page === Admin)
+      return <Admin assembly={this} />
 
     return (
       <Layout>
