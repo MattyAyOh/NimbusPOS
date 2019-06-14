@@ -9,7 +9,6 @@ import Header from "./components/Header"
 import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
-import Reservations from "./components/Reservations"
 import BigScreen from "./components/BigScreen"
 import OrderData from "./data/Order"
 
@@ -33,7 +32,6 @@ class Assembly extends React.Component {
 
   @observable scroll = 0
   @observable loaded = false
-  @observable reservations = []
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
@@ -51,7 +49,6 @@ class Assembly extends React.Component {
     {
       services: Service.order(:service_type, :position),
       extras: Extra.where(active: true),
-      reservations: Reservation.all.order(:start_time),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
       active_orders: Order.open,
       order_archive: Order.all,
@@ -62,7 +59,6 @@ class Assembly extends React.Component {
       .then((result) => {
         this.loaded = DateTime.local().toISO()
         this.services = result.services
-        this.reservations = result.reservations
         this.extras = result.extras
         this.room_pricing_factor = result.room_pricing_factor
         this.active_orders = result.active_orders.map(o => new OrderData(o))
@@ -92,16 +88,14 @@ class Assembly extends React.Component {
         </Layout.Left>
 
         <Layout.Right>
-          { this.loaded &&
-            <Observer>{() =>
-              this.visible_order
-              ? <Order
-                  assembly={this}
-                  key={this.visible_service + this.visible_position + this.loaded}
-                />
-              : <Reservations assembly={this} />
-            }</Observer>
-          }
+          <Observer>{() =>
+            this.loaded && this.visible_order
+            ? <Order
+                assembly={this}
+                key={this.visible_service_type + this.visible_position + this.loaded}
+              />
+            : null
+          }</Observer>
         </Layout.Right>
       </Layout>
     );
