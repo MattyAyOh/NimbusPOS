@@ -15,6 +15,11 @@ import Admin from "./components/Admin"
 import OrderData from "./data/Order"
 
 import Network from "./Network"
+import ApolloClient from "apollo-client";
+import { createHttpLink } from "apollo-link-http"
+import { setContext } from "apollo-link-context"
+import { InMemoryCache } from "apollo-cache-inmemory"
+import gql from "graphql-tag"
 
 @observer
 class Assembly extends React.Component {
@@ -22,10 +27,23 @@ class Assembly extends React.Component {
     super(props)
     this.network = new Network(process.env.REACT_APP_URL_API)
 
+    const httpLink = createHttpLink({ uri: process.env.REACT_APP_URL_HASURA })
+    const authLink = setContext((_, { headers }) => (
+      { headers: {
+        ...headers,
+          "x-hasura-access-key": process.env.REACT_APP_HASURA_SECRET,
+      } }
+    ))
+    this.client = new ApolloClient({
+      link: authLink.concat(httpLink),
+      cache: new InMemoryCache(),
+    })
+
     Aviator.setRoutes({
       // "/admin": () => this.current_page = Admin,
       "/bigscreen": () => this.current_page = BigScreen,
     })
+
     Aviator.dispatch()
   }
 
@@ -49,6 +67,18 @@ class Assembly extends React.Component {
       () => this.room_pricing_factor,
       value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
     )
+
+    this.client.query({
+      query: gql`
+      {
+        orders {
+          id
+        }
+      }
+`
+    }).then(result => {
+      debugger
+    })
 
     this.network.watch`
     {
