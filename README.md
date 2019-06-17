@@ -76,7 +76,7 @@ with the industry-standard Graph Query Language.
 
 This migration will be carried out in a few steps:
 
-* [ ] Add Hasura to the project as a container in `docker-compose.yml`.
+* [x] Add Hasura to the project as a container in `docker-compose.yml`.
       Hasura will run in parallel with the existing Assemble Foundation,
       giving us two APIs to program against.
 * [ ] [0/1] Replace each `network.watch` API call with a GraphQL `subscription`.
