@@ -132,6 +132,17 @@ yarn start
 ### Stop the app:
 ### Back up the database:
 ### Restore a backed-up database:
+
 ### Wipe the application database:
-### Deploy the application to DigitalOcean (staging):
-### Deploy the application to DigitalOcean (production):
+
+docker-compose exec web bundle exec rake db:drop db:create db:migrate
+
+### Update the app in production
+
+git pull
+docker-compose exec client yarn
+docker-compose stop
+docker-compose rm -f web client hasura
+docker-compose pull
+docker-compose up -d
+docker-compose exec web bundle exec rake db:migrate
