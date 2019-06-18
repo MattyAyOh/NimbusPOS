@@ -23,7 +23,7 @@ class Assembly extends React.Component {
     this.network = new Network(process.env.REACT_APP_URL_API)
 
     Aviator.setRoutes({
-      "/admin": () => this.current_page = Admin,
+      // "/admin": () => this.current_page = Admin,
       "/bigscreen": () => this.current_page = BigScreen,
     })
     Aviator.dispatch()
@@ -67,7 +67,7 @@ class Assembly extends React.Component {
         this.extras = result.extras
         this.room_pricing_factor = result.room_pricing_factor
         this.active_orders = result.active_orders.map(o => new OrderData(o))
-        this.order_archive = result.order_archive.map(o => new OrderData(o))
+        // this.order_archive = result.order_archive.map(o => new OrderData(o))
       })
       .then(() => {
         if(this.scroll !== 0)

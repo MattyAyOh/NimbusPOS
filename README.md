@@ -142,7 +142,7 @@ docker-compose exec web bundle exec rake db:drop db:create db:migrate
 git pull
 docker-compose exec client yarn
 docker-compose stop
-docker-compose rm -f web client hasura
+docker-compose rm -f web client
 docker-compose pull
 docker-compose up -d
 docker-compose exec web bundle exec rake db:migrate
