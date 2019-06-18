@@ -22,8 +22,10 @@ class Assembly extends React.Component {
     super(props)
     this.network = new Network(process.env.REACT_APP_URL_API)
 
-    Aviator.setRoutes({ "/bigscreen": () => this.current_page = BigScreen })
-    Aviator.setRoutes({ "/admin": () => this.current_page = Admin })
+    Aviator.setRoutes({
+      "/admin": () => this.current_page = Admin,
+      "/bigscreen": () => this.current_page = BigScreen,
+    })
     Aviator.dispatch()
   }
 
