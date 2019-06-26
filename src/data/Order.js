@@ -21,10 +21,11 @@ class Order {
     this.id = values.id
     this.service_id = values.service_id
     this.closed_at = values.closed_at
-    this.extras = values.extras
+    this.extras = values.order_extras
 
-    this.start_time = values.start_time && DateTime.fromISO(values.start_time)
-    this.end_time = values.end_time && DateTime.fromISO(values.end_time)
+    // TODO raise an issue on Hasura; the 'Z' would be really helpful to include automatically.
+    this.start_time = values.start_time && DateTime.fromISO(values.start_time + "Z")
+    this.end_time = values.end_time && DateTime.fromISO(values.end_time + "Z")
   }
 
   bill_amount(rate, current_time) {

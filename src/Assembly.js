@@ -14,12 +14,16 @@ import Admin from "./components/Admin"
 
 import OrderData from "./data/Order"
 
-import Network from "./Network"
+// Queries
 import ApolloClient from "apollo-client";
-import { createHttpLink } from "apollo-link-http"
-import { setContext } from "apollo-link-context"
-import { InMemoryCache } from "apollo-cache-inmemory"
+import Network from "./Network"
 import gql from "graphql-tag"
+import { InMemoryCache } from "apollo-cache-inmemory"
+import { WebSocketLink } from "apollo-link-ws"
+import { createHttpLink } from "apollo-link-http"
+import { getMainDefinition } from "apollo-utilities"
+import { setContext } from "apollo-link-context"
+import { split } from "apollo-link"
 
 @observer
 class Assembly extends React.Component {
@@ -27,15 +31,37 @@ class Assembly extends React.Component {
     super(props)
     this.network = new Network(process.env.REACT_APP_URL_API)
 
-    const httpLink = createHttpLink({ uri: process.env.REACT_APP_URL_HASURA })
+    const wsLink = new WebSocketLink({
+      uri: `ws://${process.env.REACT_APP_URL_HASURA}`,
+      options: {
+        reconnect: true,
+        connectionParams: {
+          headers: {
+            "x-hasura-access-key": process.env.REACT_APP_HASURA_SECRET,
+          }
+        }
+      },
+
+    })
+    const httpLink = createHttpLink({ uri: `http://${process.env.REACT_APP_URL_HASURA}` })
     const authLink = setContext((_, { headers }) => (
       { headers: {
         ...headers,
           "x-hasura-access-key": process.env.REACT_APP_HASURA_SECRET,
       } }
     ))
+    const link = split(({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink,
+      httpLink,
+    )
     this.client = new ApolloClient({
-      link: authLink.concat(httpLink),
+      link: authLink.concat(link),
       cache: new InMemoryCache(),
     })
 
@@ -78,11 +104,31 @@ class Assembly extends React.Component {
       } }
     ` }).then(result => runInAction(() => this.extras = result.data.extras))
 
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription { orders(where: {closed_at: {_is_null: true}}) {
+          id
+          service_id
+          closed_at
+          start_time
+          end_time
+          order_extras {
+            id
+            extra_id
+            quantity
+            extra {
+              name
+              price
+      } } } }
+    ` }).subscribe({
+      next: result => this.active_orders = result.data.orders.map(o => new OrderData(o)),
+      error: (err) => console.error('err', err),
+    });
+
     this.network.watch`
     {
       services: Service.order(:service_type, :position),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
-      active_orders: Order.open,
       order_archive: Order.all,
     }
     `((response) =>
@@ -92,7 +138,6 @@ class Assembly extends React.Component {
         this.loaded = DateTime.local().toISO()
         this.services = result.services
         this.room_pricing_factor = result.room_pricing_factor
-        this.active_orders = result.active_orders.map(o => new OrderData(o))
         // this.order_archive = result.order_archive.map(o => new OrderData(o))
       })
       .then(() => {
