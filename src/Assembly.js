@@ -103,7 +103,7 @@ class Assembly extends React.Component {
 
     // TODO clean up the subscription when we're done with it.
     this.client.subscribe({ query: gql`
-      subscription { extras(where: {active: {_eq: true}}) {
+      subscription { extras(order_by: {id: asc}, where: {active: {_eq: true}}) {
         id
         name
         image_url
