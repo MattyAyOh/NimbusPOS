@@ -102,15 +102,19 @@ class Assembly extends React.Component {
       value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
     )
 
-    this.client.query({ query: gql`
-      { extras(where: {active: {_eq: true}}) {
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription { extras(where: {active: {_eq: true}}) {
         id
         name
         image_url
         extra_type
         price
       } }
-    ` }).then(result => runInAction(() => this.extras = result.data.extras))
+    ` }).subscribe({
+      next: result => this.extras = result.data.extras,
+      error: (err) => console.error('err', err),
+    })
 
     // TODO clean up the subscription when we're done with it.
     this.client.subscribe({ query: gql`
