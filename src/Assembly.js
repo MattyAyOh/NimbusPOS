@@ -88,7 +88,6 @@ class Assembly extends React.Component {
   @observable visible_position = null
 
   @observable scroll = 0
-  @observable loaded = false
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
@@ -162,19 +161,22 @@ class Assembly extends React.Component {
       error: (err) => console.error('err', err),
     });
 
-    this.network.watch`{}`((response) =>
-      response
-      .json()
-      .then((result) => {
-        this.loaded = DateTime.local().toISO()
-        // this.order_archive = result.order_archive.map(o => new OrderData(o))
-      })
-      .then(() => {
-        if(this.scroll !== 0)
-          document.querySelector(".orderLayout").scroll(0, this.scroll)
-        this.scroll = 0;
-      })
-    )
+    // TODO find a new hook for this. Maybe a reaction to `loaded`?
+    // .then(() => {
+    //   if(this.scroll !== 0)
+    //     document.querySelector(".orderLayout").scroll(0, this.scroll)
+    //   this.scroll = 0;
+    // })
+  }
+
+  @computed get loaded() {
+    return (
+      this.services &&
+      this.extras &&
+      this.active_orders &&
+      this.room_pricing_factor
+    ) ? DateTime.local().toISO()
+      : false
   }
 
   render () {
