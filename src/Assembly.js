@@ -68,21 +68,15 @@ class Assembly extends React.Component {
       value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
     )
 
-    this.client.query({
-      query: gql`
-      {
-        extras(where: {active: {_eq: true}}) {
-          id
-          name
-          image_url
-          extra_type
-          price
-        }
-      }
-`
-    }).then(result => {
-      runInAction(() => this.extras = result.data.extras)
-    })
+    this.client.query({ query: gql`
+      { extras(where: {active: {_eq: true}}) {
+        id
+        name
+        image_url
+        extra_type
+        price
+      } }
+    ` }).then(result => runInAction(() => this.extras = result.data.extras))
 
     this.network.watch`
     {
