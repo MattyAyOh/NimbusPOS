@@ -25,6 +25,14 @@ import { getMainDefinition } from "apollo-utilities"
 import { setContext } from "apollo-link-context"
 import { split } from "apollo-link"
 
+// Direction:
+//
+// The "Assembly" is a collection of all of the software pieces
+// that work together to operate on a single data set.
+// In this case, the "Assembly" contains routing logic,
+// while details of each page are broken out into other components.
+// As a result, we should strive to remove all code from this `render` function.
+
 @observer
 class Assembly extends React.Component {
   constructor(props) {

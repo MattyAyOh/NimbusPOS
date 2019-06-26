@@ -1,4 +1,6 @@
 class Service < ApplicationRecord
+  # TODO change the database field to use strings,
+  # to conserve the database seeds.
   enum service_type: ["mahjong", "pool", "ktv"]
 
   has_many :orders
