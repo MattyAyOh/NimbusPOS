@@ -35,7 +35,7 @@ class Lobby extends React.Component {
 
             <Tables>
               { this.props.assembly.services
-                .filter(s => s.service === service_name)
+                .filter(s => s.name.toLowerCase() === service_name)
                 .map((service) => (
                   <Table
                     current_time={this.current_time}
