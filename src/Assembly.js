@@ -125,9 +125,22 @@ class Assembly extends React.Component {
       error: (err) => console.error('err', err),
     });
 
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription { services(order_by: {service_type: asc, position: asc}) {
+        id
+        hourly_rate
+        name
+        position
+        service_type
+      } }
+    ` }).subscribe({
+      next: result => this.services = result.data.services,
+      error: (err) => console.error('err', err),
+    });
+
     this.network.watch`
     {
-      services: Service.order(:service_type, :position),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
       order_archive: Order.all,
     }
@@ -136,7 +149,6 @@ class Assembly extends React.Component {
       .json()
       .then((result) => {
         this.loaded = DateTime.local().toISO()
-        this.services = result.services
         this.room_pricing_factor = result.room_pricing_factor
         // this.order_archive = result.order_archive.map(o => new OrderData(o))
       })
@@ -190,7 +202,7 @@ class Assembly extends React.Component {
 
   @computed get visible_service() {
     return this.services.filter(s =>
-      s.service === this.visible_service_type &&
+      s.name.toLowerCase() === this.visible_service_type &&
       s.position === this.visible_position
     )[0]
   }
@@ -243,14 +255,14 @@ class Assembly extends React.Component {
     `
   }
 
-  ensureCurrentOrder(service, position) {
-    this.visible_service_type = service
+  ensureCurrentOrder(service_name, position) {
+    this.visible_service_type = service_name.toLowerCase()
     this.visible_position = position
     this.visible_tab = "snacks"
 
     this.network.run`
       service = Service.find_by(
-        service_type: ${JSON.stringify(service)},
+        service_type: ${JSON.stringify(service_name.toLowerCase())},
         position: ${JSON.stringify(position)},
       )
 
