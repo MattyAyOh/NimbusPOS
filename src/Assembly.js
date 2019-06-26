@@ -139,17 +139,22 @@ class Assembly extends React.Component {
       error: (err) => console.error('err', err),
     });
 
-    this.network.watch`
-    {
-      room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
-      order_archive: Order.all,
-    }
-    `((response) =>
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription {
+        room_pricing_events(order_by: {created_at: desc}, limit: 1) {
+          pricing_factor
+      } }
+    ` }).subscribe({
+      next: result => this.room_pricing_factor = result.data.room_pricing_events[0].pricing_factor || 1,
+      error: (err) => console.error('err', err),
+    });
+
+    this.network.watch`{}`((response) =>
       response
       .json()
       .then((result) => {
         this.loaded = DateTime.local().toISO()
-        this.room_pricing_factor = result.room_pricing_factor
         // this.order_archive = result.order_archive.map(o => new OrderData(o))
       })
       .then(() => {
