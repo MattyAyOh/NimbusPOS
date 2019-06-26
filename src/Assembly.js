@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { observer, Observer } from "mobx-react"
 import { DateTime } from "luxon"
-import { observable, reaction, computed } from "mobx"
+import { computed, observable, reaction, runInAction } from "mobx"
 import Aviator from "aviator"
 
 import Header from "./components/Header"
@@ -71,19 +71,22 @@ class Assembly extends React.Component {
     this.client.query({
       query: gql`
       {
-        orders {
+        extras(where: {active: {_eq: true}}) {
           id
+          name
+          image_url
+          extra_type
+          price
         }
       }
 `
     }).then(result => {
-      debugger
+      runInAction(() => this.extras = result.data.extras)
     })
 
     this.network.watch`
     {
       services: Service.order(:service_type, :position),
-      extras: Extra.where(active: true),
       room_pricing_factor: RoomPricingEvent.order(:created_at).last.try(:pricing_factor) || 100,
       active_orders: Order.open,
       order_archive: Order.all,
@@ -94,7 +97,6 @@ class Assembly extends React.Component {
       .then((result) => {
         this.loaded = DateTime.local().toISO()
         this.services = result.services
-        this.extras = result.extras
         this.room_pricing_factor = result.room_pricing_factor
         this.active_orders = result.active_orders.map(o => new OrderData(o))
         // this.order_archive = result.order_archive.map(o => new OrderData(o))
@@ -155,15 +157,15 @@ class Assembly extends React.Component {
   }
 
   @computed get snacks() {
-    return this.extras.filter(s => s.extra_type === "snack")
+    return this.extras.filter(s => s.extra_type === 0)
   }
 
   @computed get drinks() {
-    return this.extras.filter(s => s.extra_type === "drink")
+    return this.extras.filter(s => s.extra_type === 1)
   }
 
   @computed get others() {
-    return this.extras.filter(s => s.extra_type === "other")
+    return this.extras.filter(s => s.extra_type === 2)
   }
 
   // takes a `state` object, with:

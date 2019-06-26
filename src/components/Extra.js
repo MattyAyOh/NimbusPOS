@@ -9,7 +9,7 @@ class Extra extends React.Component {
     return (
       <Layout>
         <Image
-          src={this.props.image_url}
+          src={`https://jpg.cool/${this.props.image_url || this.props.name.toLowerCase().replace(" ", ".")}`}
           onClick={() => this.add(1)}
         />
 
