@@ -12,7 +12,7 @@ const BigScreen = observer(({ assembly }) => (
     <Layout.Section>
       <Heading>Drinks</Heading>
 
-      {assembly.extras.filter(e => e.extra_type === 'drink').map(extra =>
+      {assembly.drinks.map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={`https://jpg.cool/${extra.image_url || extra.name.toLowerCase().replace(" ", ".")}`} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
@@ -99,7 +99,7 @@ const BigScreen = observer(({ assembly }) => (
     <Layout.Section>
       <Heading>Snacks</Heading>
 
-      {assembly.extras.filter(e => e.extra_type === 'snack').map(extra =>
+      {assembly.snacks.map(extra =>
         <Extra key={extra.name}>
           <Extra.Image src={extra.image_url || extra.name.toLowerCase().replace(" ", ".")} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
