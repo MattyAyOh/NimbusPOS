@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { observer, Observer } from "mobx-react"
 import { DateTime } from "luxon"
-import { observable, reaction, computed } from "mobx"
+import { observable, computed } from "mobx"
 import Selection from "../principals/Selection"
 
 @observer

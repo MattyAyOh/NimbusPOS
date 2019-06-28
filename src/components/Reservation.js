@@ -2,23 +2,35 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
+import Button from "../principals/Button"
 
-const Reservation = observer(({ start_time, end_time, service_name, service_position }) => (
+const Reservation = observer(({ assembly, start_time, end_time, service, id }) => (
   <Layout>
-    <p>{ service_name } { service_position }</p>
+    <div>
+      <Name>{ service.name } { service.position }:</Name>
 
-    <p>
       {
-        DateTime.fromISO(start_time).toLocaleString(DateTime.DATETIME_SHORT)
+        DateTime.fromISO(start_time + "Z").toLocaleString(DateTime.TIME_24_SIMPLE)
       } to {
-        DateTime.fromISO(end_time).toLocaleString(DateTime.DATETIME_SHORT)
+        DateTime.fromISO(end_time + "Z").toLocaleString(DateTime.TIME_24_SIMPLE)
       }
-    </p>
+    </div>
+
+    <Button onClick={() => assembly.remove_reservation(id)}>
+      Remove
+    </Button>
   </Layout>
 ))
 
 const Layout = styled.div`
   margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+`
+
+const Name = styled.span`
+  font-weight: bold;
+  margin-right: 2rem;
 `
 
 export default Reservation

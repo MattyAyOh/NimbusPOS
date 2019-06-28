@@ -36,7 +36,7 @@ const Selection = observer(({update, options, render, onChange}) => (
 
 const Layout = styled.div`
   text-align: center;
-  display: inline-block;
+  display: block;
 `
 
 export default Selection

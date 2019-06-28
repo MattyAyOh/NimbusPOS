@@ -9,6 +9,7 @@ import Header from "./components/Header"
 import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
 import Order from "./components/Order"
+import Reservations from "./components/Reservations"
 import BigScreen from "./components/BigScreen"
 import Admin from "./components/Admin"
 
@@ -24,6 +25,7 @@ import { createHttpLink } from "apollo-link-http"
 import { getMainDefinition } from "apollo-utilities"
 import { setContext } from "apollo-link-context"
 import { split } from "apollo-link"
+import _ from "lodash"
 
 // Direction:
 //
@@ -88,12 +90,14 @@ class Assembly extends React.Component {
   @observable visible_position = null
 
   @observable scroll = 0
+  @observable reservations = []
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
   @observable active_orders = []
   @observable order_archive = []
   @observable new_reservation = {}
+  @observable reservation_date = DateTime.local().startOf("day")
 
   componentDidMount() {
     reaction(
@@ -161,6 +165,23 @@ class Assembly extends React.Component {
       error: (err) => console.error('err', err),
     });
 
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription {
+        reservations {
+          id
+          start_time
+          end_time
+          service {
+            name
+            position
+          }
+      } }
+    ` }).subscribe({
+      next: result => this.reservations = result.data.reservations,
+      error: (err) => console.error('err', err),
+    });
+
     // TODO find a new hook for this. Maybe a reaction to `loaded`?
     // .then(() => {
     //   if(this.scroll !== 0)
@@ -199,12 +220,12 @@ class Assembly extends React.Component {
 
         <Layout.Right>
           <Observer>{() =>
-            this.loaded && this.visible_order
+            this.visible_order
             ? <Order
                 assembly={this}
                 key={this.visible_service_type + this.visible_position + this.loaded}
               />
-            : null
+            : <Reservations assembly={this} />
           }</Observer>
         </Layout.Right>
       </Layout>
@@ -290,6 +311,15 @@ class Assembly extends React.Component {
   }
 
   createReservation() {
+    let dateAttrs = _.pick(this.reservation_date.toObject(), "year", "month", "day")
+    this.new_reservation.start_time = this.new_reservation.start_time.set(dateAttrs)
+    this.new_reservation.end_time = this.new_reservation.end_time.set(dateAttrs)
+
+    if(this.new_reservation.start_time.hour < 12)
+      this.new_reservation.start_time = this.new_reservation.start_time.plus({ days: 1 })
+    if(this.new_reservation.end_time.hour < 12)
+      this.new_reservation.end_time = this.new_reservation.end_time.plus({ days: 1 })
+
     this.network.run`
       Reservation.create!(
         start_time: ${JSON.stringify(this.new_reservation.start_time.toISO())},
@@ -299,7 +329,13 @@ class Assembly extends React.Component {
           position: ${JSON.stringify(this.new_reservation.position)},
         )
       )
-    `.then(() => this.new_reservation = {})
+    `
+  }
+
+  remove_reservation(id) {
+    this.network.run`
+      Reservation.find(${id}).destroy!
+    `
   }
 
   set_visible_order(service, position) {
