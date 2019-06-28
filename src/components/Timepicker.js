@@ -44,12 +44,10 @@ class Timepicker extends React.Component {
       <Wrapper>
         <TimeInput
           onChange={(e) => this.enteredText = e.target.value }
-          onFocus={(e) => this.focused(e)}
-          onKeyPress={(e) => e.key === "Enter" && this.enter(e)}
-          onSelect={(e) => e.target.selectionStart = e.target.selectionEnd }
-          placeholder="--:--"
-          value={this.enteredText}
-        />
+          onClick={(e) => this.focused(e)}
+        >
+          {this.enteredText || "--:--"}
+        </TimeInput>
 
         { this.open &&
           <TouchInput>
@@ -82,8 +80,6 @@ class Timepicker extends React.Component {
 
   @action
   focused(event) {
-    event.target.select()
-
     this.open = true
     this.time = this.time || DateTime.local()
   }
@@ -124,8 +120,11 @@ function pad(num, size) {
   return s;
 }
 
-const TimeInput = styled.input`
+const TimeInput = styled.span`
+  display: inline-block;
   padding: 0.5rem;
+  width: 4rem;
+  border: 1px solid #aaaaaa;
 `
 
 const Wrapper = styled.div`
