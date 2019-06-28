@@ -61,7 +61,7 @@ const BigScreen = observer(({ assembly }) => (
         <Info>{emojis.mahjong}</Info>
         <Info>Mahjong</Info>
         <Price>
-          {assembly.services.filter(s => s.service === 'mahjong')[0] && assembly.services.filter(s => s.service === 'mahjong')[0].hourly_rate}
+          {assembly.services.filter(s => s.name.toLowerCase() === 'mahjong')[0] && assembly.services.filter(s => s.name.toLowerCase() === 'mahjong')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -69,7 +69,7 @@ const BigScreen = observer(({ assembly }) => (
         <Info>{emojis.pool}</Info>
         <Info>Pool</Info>
         <Price>
-          {assembly.services.filter(s => s.service === 'pool')[0] && assembly.services.filter(s => s.service === 'pool')[0].hourly_rate}
+          {assembly.services.filter(s => s.name.toLowerCase() === 'pool')[0] && assembly.services.filter(s => s.name.toLowerCase() === 'pool')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -77,7 +77,7 @@ const BigScreen = observer(({ assembly }) => (
         <Info>{emojis.ktv}</Info>
         <Info>KTV</Info>
         <Price>
-          {assembly.services.filter(s => s.service === 'ktv')[0] && assembly.services.filter(s => s.service === 'ktv')[0].hourly_rate}
+          {assembly.services.filter(s => s.name.toLowerCase() === 'ktv')[0] && assembly.services.filter(s => s.name.toLowerCase() === 'ktv')[0].hourly_rate}
         </Price>
       </Service>
 
@@ -85,7 +85,7 @@ const BigScreen = observer(({ assembly }) => (
         <Info>{emojis.ktv}</Info>
         <Info>KTV (large)</Info>
         <Price>
-          {assembly.services.filter(s => s.service === 'ktv' && s.position === 4)[0] && assembly.services.filter(s => s.service === 'ktv' && s.position === 4)[0].hourly_rate}
+          {assembly.services.filter(s => s.name.toLowerCase() === 'ktv' && s.position === 4)[0] && assembly.services.filter(s => s.name.toLowerCase() === 'ktv' && s.position === 4)[0].hourly_rate}
         </Price>
       </Service>
 
