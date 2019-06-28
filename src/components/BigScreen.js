@@ -101,7 +101,7 @@ const BigScreen = observer(({ assembly }) => (
 
       {assembly.snacks.map(extra =>
         <Extra key={extra.name}>
-          <Extra.Image src={extra.image_url || extra.name.toLowerCase().replace(" ", ".")} alt={extra.name} />
+          <Extra.Image src={`https://jpg.cool/${extra.image_url || extra.name.toLowerCase().replace(" ", ".")}`} alt={extra.name} />
           <Extra.Name>{extra.name}</Extra.Name>
           <Price>{extra.price}</Price>
         </Extra>
