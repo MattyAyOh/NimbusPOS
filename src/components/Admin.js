@@ -88,15 +88,25 @@ class Admin extends React.Component {
         <Observer>{() =>
           <Table>
             <tbody>
+              <TotalRow key="Total">
+                <td>Total</td>
+                <CurrencyCell>
+                  { this.selected_extras
+                      .map(extra => this.amount_spent_on(extra, this.orders_within_timeframe))
+                      .reduce((a,b) => a + b, 0)
+                  }
+                </CurrencyCell>
+              </TotalRow>
+
             {this.selected_extras
               .filter(extra => this.amount_spent_on(extra, this.orders_within_timeframe) > 0)
               .sort((a, b) => this.amount_spent_on(b, this.orders_within_timeframe) - this.amount_spent_on(a, this.orders_within_timeframe))
               .map(extra =>
                 <tr key={extra.id}>
                   <td>{extra.name}:</td>
-                  <NumberCell>
-                    ${this.amount_spent_on(extra, this.orders_within_timeframe)}
-                  </NumberCell>
+                  <CurrencyCell>
+                    {this.amount_spent_on(extra, this.orders_within_timeframe)}
+                  </CurrencyCell>
                 </tr>
             )}
             </tbody>
@@ -152,6 +162,13 @@ const Layout = styled.div`
 const NumberCell = styled.td`
   text-align: right;
   padding-left: 1rem;
+  `
+
+const CurrencyCell = styled(NumberCell)`
+  &:before {
+    content: "$";
+    color: #aaaaaa;
+  }
 `
 
 const Timeframe = styled.div`
@@ -160,6 +177,10 @@ const Timeframe = styled.div`
 
 const Table = styled.table`
   margin: 1rem;
+`
+
+const TotalRow = styled.tr`
+  outline: 1px solid #444444;
 `
 
 export default Admin
