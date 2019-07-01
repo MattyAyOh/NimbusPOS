@@ -76,7 +76,7 @@ class Assembly extends React.Component {
     })
 
     Aviator.setRoutes({
-      // "/admin": () => this.current_page = Admin,
+      "/admin": () => this.current_page = Admin,
       "/bigscreen": () => this.current_page = BigScreen,
     })
 
@@ -95,7 +95,6 @@ class Assembly extends React.Component {
   @observable extras = []
   @observable room_pricing_factor = 1.0
   @observable active_orders = []
-  @observable order_archive = []
   @observable new_reservation = {}
   @observable reservation_date = DateTime.local().startOf("day")
 
