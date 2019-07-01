@@ -4,10 +4,37 @@ import { observer, Observer } from "mobx-react"
 import { DateTime } from "luxon"
 import { observable, computed } from "mobx"
 import Selection from "../principals/Selection"
+import gql from "graphql-tag"
+import OrderData from "../data/Order"
 
 @observer
 class Admin extends React.Component {
-  @observable timeframe = "Week to date"
+  @observable timeframe = "All time"
+  @observable order_archive = []
+
+  componentDidMount() {
+    // TODO clean up the subscription when we're done with it.
+    this.props.assembly.client.subscribe({ query: gql`
+      subscription { orders(where: {closed_at: {_is_null: false}}) {
+          id
+          service_id
+          closed_at
+          start_time
+          end_time
+          order_extras {
+            id
+            extra_id
+            quantity
+            extra {
+              name
+              price
+      } } } }
+    ` }).subscribe({
+      next: result => this.order_archive = result.data.orders.map(o => new OrderData(o)),
+      error: (err) => console.error('err', err),
+    });
+  }
+
 
   render () {
     return (
@@ -31,6 +58,7 @@ class Admin extends React.Component {
         Time spent by service:
         <Observer>{() =>
           <Table>
+            <tbody>
             {["KTV", "Pool", "Mahjong"].map(name => {
               let service_ids = this.props.assembly.services
                 .filter(s => s.name === name)
@@ -44,7 +72,7 @@ class Admin extends React.Component {
                 .reduce((a,b) => a + b, 0)
 
               return (
-                <tr>
+                <tr key={name}>
                   <td>{name}:</td>
                   <NumberCell>
                     {hours_spent.toFixed(2)} hours
@@ -52,23 +80,26 @@ class Admin extends React.Component {
                 </tr>
               )
             })}
+            </tbody>
           </Table>
         }</Observer>
 
         Revenue by Item:
         <Observer>{() =>
           <Table>
+            <tbody>
             {this.selected_extras
               .filter(extra => this.amount_spent_on(extra, this.orders_within_timeframe) > 0)
               .sort((a, b) => this.amount_spent_on(b, this.orders_within_timeframe) - this.amount_spent_on(a, this.orders_within_timeframe))
               .map(extra =>
-                <tr>
+                <tr key={extra.id}>
                   <td>{extra.name}:</td>
                   <NumberCell>
                     ${this.amount_spent_on(extra, this.orders_within_timeframe)}
                   </NumberCell>
                 </tr>
             )}
+            </tbody>
           </Table>
         }</Observer>
       </Layout>
@@ -76,8 +107,8 @@ class Admin extends React.Component {
   }
 
   @computed get orders_within_timeframe() {
-    return this.props.assembly.order_archive.filter(order =>
-      DateTime.fromISO(order.closed_at) > this.selected_timeframe_start &&
+    return this.order_archive.filter(order =>
+      DateTime.fromISO(order.closed_at) >= this.selected_timeframe_start &&
       DateTime.fromISO(order.closed_at) < this.selected_timeframe_end
     )
   }
@@ -108,9 +139,9 @@ class Admin extends React.Component {
       "Rolling Week":   [DateTime.local().minus({ week: 1 }), DateTime.local()],
       "Rolling 30-day": [DateTime.local().minus({ day: 30 }), DateTime.local()],
       "All time": [
-        this.props.assembly.order_archive.map(order => DateTime.fromISO(order.closed_at)).sort()[0],
+        this.order_archive.map(order => DateTime.fromISO(order.closed_at)).sort()[0] || DateTime.local(),
         DateTime.local(),
-      ]
+      ],
     }
   }
 }
