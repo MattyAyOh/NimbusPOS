@@ -53,21 +53,5 @@ services:
   #    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   #   command: server http://minio1/data
 
-  web:
-    image: assemble/foundation
-    environment:
-      - DATA=postgres://postgres:postgres@db
-      - PASSWORD
-      - PORT=3000
-      - RAILS_ENV=development
-    ports:
-      - $PORT_API:3000
-    volumes:
-      - ./db:/foundation/db
-      - ./models:/foundation/app/models
-    depends_on:
-      - db
-    restart: always
-
 # volumes:
 #   photos_volume_1:

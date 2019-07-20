@@ -82,7 +82,7 @@ This migration will be carried out in a few steps:
 * [x] [0/1] Replace each `network.watch` API call with a GraphQL `subscription`.
 * [x] [0/6] Replace each `network.run` API call
             with a GraphQL `query` or `mutation`.
-* [ ] At this point, the GraphQL interface completely bypasses the Foundation.
+* [x] At this point, the GraphQL interface completely bypasses the Foundation.
       Remove the Assemble Foundation service from `docker-compose.yml`.
 
 Following this change, the application will conform in large part to the
