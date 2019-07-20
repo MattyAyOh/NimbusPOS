@@ -13,21 +13,21 @@ class Table extends React.Component {
     return (
       <Layout>
         <Time>
-          { this.current_order &&
-            this.current_order.start_time.toLocaleString(DateTime.TIME_24_SIMPLE)
+          { this.order &&
+            this.order.start_time.toLocaleString(DateTime.TIME_24_SIMPLE)
           }
         </Time>
 
         <Number
           onClick={() => this.props.assembly.ensureCurrentOrder(this.props.service.name, this.props.service.position) }
-          active={Boolean(this.current_order)}
+          active={Boolean(this.order)}
         >
           {this.props.service.position}
         </Number>
 
         <Price>
-          {this.current_order &&
-            "$" + this.current_order.bill_amount(
+          {this.order &&
+            "$" + this.order.bill_amount(
               this.props.service.hourly_rate * this.props.assembly.room_pricing_factor,
               this.props.current_time,
             )
@@ -37,7 +37,7 @@ class Table extends React.Component {
     )
   }
 
-  @computed get current_order() {
+  @computed get order() {
     return (
       this.props.assembly.active_orders
       .filter(o => o.service_id === this.props.service.id)[0]
