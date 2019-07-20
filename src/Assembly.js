@@ -332,9 +332,14 @@ class Assembly extends React.Component {
   }
 
   remove_reservation(id) {
-    this.network.run`
-      Reservation.find(${id}).destroy!
-    `
+    this.client.mutate({ mutation: gql`
+      mutation ($id: bigint!) {
+        delete_reservations(where: { id: { _eq: $id }} ) {
+          affected_rows
+      } }
+      `,
+      variables: { id },
+    })
   }
 
   set_visible_order(service, position) {
@@ -343,9 +348,14 @@ class Assembly extends React.Component {
   }
 
   cancelVisibleOrder = () => {
-    this.network.run`
-      Order.find(${this.visible_order.id}).destroy!
-    `
+    this.client.mutate({ mutation: gql`
+      mutation ($id: bigint!) {
+        delete_orders(where: { id: { _eq: $id }} ) {
+          affected_rows
+      } }
+      `,
+      variables: { id: this.visible_order.id },
+    })
 
     this.set_visible_order(null, null)
   }
