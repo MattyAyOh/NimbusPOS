@@ -17,7 +17,6 @@ import OrderData from "./data/Order"
 
 // Queries
 import ApolloClient from "apollo-client";
-import Network from "./Network"
 import gql from "graphql-tag"
 import { InMemoryCache } from "apollo-cache-inmemory"
 import { WebSocketLink } from "apollo-link-ws"
@@ -39,7 +38,6 @@ import _ from "lodash"
 class Assembly extends React.Component {
   constructor(props) {
     super(props)
-    this.network = new Network(process.env.REACT_APP_URL_API)
 
     const wsLink = new WebSocketLink({
       uri: `ws://${process.env.REACT_APP_URL_HASURA}`,
