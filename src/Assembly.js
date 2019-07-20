@@ -450,8 +450,7 @@ class Assembly extends React.Component {
       mutation (
         $created_at: timestamp!,
         $updated_at: timestamp!,
-        $service_name: String!,
-        $service_position: Int!,
+        $service_id: bigint!,
         $start_time: timestamp!,
         $end_time: timestamp!,
       ) {
@@ -460,16 +459,15 @@ class Assembly extends React.Component {
           start_time: $start_time,
           created_at: $created_at,
           updated_at: $created_at,
-          service: {data: {
-            name: $service_name,
-            position: $service_position,
-          } }
+          service_id: $service_id,
         }) { affected_rows }
       }
       `,
       variables: {
-        service_name: this.new_reservation.service,
-        service_position: this.new_reservation.position,
+        service_id: this.services.filter(s =>
+          s.name === this.new_reservation.service &&
+          s.position === this.new_reservation.position
+        )[0].id,
         start_time: this.new_reservation.start_time.toUTC().toSQL(),
         end_time: this.new_reservation.end_time.toUTC().toSQL(),
         created_at: DateTime.local().toUTC().toSQL(),

@@ -10,7 +10,7 @@ services:
     tty: true
     command: yarn start
     depends_on:
-      - web
+      - hasura
     environment:
       NODE_ENV: development
       REACT_APP_URL_API: $URL_API
