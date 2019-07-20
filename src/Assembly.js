@@ -299,14 +299,26 @@ class Assembly extends React.Component {
     this.visible_position = position
     this.visible_tab = "snacks"
 
-    this.network.run`
-      service = Service.find_by(
-        service_type: ${JSON.stringify(service_name.toLowerCase())},
-        position: ${JSON.stringify(position)},
-      )
-
-      service.orders.open.first || service.orders.create!(start_time: Time.current)
-    `
+    if(!this.visible_order) {
+      this.client.mutate({ mutation: gql`
+        mutation (
+          $service_id: bigint!,
+          $start_time: timestamp,
+          $end_time: timestamp,
+        ) {
+          insert_orders(objects: {
+            end_time: $end_time,
+            start_time: $start_time,
+            service_id: $service_id,
+          }) { affected_rows }
+        }
+        `,
+        variables: {
+          service_id: this.visible_service.id,
+          start_time: DateTime.local().toUTC().toSQL(),
+        },
+      })
+    }
   }
 
   createReservation() {
@@ -370,6 +382,10 @@ class Assembly extends React.Component {
   cancelVisibleOrder = () => {
     this.client.mutate({ mutation: gql`
       mutation ($id: bigint!) {
+        delete_order_extras(where: { order_id: { _eq: $id }} ){
+          affected_rows
+        }
+
         delete_orders(where: { id: { _eq: $id }} ) {
           affected_rows
       } }
