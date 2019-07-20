@@ -319,16 +319,36 @@ class Assembly extends React.Component {
     if(this.new_reservation.end_time.hour < 12)
       this.new_reservation.end_time = this.new_reservation.end_time.plus({ days: 1 })
 
-    this.network.run`
-      Reservation.create!(
-        start_time: ${JSON.stringify(this.new_reservation.start_time.toISO())},
-        end_time: ${JSON.stringify(this.new_reservation.end_time.toISO())},
-        service: Service.find_by(
-          name: ${JSON.stringify(this.new_reservation.service)},
-          position: ${JSON.stringify(this.new_reservation.position)},
-        )
-      )
-    `
+    this.client.mutate({ mutation: gql`
+      mutation (
+        $created_at: timestamp!,
+        $updated_at: timestamp!,
+        $service_name: String!,
+        $service_position: Int!,
+        $start_time: timestamp!,
+        $end_time: timestamp!,
+      ) {
+        insert_reservations(objects: {
+          end_time: $end_time,
+          start_time: $start_time,
+          created_at: $created_at,
+          updated_at: $created_at,
+          service: {data: {
+            name: $service_name,
+            position: $service_position,
+          } }
+        }) { affected_rows }
+      }
+      `,
+      variables: {
+        service_name: this.new_reservation.service,
+        service_position: this.new_reservation.position,
+        start_time: this.new_reservation.start_time.toUTC().toSQL(),
+        end_time: this.new_reservation.end_time.toUTC().toSQL(),
+        created_at: DateTime.local().toUTC().toSQL(),
+        updated_at: DateTime.local().toUTC().toSQL(),
+      },
+    })
   }
 
   remove_reservation(id) {
