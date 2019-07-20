@@ -102,12 +102,48 @@ class Assembly extends React.Component {
   componentDidMount() {
     reaction(
       () => this.room_pricing_factor,
-      value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
+      value => this.client.mutate({ mutation: gql`
+        mutation (
+          $created_at: timestamp!,
+          $updated_at: timestamp!,
+          $pricing_factor: float8!,
+        ) {
+          insert_room_pricing_events(objects: {
+            pricing_factor: $pricing_factor,
+            created_at: $created_at,
+            updated_at: $created_at,
+          }) { affected_rows }
+        }
+        `,
+        variables: {
+          pricing_factor: value || 1.0,
+          created_at: DateTime.local().toUTC().toSQL(),
+          updated_at: DateTime.local().toUTC().toSQL(),
+        },
+      })
     )
 
     reaction(
       () => this.room_discount_day,
-      value => this.network.run`RoomDiscountDayEvent.create!(day_of_week: ${value || 0})`
+      value => this.client.mutate({ mutation: gql`
+        mutation (
+          $created_at: timestamp!,
+          $updated_at: timestamp!,
+          $day_of_week: Int!,
+        ) {
+          insert_room_discount_day_events(objects: {
+            day_of_week: $day_of_week,
+            created_at: $created_at,
+            updated_at: $created_at,
+          }) { affected_rows }
+        }
+        `,
+        variables: {
+          day_of_week: value || 0,
+          created_at: DateTime.local().toUTC().toSQL(),
+          updated_at: DateTime.local().toUTC().toSQL(),
+        },
+      })
     )
 
     // TODO clean up the subscription when we're done with it.
