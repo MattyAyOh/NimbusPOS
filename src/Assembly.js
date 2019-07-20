@@ -332,23 +332,73 @@ class Assembly extends React.Component {
     })
   }
 
-  persistExtra(state, extra_name) {
-    this.network.run`
-      order = Order.find(${this.visible_order.id})
-      extra = Extra.find_by(name: ${JSON.stringify(extra_name)})
+  persistExtra(quantity, extra_name) {
+    let extra = this.extras.filter(e => e.name === extra_name)[0]
+    let order_extra = this.visible_order.extras.filter(e => e.extra_id === extra.id)[0]
 
-      order_extra =
-        OrderExtra.find_by(order: order, extra: extra) ||
-        OrderExtra.create!(order: order, extra: extra)
+    // Make sure the order_extra exists
+    if(!order_extra)
+      this.client.mutate({ mutation: gql`
+        mutation (
+          $order_id: bigint!,
+          $extra_id: bigint!,
+        ) {
+          insert_order_extras(objects: {
+            order_id: $order_id,
+            extra_id: $extra_id,
+          }) { affected_rows }
+        }
+        `,
+        variables: {
+          order_id: this.visible_order.id,
+          extra_id: extra.id,
+        },
+      })
 
-      if(${JSON.stringify(state.quantity)}.to_i > 0)
-        result = order_extra.update!(
-          quantity: ${JSON.stringify(state.quantity)},
-        )
-      else
-        order_extra.destroy!
-      end
-    `
+    // set the quantity
+    if(quantity > 0) {
+      this.client.mutate({ mutation: gql`
+        mutation (
+          $order_id: bigint!,
+          $extra_id: bigint!,
+          $quantity: Int!,
+        ) {
+          update_order_extras(
+            where: {
+            order_id: { _eq: $order_id },
+            extra_id: { _eq: $extra_id },
+          },
+          _set: { quantity: $quantity }
+          ) { affected_rows }
+        }
+        `,
+        variables: {
+          order_id: this.visible_order.id,
+          extra_id: extra.id,
+          quantity: quantity,
+        },
+      })
+    } else {
+      // quantity is 0; remove the record.
+      this.client.mutate({ mutation: gql`
+        mutation (
+          $order_id: bigint!,
+          $extra_id: bigint!,
+        ) {
+          delete_order_extras(
+            where: {
+            order_id: { _eq: $order_id },
+            extra_id: { _eq: $extra_id },
+          },
+          ) { affected_rows }
+        }
+        `,
+        variables: {
+          order_id: this.visible_order.id,
+          extra_id: extra.id,
+        },
+      })
+    }
   }
 
   ensureCurrentOrder(service_name, position) {
