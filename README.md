@@ -79,7 +79,7 @@ This migration will be carried out in a few steps:
 * [x] Add Hasura to the project as a container in `docker-compose.yml`.
       Hasura will run in parallel with the existing Assemble Foundation,
       giving us two APIs to program against.
-* [ ] [0/1] Replace each `network.watch` API call with a GraphQL `subscription`.
+* [x] [0/1] Replace each `network.watch` API call with a GraphQL `subscription`.
 * [ ] [0/6] Replace each `network.run` API call
             with a GraphQL `query` or `mutation`.
 * [ ] At this point, the GraphQL interface completely bypasses the Foundation.
