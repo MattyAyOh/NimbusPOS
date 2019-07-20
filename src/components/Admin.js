@@ -39,79 +39,99 @@ class Admin extends React.Component {
   render () {
     return (
       <Layout>
-        Nimbus
+        <Layout.Left>
+          Nimbus
 
-        <Timeframe>
-          <Selection
-            update={() => this.timeframe}
-            options={Object.keys(this.timeframes)}
-            onChange={(selection) => this.timeframe  = selection}
-          />
-        </Timeframe>
+          <Timeframe>
+            <Selection
+              update={() => this.timeframe}
+              options={Object.keys(this.timeframes)}
+              onChange={(selection) => this.timeframe  = selection}
+            />
+          </Timeframe>
 
-        <Timeframe>
-          {this.selected_timeframe_start.toLocaleString()}
-          &nbsp;to&nbsp;
-          {this.selected_timeframe_end.toLocaleString()}
-        </Timeframe>
+          <Timeframe>
+            {this.selected_timeframe_start.toLocaleString()}
+            &nbsp;to&nbsp;
+            {this.selected_timeframe_end.toLocaleString()}
+          </Timeframe>
 
-        Time spent by service:
-        <Observer>{() =>
-          <Table>
-            <tbody>
-            {["KTV", "Pool", "Mahjong"].map(name => {
-              let service_ids = this.props.assembly.services
-                .filter(s => s.name === name)
-                .map(s => s.id)
+          Time spent by service:
+          <Observer>{() =>
+            <Table>
+              <tbody>
+              {["KTV", "Pool", "Mahjong"].map(name => {
+                let service_ids = this.props.assembly.services
+                  .filter(s => s.name === name)
+                  .map(s => s.id)
 
-              let matching_orders = this.orders_within_timeframe
-                .filter(order => service_ids.includes(order.service_id))
+                let matching_orders = this.orders_within_timeframe
+                  .filter(order => service_ids.includes(order.service_id))
 
-              let hours_spent = matching_orders
-                .map(order => order.end_time.diff(order.start_time, "hours").hours)
-                .reduce((a,b) => a + b, 0)
+                let hours_spent = matching_orders
+                  .map(order => order.end_time.diff(order.start_time, "hours").hours)
+                  .reduce((a,b) => a + b, 0)
 
-              return (
-                <tr key={name}>
-                  <td>{name}:</td>
-                  <NumberCell>
-                    {hours_spent.toFixed(2)} hours
-                  </NumberCell>
-                </tr>
-              )
-            })}
-            </tbody>
-          </Table>
-        }</Observer>
+                return (
+                  <tr key={name}>
+                    <td>{name}:</td>
+                    <NumberCell>
+                      {hours_spent.toFixed(2)} hours
+                    </NumberCell>
+                  </tr>
+                )
+              })}
+              </tbody>
+            </Table>
+          }</Observer>
 
-        Revenue by Item:
-        <Observer>{() =>
-          <Table>
-            <tbody>
-              <TotalRow key="Total">
-                <td>Total</td>
-                <CurrencyCell>
-                  { this.selected_extras
-                      .map(extra => this.amount_spent_on(extra, this.orders_within_timeframe))
-                      .reduce((a,b) => a + b, 0)
-                  }
-                </CurrencyCell>
-              </TotalRow>
-
-            {this.selected_extras
-              .filter(extra => this.amount_spent_on(extra, this.orders_within_timeframe) > 0)
-              .sort((a, b) => this.amount_spent_on(b, this.orders_within_timeframe) - this.amount_spent_on(a, this.orders_within_timeframe))
-              .map(extra =>
-                <tr key={extra.id}>
-                  <td>{extra.name}:</td>
+          Revenue by Item:
+          <Observer>{() =>
+            <Table>
+              <tbody>
+                <TotalRow key="Total">
+                  <td>Total</td>
                   <CurrencyCell>
-                    {this.amount_spent_on(extra, this.orders_within_timeframe)}
+                    { this.selected_extras
+                        .map(extra => this.amount_spent_on(extra, this.orders_within_timeframe))
+                        .reduce((a,b) => a + b, 0)
+                    }
                   </CurrencyCell>
-                </tr>
-            )}
-            </tbody>
-          </Table>
-        }</Observer>
+                </TotalRow>
+
+              {this.selected_extras
+                .filter(extra => this.amount_spent_on(extra, this.orders_within_timeframe) > 0)
+                .sort((a, b) => this.amount_spent_on(b, this.orders_within_timeframe) - this.amount_spent_on(a, this.orders_within_timeframe))
+                .map(extra =>
+                  <tr key={extra.id}>
+                    <td>{extra.name}:</td>
+                    <CurrencyCell>
+                      {this.amount_spent_on(extra, this.orders_within_timeframe)}
+                    </CurrencyCell>
+                  </tr>
+              )}
+              </tbody>
+            </Table>
+          }</Observer>
+        </Layout.Left>
+
+        <Layout.Right>
+          <p>Room Pricing:</p>
+          <Selection
+            update={() => this.props.assembly.room_pricing_factor}
+            options={[0.5, 0.6, 0.75, 0.8, 0.9, 1]}
+            render ={option => option * 100 + "%"}
+            onChange={(selection) => this.props.assembly.room_pricing_factor  = selection}
+          />
+
+          <p>Applied on:</p>
+          <Selection
+            update={() => this.props.assembly.room_discount_day}
+            options={[1, 2, 3, 4, 5, 6, 7, 0]}
+            render ={option => option ? DateTime.fromObject({weekday: option}).toLocaleString({ weekday: "short" }) : "Any Day"}
+            onChange={(selection) => this.props.assembly.room_discount_day  = selection}
+          />
+        </Layout.Right>
       </Layout>
     );
   }
@@ -157,6 +177,19 @@ class Admin extends React.Component {
 }
 
 const Layout = styled.div`
+  display: grid;
+  grid-row-gap: 2rem;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 4rem 1fr;
+  height: 100vh;
+`
+
+Layout.Left = styled.div`
+  grid-area: 1 / 1 / -1 / 1;
+`
+
+Layout.Right = styled.div`
+  grid-area: 1 / 2 / -1 / 2;
 `
 
 const NumberCell = styled.td`

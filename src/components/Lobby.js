@@ -49,13 +49,13 @@ class Lobby extends React.Component {
         ))}
 
         <Layout.Discount>
-          <p>Room Pricing:</p>
-          <Selection
-            update={() => this.props.assembly.room_pricing_factor}
-            options={[0.5, 0.6, 0.75, 0.8, 0.9, 1]}
-            render ={option => option * 100 + "%"}
-            onChange={(selection) => this.props.assembly.room_pricing_factor  = selection}
-          />
+          { (
+            this.props.assembly.room_discount_day === DateTime.local().weekday  ||
+            this.props.assembly.room_discount_day === 0
+          )
+              ? `Today's discount: ${this.props.assembly.room_pricing_factor * 100}% room prices.`
+              : `No discount today.`
+          }
         </Layout.Discount>
       </Layout>
     )
