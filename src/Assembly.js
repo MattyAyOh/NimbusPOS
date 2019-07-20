@@ -94,6 +94,7 @@ class Assembly extends React.Component {
   @observable services = []
   @observable extras = []
   @observable room_pricing_factor = 1.0
+  @observable room_discount_day = 0
   @observable active_orders = []
   @observable new_reservation = {}
   @observable reservation_date = DateTime.local().startOf("day")
@@ -102,6 +103,11 @@ class Assembly extends React.Component {
     reaction(
       () => this.room_pricing_factor,
       value => this.network.run`RoomPricingEvent.create!(pricing_factor: ${value || 1.0})`
+    )
+
+    reaction(
+      () => this.room_discount_day,
+      value => this.network.run`RoomDiscountDayEvent.create!(day_of_week: ${value || 0})`
     )
 
     // TODO clean up the subscription when we're done with it.
@@ -150,6 +156,21 @@ class Assembly extends React.Component {
       } }
     ` }).subscribe({
       next: result => this.services = result.data.services,
+      error: (err) => console.error('err', err),
+    });
+
+    // TODO clean up the subscription when we're done with it.
+    this.client.subscribe({ query: gql`
+      subscription {
+        room_discount_day_events(order_by: {created_at: desc}, limit: 1) {
+          day_of_week
+      } }
+    ` }).subscribe({
+      next: result => this.room_discount_day = (
+        result.data.room_discount_day_events[0] ||
+        { day_of_week: 0 }
+      ).day_of_week,
+
       error: (err) => console.error('err', err),
     });
 

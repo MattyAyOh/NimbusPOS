@@ -1,0 +1,2 @@
+class RoomDiscountDayEvent < ApplicationRecord
+end
