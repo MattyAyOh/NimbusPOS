@@ -37,7 +37,7 @@ class Extra extends React.Component {
     const layout = document.querySelector(".orderLayout")
     this.props.assembly.scroll = layout.scrollTop
 
-    this.props.assembly.persistExtra({ quantity: quantity }, this.props.name)
+    this.props.assembly.persistExtra(quantity, this.props.name)
   }
 }
 
