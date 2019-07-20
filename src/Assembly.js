@@ -319,16 +319,26 @@ class Assembly extends React.Component {
   // `start_time`: `null` | `DateTime` object
   // `end_time`: `null` | `DateTime` object
   persistVisibleOrder = (state) => {
-    if(state.start_time) state.start_time = state.start_time.toISO()
-    if(state.end_time) state.end_time = state.end_time.toISO()
+    if(state.start_time) state.start_time = state.start_time.toUTC().toSQL()
+    if(state.end_time) state.end_time = state.end_time.toUTC().toSQL()
 
-    return this.network.run`
-      order = Order.find(${this.visible_order.id})
-      result = order.update!(JSON.parse('${JSON.stringify(state)}'))
-
-      { persisted: result, closed: !order.open? }
-    `.then((result) => {
-      if(result.closed) this.props.assembly.set_visible_order(null, null)
+    this.client.mutate({ mutation: gql`
+      mutation (
+        $order_id: bigint!,
+        $state: orders_set_input,
+      ) {
+        update_orders(
+          where: { id: { _eq: $order_id }, },
+          _set: $state,
+        ) {
+          returning { closed_at }
+        }
+      }
+      `,
+      variables: {
+        order_id: this.visible_order.id,
+        state: state,
+      },
     })
   }
 
