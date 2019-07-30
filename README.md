@@ -17,15 +17,16 @@ This is easier said than done.
 ### History
 
 * Nov 2017: Initial development begins as a Ruby on Rails application.
-* Feb 2018: Front-end markup templates are removed and replaced by React
-* May 2018: A clean break between front-end view logic, and a back-end API
-* Jul 2018: Standardize on Mobx for managing client state
-* Sep 2018: Add a page at `/bigscreen` as a customer-facing menu
-* Apr 2019: Use a generic "Foundation" container to execute arbitrary API code
+* Feb 2018: Front-end markup templates are removed and replaced by React.
+* May 2018: A clean break between front-end view logic, and a back-end API.
+* Jul 2018: Standardize on Mobx for managing client state.
+* Sep 2018: Add a page at `/bigscreen` as a customer-facing menu.
+* Apr 2019: Use a generic "Foundation" container to execute arbitrary API code.
             This removes the admin dashboard provided by [Administrate].
-* Apr 2019: Standardize on Luxon for handling dates and times
-* May 2019: Standardize on Aviator for high-level URL logic
-* Jun 2019: Build from scratch a new admin dashboard, focused on sales metrics
+* Apr 2019: Standardize on Luxon for handling dates and times.
+* May 2019: Standardize on Aviator for high-level URL logic.
+* Jun 2019: Build from scratch a new admin dashboard, focused on sales metrics.
+* Jul 2019: Add an automated script that showcases and verifies main features.
 
 [Administrate]: https://administrate-prototype.herokuapp.com
 
@@ -101,48 +102,38 @@ for the benefits of managed database backups and automated deployments.
 
 ### Start the app (development):
 
-Set up the database:
-
-```shell
-cd server
-bundle exec rake db:create db:migrate db:seed
+```bash
+docker-compose up -d
 ```
 
-Run the server
-```shell
-cd server
-rails s -p 3000
-```
-
-You'll need to edit `package.json`,
-and change the `"proxy" option to match the server's port.
-
-```
-  "proxy": "http://localhost:3000/",
-```
-
-Finally...
-
-```shell
-yarn install
-yarn start
-```
+### Set up the database
+(not yet possible; working on a solution with Hasura migrations).
 
 ### View application logs:
 ### Stop the app:
 ### Back up the database:
+
+For Fish:
+
+```fish
+dc exec db pg_dump -U postgres -F t development > (date +'%C%y_%m_%d).backup
+```
+
 ### Restore a backed-up database:
 
-### Wipe the application database:
+### Run the test suite
 
-docker-compose exec web bundle exec rake db:drop db:create db:migrate
+```fish
+./node_modules/taiko/bin/taiko.js script.js --observe
+```
 
 ### Update the app in production
 
+ssh root@142.93.196.155
+cd nimbuspos
 git pull
-docker-compose exec client yarn
+docker-compose run client yarn
 docker-compose stop
-docker-compose rm -f web client
-docker-compose pull
+docker-compose rm -f client
 docker-compose up -d
-docker-compose exec web bundle exec rake db:migrate
+docker-compose logs -f
