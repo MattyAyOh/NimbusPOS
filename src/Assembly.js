@@ -414,9 +414,9 @@ class Assembly extends React.Component {
     this.new_reservation.start_time = this.new_reservation.start_time.set(dateAttrs)
     this.new_reservation.end_time = this.new_reservation.end_time.set(dateAttrs)
 
-    if(this.new_reservation.start_time.hour < 12)
+    if(this.new_reservation.start_time.hour < 4)
       this.new_reservation.start_time = this.new_reservation.start_time.plus({ days: 1 })
-    if(this.new_reservation.end_time.hour < 12)
+    if(this.new_reservation.end_time.hour < 4)
       this.new_reservation.end_time = this.new_reservation.end_time.plus({ days: 1 })
 
     this.client.mutate({ mutation: gql`
