@@ -137,6 +137,16 @@
       "update_permissions": [],
       "delete_permissions": [],
       "event_triggers": []
+    },
+    {
+      "table": "room_discount_day_events",
+      "object_relationships": [],
+      "array_relationships": [],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
     }
   ],
   "query_templates": []
