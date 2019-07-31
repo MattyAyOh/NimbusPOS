@@ -35,7 +35,7 @@ class Lobby extends React.Component {
         <Header/>
 
         <Layout.Left>
-          { this.loaded
+          { this.props.assembly.loaded
           ? <InnerLayout>
               { Object.keys(service_icons).map((service_name) => (
                 <Column key={service_name}>
@@ -72,10 +72,10 @@ class Lobby extends React.Component {
 
         <Layout.Right>
           <Observer>{() =>
-            this.visible_order
+            this.props.assembly.visible_order
             ? <Order
                 assembly={this.props.assembly}
-                key={this.visible_service_type + this.visible_position + this.loaded}
+                key={this.props.assembly.visible_service_type + this.props.assembly.visible_position + this.props.assembly.loaded}
               />
             : <Reservations assembly={this.props.assembly} />
           }</Observer>
