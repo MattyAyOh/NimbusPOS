@@ -1,15 +1,10 @@
 import React from "react"
-import styled from "styled-components"
-import { observer, Observer } from "mobx-react"
+import { observer } from "mobx-react"
 import { DateTime } from "luxon"
-import { computed, observable, reaction, runInAction } from "mobx"
+import { computed, observable, reaction } from "mobx"
 import Aviator from "aviator"
 
-import Header from "./components/Header"
-import Loading from "./components/Loading"
 import Lobby from "./components/Lobby"
-import Order from "./components/Order"
-import Reservations from "./components/Reservations"
 import BigScreen from "./components/BigScreen"
 import Admin from "./components/Admin"
 
@@ -261,29 +256,7 @@ class Assembly extends React.Component {
     if(this.current_page === Admin)
       return <Admin assembly={this} />
 
-    return (
-      <Layout>
-        <Header/>
-
-        <Layout.Left>
-          { this.loaded
-          ? <Lobby assembly={this} />
-          : <Loading/>
-          }
-        </Layout.Left>
-
-        <Layout.Right>
-          <Observer>{() =>
-            this.visible_order
-            ? <Order
-                assembly={this}
-                key={this.visible_service_type + this.visible_position + this.loaded}
-              />
-            : <Reservations assembly={this} />
-          }</Observer>
-        </Layout.Right>
-      </Layout>
-    );
+    return <Lobby assembly={this} />
   }
 
   @computed get visible_order() {

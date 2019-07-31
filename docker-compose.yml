@@ -13,7 +13,6 @@ services:
       - hasura
     environment:
       NODE_ENV: development
-      REACT_APP_URL_API: $URL_API
       REACT_APP_URL_HASURA: $URL_HASURA
       REACT_APP_HASURA_SECRET: $HASURA_PASSWORD
       # REACT_APP_MINIO_HOST: $MINIO_HOST

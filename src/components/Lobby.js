@@ -2,11 +2,14 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observable } from "mobx"
-import { observer } from "mobx-react"
+import { observer, Observer } from "mobx-react"
 import Table from "./Table"
 import service_icons from "../Emojis"
-import Selection from "../principals/Selection"
 import { primary } from "../colors"
+import Header from "./Header"
+import Loading from "./Loading"
+import Order from "./Order"
+import Reservations from "./Reservations"
 
 @observer
 class Lobby extends React.Component {
@@ -29,40 +32,60 @@ class Lobby extends React.Component {
   render() {
     return (
       <Layout>
-        { Object.keys(service_icons).map((service_name) => (
-          <Column key={service_name}>
-            <Emoji>{ service_icons[service_name] }</Emoji>
+        <Header/>
 
-            <Tables>
-              { this.props.assembly.services
-                .filter(s => s.name.toLowerCase() === service_name)
-                .map((service) => (
-                  <Table
-                    current_time={this.current_time}
-                    key={service.id}
-                    service={service}
-                    assembly={this.props.assembly}
-                  />
+        <Layout.Left>
+          { this.loaded
+          ? <InnerLayout>
+              { Object.keys(service_icons).map((service_name) => (
+                <Column key={service_name}>
+                  <Emoji>{ service_icons[service_name] }</Emoji>
+
+                  <Tables>
+                    { this.props.assembly.services
+                      .filter(s => s.name.toLowerCase() === service_name)
+                      .map((service) => (
+                        <Table
+                          current_time={this.current_time}
+                          key={service.id}
+                          service={service}
+                          assembly={this.props.assembly}
+                        />
+                    ))}
+                  </Tables>
+                </Column>
               ))}
-            </Tables>
-          </Column>
-        ))}
 
-        <Layout.Discount>
-          { (
-            this.props.assembly.room_discount_day === DateTime.local().weekday  ||
-            this.props.assembly.room_discount_day === 0
-          )
-              ? `Today's discount: ${this.props.assembly.room_pricing_factor * 100}% room prices.`
-              : `No discount today.`
+              <InnerLayout.Discount>
+                { (
+                  this.props.assembly.room_discount_day === DateTime.local().weekday  ||
+                  this.props.assembly.room_discount_day === 0
+                )
+                    ? `Today's discount: ${this.props.assembly.room_pricing_factor * 100}% room prices.`
+                    : `No discount today.`
+                }
+              </InnerLayout.Discount>
+            </InnerLayout>
+          : <Loading/>
           }
-        </Layout.Discount>
+        </Layout.Left>
+
+        <Layout.Right>
+          <Observer>{() =>
+            this.visible_order
+            ? <Order
+                assembly={this.props.assembly}
+                key={this.visible_service_type + this.visible_position + this.loaded}
+              />
+            : <Reservations assembly={this.props.assembly} />
+          }</Observer>
+        </Layout.Right>
       </Layout>
     )
   }
 }
 
-const Layout = styled.div`
+const InnerLayout = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr 5rem 5rem;
@@ -70,9 +93,25 @@ const Layout = styled.div`
   grid-row-gap: 2rem;
 `
 
-Layout.Discount = styled.div`
+InnerLayout.Discount = styled.div`
   grid-area: 2 / 1 / 2 / 4;
   text-align: center;
+`
+
+const Layout = styled.div`
+  display: grid;
+  grid-row-gap: 2rem;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 4rem 1fr;
+  height: 100vh;
+`
+
+Layout.Left = styled.div`
+  grid-area: 2 / 1 / -1 / 1;
+`
+
+Layout.Right = styled.div`
+  grid-area: 1 / 2 / -1 / 2;
 `
 
 const Emoji = styled.span`
