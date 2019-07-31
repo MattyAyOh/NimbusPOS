@@ -36,7 +36,7 @@ class Reservations extends React.Component {
         <NewReservation>
           <h3>New Reservation</h3>
 
-          <SaveButton onClick={() => this.props.assembly.createReservation()} >
+          <SaveButton onClick={() => this.props.assembly.create_reservation()} >
             Save
           </SaveButton>
 

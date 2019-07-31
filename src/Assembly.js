@@ -409,7 +409,7 @@ class Assembly extends React.Component {
     }
   }
 
-  createReservation() {
+  create_reservation() {
     let dateAttrs = _.pick(this.reservation_date.toObject(), "year", "month", "day")
     this.new_reservation.start_time = this.new_reservation.start_time.set(dateAttrs)
     this.new_reservation.end_time = this.new_reservation.end_time.set(dateAttrs)
