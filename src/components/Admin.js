@@ -149,7 +149,7 @@ class Admin extends React.Component {
 
   amount_spent_on(extra, orders) {
     return this.orders_within_timeframe
-      .map(order => order.extras.filter(e => e.extra.name === extra.name).map(e => e.quantity))
+      .map(order => order.order_extras.filter(e => e.extra.name === extra.name).map(e => e.quantity))
       .flat()
       .reduce((a,b) => a + b, 0) * extra.price
   }

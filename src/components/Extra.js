@@ -25,7 +25,7 @@ class Extra extends React.Component {
   }
 
   @computed get quantity() {
-    const extra = this.props.assembly.visible_order.extras
+    const extra = this.props.assembly.visible_order.order_extras
       .filter((x) => x.extra.name === this.props.name)[0]
     return (extra && extra.quantity) || 0
   }

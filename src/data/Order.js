@@ -6,13 +6,13 @@ import { DateTime } from "luxon"
 // order:
 //   closed_at: null
 //   end_time: 2018-07-06T23:44:32.000Z
-//   extras: []
+//   order_extras: []
 //   start_time: 2018-07-06T21:26:37.894Z
 
 class Order {
   @observable closed_at = null
   @observable end_time = null
-  @observable extras = null
+  @observable order_extras = null
   @observable start_time = null
   @observable id = null
   @observable service_id = null
@@ -21,7 +21,7 @@ class Order {
     this.id = values.id
     this.service_id = values.service_id
     this.closed_at = values.closed_at
-    this.extras = values.order_extras
+    this.order_extras = values.order_extras
 
     // TODO raise an issue on Hasura; the 'Z' would be really helpful to include automatically.
     this.start_time = values.start_time && DateTime.fromISO(values.start_time + "Z")
@@ -45,7 +45,7 @@ class Order {
   }
 
   extrasComponent() {
-    const subtotals = this.extras.map((x) => (x.quantity * x.extra.price))
+    const subtotals = this.order_extras.map((x) => (x.quantity * x.extra.price))
     return subtotals.reduce((running_total, x) => (running_total + x), 0)
   }
 

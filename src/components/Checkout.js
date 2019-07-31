@@ -37,7 +37,7 @@ class Checkout extends React.Component {
             amount={(this.props.assembly.visible_service.hourly_rate * this.props.assembly.room_pricing_factor * hours_spent).toFixed(2)}
           />
 
-          {this.order.extras.map((extra) => (
+          {this.order.order_extras.map((extra) => (
             <LineItem
               key={extra.extra.name}
               name={extra.extra.name}

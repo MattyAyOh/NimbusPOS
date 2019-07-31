@@ -315,7 +315,7 @@ class Assembly extends React.Component {
 
   persistExtra(quantity, extra_name) {
     let extra = this.extras.filter(e => e.name === extra_name)[0]
-    let order_extra = this.visible_order.extras.filter(e => e.extra_id === extra.id)[0]
+    let order_extra = this.visible_order.order_extras.filter(e => e.extra_id === extra.id)[0]
 
     // Make sure the order_extra exists
     if(!order_extra)
