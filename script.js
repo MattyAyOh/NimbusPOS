@@ -13,7 +13,10 @@ const { DateTime } = require("luxon");
 
 (async () => {
   try {
-    const nextMinute = DateTime.local().get("minute") + 1;
+    const nextMinute = DateTime
+      .local()
+      .plus({ minute: 1 })
+      .toFormat("mm")
 
     await openBrowser();
     await goto("http://localhost:3060");
