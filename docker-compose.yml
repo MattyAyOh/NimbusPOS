@@ -27,18 +27,26 @@ services:
   db:
     restart: always
     image: postgres
+    user: postgres
+    expose:
+    - 5432
+    volumes:
+    - database:/var/lib/postgresql/data
 
   hasura:
-    image: hasura/graphql-engine:v1.0.0-beta.2
+    image: hasura/graphql-engine:v1.0.0-beta.3.cli-migrations
     ports:
     - 5000:8080
     depends_on:
     - db
     restart: always
+    volumes:
+    - ./migrations:/hasura-migrations
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@db:5432/development
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_ADMIN_SECRET: $HASURA_PASSWORD
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgres@db:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
 
   # For an example of running multiple connected Minio services, see
   # https://github.com/minio/minio/blob/master/docs/orchestration/docker-compose/docker-compose.yaml
@@ -53,5 +61,5 @@ services:
   #    MINIO_SECRET_KEY: $MINIO_SECRET_KEY
   #   command: server http://minio1/data
 
-# volumes:
-#   photos_volume_1:
+volumes:
+  database:

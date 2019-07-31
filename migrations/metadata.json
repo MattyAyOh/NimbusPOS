@@ -1,0 +1,143 @@
+{
+  "functions": [],
+  "remote_schemas": [],
+  "query_collections": [],
+  "allowlist": [],
+  "tables": [
+    {
+      "table": "orders",
+      "object_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": "service_id"
+          },
+          "name": "service",
+          "comment": null
+        }
+      ],
+      "array_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": {
+              "column": "order_id",
+              "table": "order_extras"
+            }
+          },
+          "name": "order_extras",
+          "comment": null
+        }
+      ],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    },
+    {
+      "table": "reservations",
+      "object_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": "service_id"
+          },
+          "name": "service",
+          "comment": null
+        }
+      ],
+      "array_relationships": [],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    },
+    {
+      "table": "extras",
+      "object_relationships": [],
+      "array_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": {
+              "column": "extra_id",
+              "table": "order_extras"
+            }
+          },
+          "name": "order_extras",
+          "comment": null
+        }
+      ],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    },
+    {
+      "table": "room_pricing_events",
+      "object_relationships": [],
+      "array_relationships": [],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    },
+    {
+      "table": "services",
+      "object_relationships": [],
+      "array_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": {
+              "column": "service_id",
+              "table": "orders"
+            }
+          },
+          "name": "orders",
+          "comment": null
+        },
+        {
+          "using": {
+            "foreign_key_constraint_on": {
+              "column": "service_id",
+              "table": "reservations"
+            }
+          },
+          "name": "reservations",
+          "comment": null
+        }
+      ],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    },
+    {
+      "table": "order_extras",
+      "object_relationships": [
+        {
+          "using": {
+            "foreign_key_constraint_on": "extra_id"
+          },
+          "name": "extra",
+          "comment": null
+        },
+        {
+          "using": {
+            "foreign_key_constraint_on": "order_id"
+          },
+          "name": "order",
+          "comment": null
+        }
+      ],
+      "array_relationships": [],
+      "insert_permissions": [],
+      "select_permissions": [],
+      "update_permissions": [],
+      "delete_permissions": [],
+      "event_triggers": []
+    }
+  ],
+  "query_templates": []
+}
