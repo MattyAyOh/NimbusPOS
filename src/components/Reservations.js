@@ -71,8 +71,8 @@ class Reservations extends React.Component {
 
         {this.props.assembly.reservations
             .filter(reservation =>
-              DateTime.fromISO(reservation.start_time) < this.props.assembly.reservation_date.plus({ days: 1, hours: 4 }) &&
-              DateTime.fromISO(reservation.start_time) > this.props.assembly.reservation_date.plus({ hours: 4 })
+              DateTime.fromISO(reservation.start_time, { zone: "utc" }) > this.props.assembly.reservation_date.toUTC().plus({ hours: 4}) &&
+              DateTime.fromISO(reservation.start_time, { zone: "utc" }) < this.props.assembly.reservation_date.toUTC().plus({ days: 1, hours: 4 })
             )
             .map((reservation) =>
               <Reservation

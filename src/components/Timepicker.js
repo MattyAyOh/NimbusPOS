@@ -100,12 +100,12 @@ class Timepicker extends React.Component {
 
   minuteSelected(minute) {
     let hour = this.time.hour
-    let newTime = DateTime.fromObject({ hour, minute })
-    this.timeChanged(newTime)
+    this.timeChanged({ hour, minute })
   }
 
   @action
-  timeChanged(newTime) {
+  timeChanged(timeComponents) {
+    let newTime = DateTime.fromObject(timeComponents)
     this.props.onChange(newTime)
 
     this.enteredText = newTime.toLocaleString(DateTime.TIME_24_SIMPLE)
