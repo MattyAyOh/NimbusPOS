@@ -170,7 +170,7 @@ class Assembly extends React.Component {
               price
       } } } }
     ` }).subscribe({
-      next: result => this.active_orders = result.data.orders.map(o => new OrderData(o)),
+      next: result => this.active_orders = result.data.orders.map(o => OrderData.create(o)),
       error: (err) => console.error('err', err),
     });
 

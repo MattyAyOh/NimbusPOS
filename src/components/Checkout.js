@@ -17,8 +17,8 @@ class Checkout extends React.Component {
 
   render() {
     const hours_spent = (
-      DateTime.fromISO(this.order.end_time)
-        .diff(this.order.start_time, "minutes").minutes + 1
+      DateTime.fromISO(this.order.end)
+        .diff(this.order.start, "minutes").minutes + 1
     ) / 60.0
 
     let total_price = this.order.bill_amount(
@@ -77,7 +77,7 @@ class Checkout extends React.Component {
         </Bill>
 
         <Confirm
-          disabled={this.order.end_time < this.order.start_time}
+          disabled={this.order.end < this.order.start}
           onClick={() => this.props.assembly.persistVisibleOrder({ closed_at: DateTime.local().toISO() })}
         >Confirm</Confirm>
       </Layout>
