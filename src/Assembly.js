@@ -8,7 +8,7 @@ import Lobby from "./components/Lobby"
 import BigScreen from "./components/BigScreen"
 import Admin from "./components/Admin"
 
-import OrderData from "./data/Order"
+import Order from "./data/Order"
 
 // Queries
 import ApolloClient from "apollo-client";
@@ -170,7 +170,7 @@ class Assembly extends React.Component {
               price
       } } } }
     ` }).subscribe({
-      next: result => this.active_orders = result.data.orders.map(o => OrderData.create(o)),
+      next: result => this.active_orders = result.data.orders.map(o => Order.create(o)),
       error: (err) => console.error('err', err),
     });
 
