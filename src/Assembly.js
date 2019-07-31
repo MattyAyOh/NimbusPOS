@@ -483,20 +483,4 @@ class Assembly extends React.Component {
   }
 }
 
-const Layout = styled.div`
-  display: grid;
-  grid-row-gap: 2rem;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: 4rem 1fr;
-  height: 100vh;
-`
-
-Layout.Left = styled.div`
-  grid-area: 2 / 1 / -1 / 1;
-`
-
-Layout.Right = styled.div`
-  grid-area: 1 / 2 / -1 / 2;
-`
-
 export default Assembly
