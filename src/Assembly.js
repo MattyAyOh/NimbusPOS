@@ -25,7 +25,6 @@ import { createHttpLink } from "apollo-link-http"
 import { getMainDefinition } from "apollo-utilities"
 import { setContext } from "apollo-link-context"
 import { split } from "apollo-link"
-import _ from "lodash"
 
 // Direction:
 //
@@ -445,21 +444,6 @@ class Assembly extends React.Component {
   }
 
   create_reservation() {
-    let dateAttrs = _.pick(
-      this.reservation_date.luxon.toObject(),
-      "year",
-      "month",
-      "day",
-    )
-
-    this.new_reservation.start_set(dateAttrs)
-    this.new_reservation.end_set(dateAttrs)
-
-    if(this.new_reservation.start.hour < 4)
-      this.new_reservation.set_start(this.new_reservation.start.plus({ days: 1 }))
-    if(this.new_reservation.end.hour < 4)
-      this.new_reservation.set_end(this.new_reservation.end.plus({ days: 1 }))
-
     this.client.mutate({ mutation: gql`
       mutation (
         $created_at: timestamp!,
@@ -482,8 +466,8 @@ class Assembly extends React.Component {
           s.name === this.new_reservation.service &&
           s.position === this.new_reservation.position
         )[0].id,
-        start_time: this.new_reservation.start.toUTC().toSQL(),
-        end_time: this.new_reservation.end.toUTC().toSQL(),
+        start_time: this.new_reservation.start_time.toUTC().toSQL(),
+        end_time: this.new_reservation.end_time.toUTC().toSQL(),
         created_at: DateTime.local().toUTC().toSQL(),
         updated_at: DateTime.local().toUTC().toSQL(),
       },

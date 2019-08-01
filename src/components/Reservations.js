@@ -5,9 +5,7 @@ import Selection from "../principals/Selection"
 import 'react-select/dist/react-select.css'
 
 import Reservation from "./Reservation"
-import TimeSpanInput from "./TimeSpanInput"
 import { DateTime } from "luxon"
-import Button from "../principals/Button"
 
 @observer
 class Reservations extends React.Component {
@@ -57,18 +55,15 @@ class Reservations extends React.Component {
             onChange={(position) => this.props.assembly.new_reservation.set_position(position) }
           />
 
-          <ReservationTimes
-            startTime={this.props.assembly.new_reservation.start}
-            end_time={this.props.assembly.new_reservation.end}
-            onStartTimeChange={(new_time) => this.props.assembly.new_reservation.set_start(new_time) }
-            onEndTimeChange={(new_time) => this.props.assembly.new_reservation.set_end(new_time) }
-          />
+          <ReservationTimes>
+            {this.props.assembly.new_reservation.timespanInput(this.props.assembly)}
+          </ReservationTimes>
         </NewReservation>
 
         {this.props.assembly.reservations
             .filter(reservation =>
-              reservation.start > this.props.assembly.reservation_date.luxon.toUTC().plus({ hours: 4 }) &&
-              reservation.start < this.props.assembly.reservation_date.luxon.toUTC().plus({ days: 1, hours: 4 })
+              reservation.start_time > this.props.assembly.reservation_date.luxon.toUTC().plus({ hours: 4 }) &&
+              reservation.start_time < this.props.assembly.reservation_date.luxon.toUTC().plus({ days: 1, hours: 4 })
             )
             .map((reservation) =>
               <Reservation
@@ -103,8 +98,8 @@ const NewReservation = styled.div`
   grid-row-gap: 1rem;
 `
 
-const ReservationTimes = styled(TimeSpanInput)`
-  grid-area: 3/3/1/3;
+const ReservationTimes = styled.div`
+  grid-area: 3/1/3/3;
   text-align: center;
 `
 

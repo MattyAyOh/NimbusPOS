@@ -2,29 +2,23 @@ import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
 import { observer } from "mobx-react"
-import { action, observable } from "mobx"
+import { action, computed, observable } from "mobx"
 
 const blue = "#4a90e2"
 
+const scrollNodeIntoView = (boolean) => (node) =>
+  node && boolean && node.scrollIntoView()
+
 /*
  * Props:
- * `initialValue`: a `DateTime` object
+ * `value`: a `DateTime` object
  * `onChange`: a callback function that takes a `DateTime` object.
  * `hourOptions`: a list of allowed values for the hour
  * `minuteOptions`: a list of allowed values for the minute
  */
 @observer
 class Timepicker extends React.Component {
-  @observable time = null
-  @observable enteredText = ""
   @observable open = false
-
-  constructor(props) {
-    super(props)
-
-    this.time = this.props.initialValue || DateTime.local()
-    this.enteredText = this.props.initialValue ? this.props.initialValue.toLocaleString(DateTime.TIME_24_SIMPLE) : ""
-  }
 
   hourOptions() {
     return this.props.hourOptions ||
@@ -36,17 +30,25 @@ class Timepicker extends React.Component {
       Array.apply(null, {length: 60}).map(Number.call, Number)
   }
 
+  @computed get time() {
+    return this.props.value || DateTime.local()
+  }
+
+  @computed get displayText() {
+    return this.props.value
+      ? this.props.value.toLocaleString(DateTime.TIME_24_SIMPLE)
+      : "--:--"
+  }
+
   render() {
-    let selectedHour = this.time && this.time.hour
-    let selectedMinute = this.time && this.time.minute
+    let selectedHour = this.time.hour
+    let selectedMinute = this.time.minute
 
     return (
       <Wrapper>
-        <TimeInput
-          onChange={(e) => this.enteredText = e.target.value }
-          onClick={(e) => this.focused(e)}
-        >
-          {this.enteredText || "--:--"}
+        <TimeInput onClick={() => this.toggleOpen()} >
+          {this.displayText}
+          { this.open && <Right>X</Right> }
         </TimeInput>
 
         { this.open &&
@@ -54,9 +56,9 @@ class Timepicker extends React.Component {
             <Scroll>
               {this.hourOptions().map((hour) => (
                 <TimeOption
-                  innerRef={(node) => node && (hour === selectedHour) && node.scrollIntoView()}
+                  innerRef={scrollNodeIntoView(hour === selectedHour)}
                   key={hour}
-                  onClick={() => this.hourSelected(hour)}
+                  onClick={() => this.timeChanged({ hour }) }
                   selected={hour === selectedHour}
                 >{pad(hour, 2)}</TimeOption>
               ))}
@@ -65,9 +67,9 @@ class Timepicker extends React.Component {
             <Scroll>
               {this.minuteOptions().map((minute) => (
                 <TimeOption
-                  innerRef={(node) => node && (minute === selectedMinute) && node.scrollIntoView()}
+                  innerRef={scrollNodeIntoView(minute === selectedMinute)}
                   key={minute}
-                  onClick={() => this.minuteSelected(minute)}
+                  onClick={() => this.timeChanged({ minute }) }
                   selected={minute === selectedMinute}
                 >{pad(minute, 2)}</TimeOption>
               ))}
@@ -78,39 +80,12 @@ class Timepicker extends React.Component {
     )
   }
 
-  @action
-  focused(event) {
-    this.open = true
-    this.time = this.time || DateTime.local()
+  @action timeChanged(timeComponents) {
+    this.props.onChange(this.time.set(timeComponents))
   }
 
-  enter(event) {
-    event.target.blur()
-    this.timeChanged(DateTime.fromISO(event.target.value))
-  }
-
-  @action
-  hourSelected(hour) {
-    let minute = this.time.minute
-    let newTime = DateTime.fromObject({ hour, minute: minute || 0 })
-
-    this.time = newTime
-    this.enteredText = newTime.toLocaleString(DateTime.TIME_24_SIMPLE)
-  }
-
-  minuteSelected(minute) {
-    let hour = this.time.hour
-    this.timeChanged({ hour, minute })
-  }
-
-  @action
-  timeChanged(timeComponents) {
-    let newTime = DateTime.fromObject(timeComponents)
-    this.props.onChange(newTime)
-
-    this.enteredText = newTime.toLocaleString(DateTime.TIME_24_SIMPLE)
-    this.open = false
-    this.time = newTime
+  @action toggleOpen() {
+    this.open = !this.open
   }
 }
 
@@ -144,6 +119,10 @@ const TouchInput = styled.div`
 const Scroll = styled.div`
   border: 1px solid grey;
   overflow-y: scroll;
+`
+
+const Right = styled.span`
+  float: right;
 `
 
 const TimeOption = styled.div`

@@ -1,8 +1,10 @@
-import { observable } from "mobx"
+import React from "react"
+import TimeSpanInput from "../components/TimeSpanInput"
 import { DateTime } from "luxon"
 import { types } from "mobx-state-tree"
 
 import OrderExtra from "./OrderExtra"
+import Time from "./Time"
 
 // JSON from server:
 //
@@ -15,41 +17,63 @@ import OrderExtra from "./OrderExtra"
 // TODO change id => a types.identifier parameter
 const Order = types.model({
   closed_at: types.maybeNull(types.string),
-  end_time: types.maybeNull(types.string),
   order_extras: types.array(OrderExtra),
-  start_time: types.string,
   id: types.integer,
   service_id: types.integer,
+
+  start_time: Time,
+  end_time: types.maybeNull(Time),
 }).views(self => ({
-  get start() {
-    // TODO raise an issue on Hasura; the 'Z' would be really helpful to include automatically.
-    return self.start_time && DateTime.fromISO(self.start_time + "Z")
-  },
-
-  get end() {
-    return self.end_time && DateTime.fromISO(self.end_time + "Z")
-  },
-
   bill_amount(rate, current_time) {
-    let amount =
-      self.timeComponent(rate, current_time)
-      + self.extrasComponent()
-
-    return String(amount.toFixed(2))
+    return String((
+      self.timeComponent(rate, current_time) +
+      self.extrasComponent()
+    ).toFixed(2))
   },
 
   timeComponent(rate, current_time) {
-    let start = self.start ? self.start : current_time
-    let end   = self.end   ? self.end   : current_time
+    let end   = self.end_time || current_time
 
     // Bill with minute-level granularity
-    return (end.diff(start, "minutes").minutes + 1) * rate / 60.0
+    return (end.diff(self.start_time, "minutes").minutes + 1) * rate / 60.0
   },
 
   extrasComponent() {
     const subtotals = self.order_extras.map((x) => (x.quantity * x.extra.price))
     return subtotals.reduce((running_total, x) => (running_total + x), 0)
   },
+
+  timespanInput(assembly) {
+    return (
+      <TimeSpanInput
+        startTime={self.start_time}
+        endTime={self.end_time}
+        onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime, assembly)}
+        onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime, assembly)}
+        hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
+      />
+    )
+  }
+})).actions(self => ({
+  timeUpdated(field, new_time, assembly) {
+    const current_hour = DateTime.local().hour
+    const chosen_hour = new_time.hour
+
+    // Chose a time before this past midnight?
+    if(current_hour < 12 && chosen_hour > 12)
+      new_time = new_time.minus({ days: 1 })
+
+    // Chose a time after this coming midnight?
+    if(current_hour > 12 && chosen_hour < 12)
+      new_time = new_time.plus({ days: 1 })
+
+    self[field] = new_time
+
+    assembly.persistVisibleOrder({
+      start_time: self.start_time,
+      end_time: self.end_time,
+    })
+  }
 }))
 
 export default Order

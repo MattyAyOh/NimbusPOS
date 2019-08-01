@@ -10,9 +10,9 @@ const Reservation = observer(({ assembly, start_time, end_time, service, id }) =
       <Name>{ service.name } { service.position }:</Name>
 
       {
-        DateTime.fromISO(start_time + "Z").toLocaleString(DateTime.TIME_24_SIMPLE)
+        start_time.toLocaleString(DateTime.TIME_24_SIMPLE)
       } to {
-        DateTime.fromISO(end_time + "Z").toLocaleString(DateTime.TIME_24_SIMPLE)
+        end_time.toLocaleString(DateTime.TIME_24_SIMPLE)
       }
     </div>
 

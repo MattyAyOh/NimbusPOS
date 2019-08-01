@@ -14,7 +14,7 @@ class Table extends React.Component {
       <Layout>
         <Time>
           { this.order &&
-            this.order.start.toLocaleString(DateTime.TIME_24_SIMPLE)
+            this.order.start_time.toLocaleString(DateTime.TIME_24_SIMPLE)
           }
         </Time>
 

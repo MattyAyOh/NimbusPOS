@@ -69,7 +69,7 @@ class Admin extends React.Component {
                   .filter(order => service_ids.includes(order.service_id))
 
                 let hours_spent = matching_orders
-                  .map(order => order.end.diff(order.start, "hours").hours)
+                  .map(order => order.end_time.diff(order.start_time, "hours").hours)
                   .reduce((a,b) => a + b, 0)
 
                 return (

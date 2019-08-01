@@ -16,7 +16,6 @@ const { DateTime } = require("luxon");
     const nextMinute = DateTime
       .local()
       .plus({ minute: 1 })
-      .toFormat("mm")
 
     await openBrowser();
     await goto("http://localhost:3060");
@@ -25,15 +24,18 @@ const { DateTime } = require("luxon");
     await click("KTV");
     await click("4", toRightOf("KTV"));
     await click("--:--", toLeftOf("--:--"));
-    await click(String(nextMinute), toRightOf($("span"), below("--:--")));
+    await click(nextMinute.toFormat("mm"), toRightOf($("span"), below("--:--")));
+    await click("X", toRightOf(nextMinute.toFormat("HH:mm")));
     await click("--:--", toRightOf("to"));
-    await click(String(nextMinute), toRightOf($("span"), below("--:--")));
+    await click(nextMinute.toFormat("mm"), toRightOf($("span"), below("--:--")));
+    await click("X", toRightOf(nextMinute.toFormat("HH:mm")));
     await click("Save")
 
     // Group
     await click("1");
     await click("+");
     await click("Checkout");
+    await click("2", toRightOf("Split by # of people"))
     await click("Confirm");
 
     // Close reservation

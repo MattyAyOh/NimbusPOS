@@ -15,12 +15,11 @@ import Timepicker from "./Timepicker"
  */
 const TimeSpanInput = observer((props) => (
   <div>
-
     <Emoji>🕙</Emoji>
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
-      initialValue={props.startTime}
+      value={props.startTime}
       onChange={(chosen_time) => props.onStartTimeChange(chosen_time)}
     />
 
@@ -30,7 +29,7 @@ const TimeSpanInput = observer((props) => (
     <Timepicker
       hourOptions={props.hourOptions}
       minuteOptions={props.minuteOptions}
-      initialValue={props.endTime}
+      value={props.endTime}
       onChange={(chosen_time) => props.onEndTimeChange(chosen_time)}
     />
 

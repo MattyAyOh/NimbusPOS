@@ -4,7 +4,6 @@ import { DateTime } from "luxon"
 import { observable, computed } from "mobx"
 import { observer } from "mobx-react"
 
-import TimeSpanInput from "./TimeSpanInput"
 import Checkout from "./Checkout"
 import Extras from "./Extras"
 import TabView from "./TabView"
@@ -14,16 +13,6 @@ import Loading from "./Loading"
 class Order extends React.Component {
   @observable start_time = null
   @observable end_time = null
-
-  constructor(props) {
-    super(props)
-
-    let start_time = this.order.start_time
-    let end_time = this.order.end_time
-
-    this.start_time = start_time && DateTime.fromISO(start_time)
-    this.end_time = end_time && DateTime.fromISO(end_time)
-  }
 
   @computed get order() {
     return this.props.assembly.visible_order
@@ -50,13 +39,7 @@ class Order extends React.Component {
             #{this.props.assembly.visible_service.position}
           </h2>
 
-          <TimeSpanInput
-            startTime={this.start_time}
-            endTime={this.end_time}
-            onStartTimeChange={(newTime) => this.timeUpdated("start_time", newTime)}
-            onEndTimeChange={(newTime) => this.timeUpdated("end_time", newTime)}
-            hourOptions={[18,19,20,21,22,23,0,1,2,3,4,5,6]}
-          />
+          {this.order.timespanInput(this.props.assembly)}
 
           <TabView
             assembly={this.props.assembly}
@@ -85,7 +68,7 @@ class Order extends React.Component {
   }
 
   ensureEndTime() {
-    if(this.end_time === null) {
+    if(this.order.end_time === null) {
       this.props.assembly.persistVisibleOrder({end_time: DateTime.local()})
     }
   }
@@ -94,8 +77,8 @@ class Order extends React.Component {
   // `new_time`: a `DateTime` object
   timeUpdated(field, new_time) {
     let new_timestamps = {
-      start_time: this.start_time,
-      end_time: this.end_time,
+      start_time: this.order.start_time,
+      end_time: this.order.end_time,
     }
 
     const current_hour = DateTime.local().hour
