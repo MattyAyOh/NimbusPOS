@@ -2,13 +2,19 @@ import React from "react"
 import { observer } from "mobx-react"
 import { DateTime } from "luxon"
 import { computed, observable, reaction } from "mobx"
+import { types } from "mobx-state-tree"
 import Aviator from "aviator"
 
 import Lobby from "./components/Lobby"
 import BigScreen from "./components/BigScreen"
 import Admin from "./components/Admin"
 
+import Extra from "./data/Extra"
 import Order from "./data/Order"
+import Reservation from "./data/Reservation"
+import Service from "./data/Service"
+import NewReservation from "./data/NewReservation"
+import CalendarDate from "./data/CalendarDate"
 
 // Queries
 import ApolloClient from "apollo-client";
@@ -28,6 +34,33 @@ import _ from "lodash"
 // In this case, the "Assembly" contains routing logic,
 // while details of each page are broken out into other components.
 // As a result, we should strive to remove all code from this `render` function.
+
+const DataModel = types.model({
+  visible_tab: types.maybeNull(types.string),
+  visible_service_type: types.maybeNull(types.string),
+  visible_position: types.maybeNull(types.integer),
+
+  scroll: 0,
+  reservations: types.array(Reservation),
+  services: types.array(Service),
+  extras: types.array(Extra),
+  room_pricing_factor: 1.0,
+  room_discount_day: 0,
+  active_orders: types.array(Order),
+  new_reservation: NewReservation,
+  reservation_date: CalendarDate,
+}).actions(self => ({
+  set_visible_tab(visible_tab) { self.visible_tab = visible_tab },
+  set_visible_service_type(visible_service_type) { self.visible_service_type = visible_service_type },
+  set_visible_position(visible_position) { self.visible_position = visible_position },
+  set_scroll(scroll) { self.scroll = scroll },
+  set_reservations(reservations) { self.reservations = reservations },
+  set_services(services) { self.services = services },
+  set_extras(extras) { self.extras = extras },
+  set_room_pricing_factor(factor) { self.room_pricing_factor = factor },
+  set_room_discount_day(day) { self.room_discount_day = day },
+  set_active_orders(orders) { self.active_orders = orders },
+}))
 
 @observer
 class Assembly extends React.Component {
@@ -76,25 +109,16 @@ class Assembly extends React.Component {
     Aviator.dispatch()
   }
 
+  data = DataModel.create({
+    new_reservation: {},
+    reservation_date: { iso: DateTime.local().startOf("day").toISO() },
+  })
+
   @observable current_page = Lobby
-
-  @observable visible_tab = null
-  @observable visible_service_type = null
-  @observable visible_position = null
-
-  @observable scroll = 0
-  @observable reservations = []
-  @observable services = []
-  @observable extras = []
-  @observable room_pricing_factor = 1.0
-  @observable room_discount_day = 0
-  @observable active_orders = []
-  @observable new_reservation = {}
-  @observable reservation_date = DateTime.local().startOf("day")
 
   componentDidMount() {
     reaction(
-      () => this.room_pricing_factor,
+      () => this.data.room_pricing_factor,
       value => this.client.mutate({ mutation: gql`
         mutation (
           $created_at: timestamp!,
@@ -117,7 +141,7 @@ class Assembly extends React.Component {
     )
 
     reaction(
-      () => this.room_discount_day,
+      () => this.data.room_discount_day,
       value => this.client.mutate({ mutation: gql`
         mutation (
           $created_at: timestamp!,
@@ -149,7 +173,7 @@ class Assembly extends React.Component {
         price
       } }
     ` }).subscribe({
-      next: result => this.extras = result.data.extras,
+      next: result => this.data.set_extras(result.data.extras),
       error: (err) => console.error('err', err),
     })
 
@@ -170,7 +194,7 @@ class Assembly extends React.Component {
               price
       } } } }
     ` }).subscribe({
-      next: result => this.active_orders = result.data.orders.map(o => Order.create(o)),
+      next: result => this.data.set_active_orders(result.data.orders.map(o => Order.create(o))),
       error: (err) => console.error('err', err),
     });
 
@@ -184,7 +208,7 @@ class Assembly extends React.Component {
         service_type
       } }
     ` }).subscribe({
-      next: result => this.services = result.data.services,
+      next: result => this.data.set_services(result.data.services),
       error: (err) => console.error('err', err),
     });
 
@@ -195,10 +219,10 @@ class Assembly extends React.Component {
           day_of_week
       } }
     ` }).subscribe({
-      next: result => this.room_discount_day = (
+      next: result => this.data.set_room_discount_day((
         result.data.room_discount_day_events[0] ||
         { day_of_week: 0 }
-      ).day_of_week,
+      ).day_of_week),
 
       error: (err) => console.error('err', err),
     });
@@ -210,7 +234,7 @@ class Assembly extends React.Component {
           pricing_factor
       } }
     ` }).subscribe({
-      next: result => this.room_pricing_factor = result.data.room_pricing_events[0].pricing_factor || 1,
+      next: result => this.data.set_room_pricing_factor(result.data.room_pricing_events[0].pricing_factor || 1),
       error: (err) => console.error('err', err),
     });
 
@@ -227,17 +251,30 @@ class Assembly extends React.Component {
           }
       } }
     ` }).subscribe({
-      next: result => this.reservations = result.data.reservations,
+      next: result => this.data.set_reservations(result.data.reservations),
       error: (err) => console.error('err', err),
     });
 
     // TODO find a new hook for this. Maybe a reaction to `loaded`?
     // .then(() => {
-    //   if(this.scroll !== 0)
-    //     document.querySelector(".orderLayout").scroll(0, this.scroll)
-    //   this.scroll = 0;
+    //   if(this.data.scroll !== 0)
+    //     document.querySelector(".orderLayout").scroll(0, this.data.scroll)
+    //   this.data.set_scroll(0);
     // })
   }
+
+  @computed get visible_tab() { return this.data.visible_tab }
+  @computed get visible_service_type() { return this.data.visible_service_type }
+  @computed get visible_position() { return this.data.visible_position }
+  @computed get scroll() { return this.data.scroll }
+  @computed get reservations() { return this.data.reservations }
+  @computed get services() { return this.data.services }
+  @computed get extras() { return this.data.extras }
+  @computed get room_pricing_factor() { return this.data.room_pricing_factor }
+  @computed get room_discount_day() { return this.data.room_discount_day }
+  @computed get active_orders() { return this.data.active_orders }
+  @computed get new_reservation() { return this.data.new_reservation || {} }
+  @computed get reservation_date() { return this.data.reservation_date }
 
   @computed get loaded() {
     return (
@@ -383,9 +420,7 @@ class Assembly extends React.Component {
   }
 
   ensureCurrentOrder(service_name, position) {
-    this.visible_service_type = service_name.toLowerCase()
-    this.visible_position = position
-    this.visible_tab = "snacks"
+    this.set_visible_order(service_name.toLowerCase(), position)
 
     if(!this.visible_order) {
       this.client.mutate({ mutation: gql`
@@ -410,14 +445,20 @@ class Assembly extends React.Component {
   }
 
   create_reservation() {
-    let dateAttrs = _.pick(this.reservation_date.toObject(), "year", "month", "day")
-    this.new_reservation.start_time = this.new_reservation.start_time.set(dateAttrs)
-    this.new_reservation.end_time = this.new_reservation.end_time.set(dateAttrs)
+    let dateAttrs = _.pick(
+      this.reservation_date.luxon.toObject(),
+      "year",
+      "month",
+      "day",
+    )
 
-    if(this.new_reservation.start_time.hour < 4)
-      this.new_reservation.start_time = this.new_reservation.start_time.plus({ days: 1 })
-    if(this.new_reservation.end_time.hour < 4)
-      this.new_reservation.end_time = this.new_reservation.end_time.plus({ days: 1 })
+    this.new_reservation.start_set(dateAttrs)
+    this.new_reservation.end_set(dateAttrs)
+
+    if(this.new_reservation.start.hour < 4)
+      this.new_reservation.set_start(this.new_reservation.start.plus({ days: 1 }))
+    if(this.new_reservation.end.hour < 4)
+      this.new_reservation.set_end(this.new_reservation.end.plus({ days: 1 }))
 
     this.client.mutate({ mutation: gql`
       mutation (
@@ -441,8 +482,8 @@ class Assembly extends React.Component {
           s.name === this.new_reservation.service &&
           s.position === this.new_reservation.position
         )[0].id,
-        start_time: this.new_reservation.start_time.toUTC().toSQL(),
-        end_time: this.new_reservation.end_time.toUTC().toSQL(),
+        start_time: this.new_reservation.start.toUTC().toSQL(),
+        end_time: this.new_reservation.end.toUTC().toSQL(),
         created_at: DateTime.local().toUTC().toSQL(),
         updated_at: DateTime.local().toUTC().toSQL(),
       },
@@ -461,8 +502,9 @@ class Assembly extends React.Component {
   }
 
   set_visible_order(service, position) {
-    this.visible_service_type = service
-    this.visible_position = position
+    this.data.set_visible_service_type(service)
+    this.data.set_visible_position(position)
+    this.data.set_visible_tab("snacks")
   }
 
   cancelVisibleOrder = () => {

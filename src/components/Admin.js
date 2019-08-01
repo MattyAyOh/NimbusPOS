@@ -121,7 +121,7 @@ class Admin extends React.Component {
             update={() => this.props.assembly.room_pricing_factor}
             options={[0.5, 0.6, 0.75, 0.8, 0.9, 1]}
             render ={option => option * 100 + "%"}
-            onChange={(selection) => this.props.assembly.room_pricing_factor  = selection}
+            onChange={(selection) => this.props.assembly.data.set_room_pricing_factor(selection)}
           />
 
           <p>Applied on:</p>
@@ -129,7 +129,7 @@ class Admin extends React.Component {
             update={() => this.props.assembly.room_discount_day}
             options={[1, 2, 3, 4, 5, 6, 7, 0]}
             render ={option => option ? DateTime.fromObject({weekday: option}).toLocaleString({ weekday: "short" }) : "Any Day"}
-            onChange={(selection) => this.props.assembly.room_discount_day  = selection}
+            onChange={(selection) => this.props.assembly.data.set_room_discount_day(selection)}
           />
         </Layout.Right>
       </Layout>

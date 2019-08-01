@@ -13,8 +13,8 @@ class TabView extends React.Component {
           { Object.keys(this.props.tabs).map((tab) => (
             <Tab
               key={tab}
-              onClick={() => this.props.assembly.visible_tab = tab}
-              selected={this.props.assembly.visible_tab === tab}
+              onClick={() => this.props.assembly.data.set_visible_tab(tab)}
+              selected={this.props.assembly.data.visible_tab === tab}
             >
               {tab}
             </Tab>

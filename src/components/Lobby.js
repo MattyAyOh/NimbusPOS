@@ -75,7 +75,11 @@ class Lobby extends React.Component {
             this.props.assembly.visible_order
             ? <Order
                 assembly={this.props.assembly}
-                key={this.props.assembly.visible_service_type + this.props.assembly.visible_position + this.props.assembly.loaded}
+                key={
+                this.props.assembly.visible_service_type +
+                this.props.assembly.visible_position +
+                this.props.assembly.loaded
+                }
               />
             : <Reservations assembly={this.props.assembly} />
           }</Observer>
