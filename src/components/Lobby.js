@@ -54,16 +54,6 @@ class Lobby extends React.Component {
                   </Tables>
                 </Column>
               ))}
-
-              <InnerLayout.Discount>
-                { (
-                  this.props.assembly.room_discount_day === DateTime.local().weekday  ||
-                  this.props.assembly.room_discount_day === 0
-                )
-                    ? `Today's discount: ${this.props.assembly.room_pricing_factor * 100}% room prices.`
-                    : `No discount today.`
-                }
-              </InnerLayout.Discount>
             </InnerLayout>
           : <Loading/>
           }
@@ -94,11 +84,6 @@ const InnerLayout = styled.div`
   grid-template-rows: 1fr 5rem 5rem;
   height: 100%;
   grid-row-gap: 2rem;
-`
-
-InnerLayout.Discount = styled.div`
-  grid-area: 2 / 1 / 2 / 4;
-  text-align: center;
 `
 
 const Layout = styled.div`

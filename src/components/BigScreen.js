@@ -88,12 +88,6 @@ const BigScreen = observer(({ assembly }) => (
           {assembly.services.filter(s => s.name.toLowerCase() === 'ktv' && s.position === 4)[0] && assembly.services.filter(s => s.name.toLowerCase() === 'ktv' && s.position === 4)[0].hourly_rate}
         </Price>
       </Service>
-
-      <Banner>
-        Discount!
-        Rooms are 20% off,
-        Sun - Wed
-      </Banner>
     </Layout.Section>
 
     <Layout.Section>
