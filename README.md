@@ -128,7 +128,7 @@ dc exec db pg_dump -U postgres -F t development > (date +'%C%y_%m_%d).backup
 ```
 
 ### Update the app in production
-
+```
 ssh root@142.93.196.155
 cd nimbuspos
 git pull
@@ -137,3 +137,4 @@ docker-compose stop
 docker-compose rm -f client
 docker-compose up -d
 docker-compose logs -f
+```
