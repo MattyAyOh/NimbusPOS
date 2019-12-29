@@ -21,8 +21,8 @@ class Reservations extends React.Component {
         </Layout.Title>
 
         <Center>
-          {this.props.assembly.data.reservation_date.todayButton}
-          {this.props.assembly.data.reservation_date.calendar}
+          {this.props.assembly.model.reservation_date.todayButton}
+          {this.props.assembly.model.reservation_date.calendar}
         </Center>
 
         <NewReservation>

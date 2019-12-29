@@ -108,7 +108,7 @@ class Assembly extends React.Component {
     Aviator.dispatch()
   }
 
-  data = DataModel.create({
+  model = modelModel.create({
     new_reservation: {},
     reservation_date: { iso: DateTime.local().startOf("day").toISO() },
   })
@@ -117,7 +117,7 @@ class Assembly extends React.Component {
 
   componentDidMount() {
     reaction(
-      () => this.data.room_pricing_factor,
+      () => this.model.room_pricing_factor,
       value => this.client.mutate({ mutation: gql`
         mutation (
           $created_at: timestamp!,
@@ -140,7 +140,7 @@ class Assembly extends React.Component {
     )
 
     reaction(
-      () => this.data.room_discount_day,
+      () => this.model.room_discount_day,
       value => this.client.mutate({ mutation: gql`
         mutation (
           $created_at: timestamp!,
@@ -172,7 +172,7 @@ class Assembly extends React.Component {
         price
       } }
     ` }).subscribe({
-      next: result => this.data.set_extras(result.data.extras),
+      next: result => this.model.set_extras(result.data.extras),
       error: (err) => console.error('err', err),
     })
 
@@ -193,7 +193,7 @@ class Assembly extends React.Component {
               price
       } } } }
     ` }).subscribe({
-      next: result => this.data.set_active_orders(result.data.orders.map(o => Order.create(o))),
+      next: result => this.model.set_active_orders(result.data.orders.map(o => Order.create(o))),
       error: (err) => console.error('err', err),
     });
 
@@ -207,7 +207,7 @@ class Assembly extends React.Component {
         service_type
       } }
     ` }).subscribe({
-      next: result => this.data.set_services(result.data.services),
+      next: result => this.model.set_services(result.data.services),
       error: (err) => console.error('err', err),
     });
 
@@ -218,7 +218,7 @@ class Assembly extends React.Component {
           day_of_week
       } }
     ` }).subscribe({
-      next: result => this.data.set_room_discount_day((
+      next: result => this.model.set_room_discount_day((
         result.data.room_discount_day_events[0] ||
         { day_of_week: 0 }
       ).day_of_week),
@@ -233,7 +233,7 @@ class Assembly extends React.Component {
           pricing_factor
       } }
     ` }).subscribe({
-      next: result => this.data.set_room_pricing_factor(result.data.room_pricing_events[0].pricing_factor || 1),
+      next: result => this.model.set_room_pricing_factor(result.data.room_pricing_events[0].pricing_factor || 1),
       error: (err) => console.error('err', err),
     });
 
@@ -250,30 +250,30 @@ class Assembly extends React.Component {
           }
       } }
     ` }).subscribe({
-      next: result => this.data.set_reservations(result.data.reservations),
+      next: result => this.model.set_reservations(result.data.reservations),
       error: (err) => console.error('err', err),
     });
 
     // TODO find a new hook for this. Maybe a reaction to `loaded`?
     // .then(() => {
-    //   if(this.data.scroll !== 0)
-    //     document.querySelector(".orderLayout").scroll(0, this.data.scroll)
-    //   this.data.set_scroll(0);
+    //   if(this.model.scroll !== 0)
+    //     document.querySelector(".orderLayout").scroll(0, this.model.scroll)
+    //   this.model.set_scroll(0);
     // })
   }
 
-  @computed get visible_tab() { return this.data.visible_tab }
-  @computed get visible_service_type() { return this.data.visible_service_type }
-  @computed get visible_position() { return this.data.visible_position }
-  @computed get scroll() { return this.data.scroll }
-  @computed get reservations() { return this.data.reservations }
-  @computed get services() { return this.data.services }
-  @computed get extras() { return this.data.extras }
-  @computed get room_pricing_factor() { return this.data.room_pricing_factor }
-  @computed get room_discount_day() { return this.data.room_discount_day }
-  @computed get active_orders() { return this.data.active_orders }
-  @computed get new_reservation() { return this.data.new_reservation || {} }
-  @computed get reservation_date() { return this.data.reservation_date }
+  @computed get visible_tab() { return this.model.visible_tab }
+  @computed get visible_service_type() { return this.model.visible_service_type }
+  @computed get visible_position() { return this.model.visible_position }
+  @computed get scroll() { return this.model.scroll }
+  @computed get reservations() { return this.model.reservations }
+  @computed get services() { return this.model.services }
+  @computed get extras() { return this.model.extras }
+  @computed get room_pricing_factor() { return this.model.room_pricing_factor }
+  @computed get room_discount_day() { return this.model.room_discount_day }
+  @computed get active_orders() { return this.model.active_orders }
+  @computed get new_reservation() { return this.model.new_reservation || {} }
+  @computed get reservation_date() { return this.model.reservation_date }
 
   @computed get loaded() {
     return (
@@ -486,9 +486,9 @@ class Assembly extends React.Component {
   }
 
   set_visible_order(service, position) {
-    this.data.set_visible_service_type(service)
-    this.data.set_visible_position(position)
-    this.data.set_visible_tab("snacks")
+    this.model.set_visible_service_type(service)
+    this.model.set_visible_position(position)
+    this.model.set_visible_tab("snacks")
   }
 
   cancelVisibleOrder = () => {
