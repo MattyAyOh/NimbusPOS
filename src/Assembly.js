@@ -29,12 +29,12 @@ import { split } from "apollo-link"
 // Direction:
 //
 // The "Assembly" is a collection of all of the software pieces
-// that work together to operate on a single data set.
+// that work together to operate on a single model.
 // In this case, the "Assembly" contains routing logic,
 // while details of each page are broken out into other components.
 // As a result, we should strive to remove all code from this `render` function.
 
-const DataModel = types.model({
+const modelModel = types.model({
   visible_tab: types.maybeNull(types.string),
   visible_service_type: types.maybeNull(types.string),
   visible_position: types.maybeNull(types.integer),
@@ -72,7 +72,7 @@ class Assembly extends React.Component {
         reconnect: true,
         connectionParams: {
           headers: {
-            "x-hasura-access-key": process.env.REACT_APP_HASURA_SECRET,
+            "x-hasura-access-key": process.env.REACT_APP_HASURA_PASSWORD,
           }
         }
       },

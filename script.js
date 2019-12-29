@@ -18,7 +18,7 @@ const { DateTime } = require("luxon");
       .plus({ minute: 1 })
 
     await openBrowser();
-    await goto("http://localhost:3060");
+    await goto("http://localhost:3000");
 
     // Reservation
     await click("KTV");
