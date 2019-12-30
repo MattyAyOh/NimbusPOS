@@ -3,11 +3,6 @@ import { observer } from "mobx-react"
 import { DateTime } from "luxon"
 import { computed, observable, reaction } from "mobx"
 import { types } from "mobx-state-tree"
-import Aviator from "aviator"
-
-import Lobby from "./components/Lobby"
-import BigScreen from "./components/BigScreen"
-import Admin from "./components/Admin"
 
 import Extra from "./data/Extra"
 import Order from "./data/Order"
@@ -103,21 +98,12 @@ class Assembly extends React.Component {
       link: authLink.concat(link),
       cache: new InMemoryCache(),
     })
-
-    Aviator.setRoutes({
-      "/admin": () => this.current_page = Admin,
-      "/bigscreen": () => this.current_page = BigScreen,
-    })
-
-    Aviator.dispatch()
   }
 
   model = Model.create({
     new_reservation: {},
     reservation_date: { iso: DateTime.local().startOf("day").toISO() },
   })
-
-  @observable current_page = Lobby
 
   componentDidMount() {
     reaction(
@@ -168,16 +154,6 @@ class Assembly extends React.Component {
       this.room_pricing_factor
     ) ? DateTime.local().toISO()
       : false
-  }
-
-  render () {
-    if(this.current_page === BigScreen)
-      return <BigScreen assembly={this} />
-
-    if(this.current_page === Admin)
-      return <Admin assembly={this} />
-
-    return <Lobby assembly={this} />
   }
 
   @computed get visible_order() {
