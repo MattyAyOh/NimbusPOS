@@ -20,7 +20,6 @@ export const change_room_pricing = (graph, variables) => {
     mutation (
       ${clock_variables},
       $pricing_factor: float8!,
-    }
     ) {
       insert_room_pricing_events(objects: {
         pricing_factor: $pricing_factor,

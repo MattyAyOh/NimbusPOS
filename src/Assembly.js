@@ -15,14 +15,7 @@ import subscriptions from "./subscribe"
 import { change_room_discount_day, change_room_pricing } from "./change"
 
 // Queries
-import ApolloClient from "apollo-client";
 import gql from "graphql-tag"
-import { InMemoryCache } from "apollo-cache-inmemory"
-import { WebSocketLink } from "apollo-link-ws"
-import { createHttpLink } from "apollo-link-http"
-import { getMainDefinition } from "apollo-utilities"
-import { setContext } from "apollo-link-context"
-import { split } from "apollo-link"
 
 // Direction:
 //
@@ -33,6 +26,7 @@ import { split } from "apollo-link"
 // As a result, we should strive to remove all code from this `render` function.
 
 const Model = types.model({
+
   visible_tab: types.maybeNull(types.string),
   visible_service_type: types.maybeNull(types.string),
   visible_position: types.maybeNull(types.integer),
@@ -46,6 +40,7 @@ const Model = types.model({
   active_orders: types.array(Order),
   new_reservation: NewReservation,
   reservation_date: CalendarDate,
+
 }).actions(self => ({
   set_visible_tab(visible_tab) { self.visible_tab = visible_tab },
   set_visible_service_type(visible_service_type) { self.visible_service_type = visible_service_type },
@@ -59,53 +54,15 @@ const Model = types.model({
   set_active_orders(orders) { self.active_orders = orders },
 }))
 
-@observer
-class Assembly extends React.Component {
-  constructor(props) {
-    super(props)
+class Assembly {
+  constructor(graph) {
+    this.graph = graph
 
-    const wsLink = new WebSocketLink({
-      uri: `ws://${process.env.REACT_APP_URL_HASURA}`,
-      options: {
-        reconnect: true,
-        connectionParams: {
-          headers: {
-            // TODO is this needed if used alongside authLink?
-            "x-hasura-access-key": process.env.REACT_APP_HASURA_PASSWORD,
-          }
-        }
-      },
-
+    this.model = Model.create({
+      new_reservation: {},
+      reservation_date: { iso: DateTime.local().startOf("day").toISO() },
     })
-    const httpLink = createHttpLink({ uri: `http://${process.env.REACT_APP_URL_HASURA}` })
-    const authLink = setContext((_, { headers }) => (
-      { headers: {
-        ...headers,
-          "x-hasura-access-key": process.env.REACT_APP_HASURA_PASSWORD,
-      } }
-    ))
-    const link = split(({ query }) => {
-        const definition = getMainDefinition(query);
-        return (
-          definition.kind === 'OperationDefinition' &&
-          definition.operation === 'subscription'
-        );
-      },
-      wsLink,
-      httpLink,
-    )
-    this.graph = new ApolloClient({
-      link: authLink.concat(link),
-      cache: new InMemoryCache(),
-    })
-  }
 
-  model = Model.create({
-    new_reservation: {},
-    reservation_date: { iso: DateTime.local().startOf("day").toISO() },
-  })
-
-  componentDidMount() {
     reaction(
       () => this.model.room_pricing_factor,
       value => change_room_pricing(this.graph, { pricing_factor: value || 1.0 }),

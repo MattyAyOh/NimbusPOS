@@ -1,20 +1,24 @@
+import Aviator from "aviator"
 import React from "react"
 import ReactDOM from "react-dom"
-import Assembly from "./Assembly"
 
-import Aviator from "aviator"
+import Assembly from "./Assembly"
+import graph from "./graph"
 
 import Lobby from "./components/Lobby"
 import BigScreen from "./components/BigScreen"
 import Admin from "./components/Admin"
 
 const base = document.getElementById('root')
-const assembly = new Assembly()
+
+window.graph = graph
+window.Assembly = Assembly
+window.assembly = new Assembly(graph)
 
 Aviator.setRoutes({
-  "/":          () => window.assembly = ReactDOM.render(<Lobby assembly={assembly} />, base),
-  "/admin":     () => window.assembly = ReactDOM.render(<Admin assembly={assembly} />, base),
-  "/bigscreen": () => window.assembly = ReactDOM.render(<BigScreen assembly={assembly} />, base),
+  "/":          () => ReactDOM.render(<Lobby assembly={window.assembly} />, base),
+  "/admin":     () => ReactDOM.render(<Admin assembly={window.assembly} />, base),
+  "/bigscreen": () => ReactDOM.render(<BigScreen assembly={window.assembly} />, base),
 })
 
 Aviator.dispatch()
