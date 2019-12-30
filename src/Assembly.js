@@ -16,6 +16,9 @@ import Service from "./data/Service"
 import NewReservation from "./data/NewReservation"
 import CalendarDate from "./data/CalendarDate"
 
+import subscriptions from "./subscribe"
+import { change_room_discount_day, change_room_pricing } from "./change"
+
 // Queries
 import ApolloClient from "apollo-client";
 import gql from "graphql-tag"
@@ -34,7 +37,7 @@ import { split } from "apollo-link"
 // while details of each page are broken out into other components.
 // As a result, we should strive to remove all code from this `render` function.
 
-const modelModel = types.model({
+const Model = types.model({
   visible_tab: types.maybeNull(types.string),
   visible_service_type: types.maybeNull(types.string),
   visible_position: types.maybeNull(types.integer),
@@ -72,6 +75,7 @@ class Assembly extends React.Component {
         reconnect: true,
         connectionParams: {
           headers: {
+            // TODO is this needed if used alongside authLink?
             "x-hasura-access-key": process.env.REACT_APP_HASURA_PASSWORD,
           }
         }
@@ -82,7 +86,7 @@ class Assembly extends React.Component {
     const authLink = setContext((_, { headers }) => (
       { headers: {
         ...headers,
-          "x-hasura-access-key": process.env.REACT_APP_HASURA_SECRET,
+          "x-hasura-access-key": process.env.REACT_APP_HASURA_PASSWORD,
       } }
     ))
     const link = split(({ query }) => {
@@ -95,7 +99,7 @@ class Assembly extends React.Component {
       wsLink,
       httpLink,
     )
-    this.client = new ApolloClient({
+    this.graph = new ApolloClient({
       link: authLink.concat(link),
       cache: new InMemoryCache(),
     })
@@ -108,7 +112,7 @@ class Assembly extends React.Component {
     Aviator.dispatch()
   }
 
-  model = modelModel.create({
+  model = Model.create({
     new_reservation: {},
     reservation_date: { iso: DateTime.local().startOf("day").toISO() },
   })
@@ -118,141 +122,22 @@ class Assembly extends React.Component {
   componentDidMount() {
     reaction(
       () => this.model.room_pricing_factor,
-      value => this.client.mutate({ mutation: gql`
-        mutation (
-          $created_at: timestamp!,
-          $updated_at: timestamp!,
-          $pricing_factor: float8!,
-        ) {
-          insert_room_pricing_events(objects: {
-            pricing_factor: $pricing_factor,
-            created_at: $created_at,
-            updated_at: $created_at,
-          }) { affected_rows }
-        }
-        `,
-        variables: {
-          pricing_factor: value || 1.0,
-          created_at: DateTime.local().toUTC().toSQL(),
-          updated_at: DateTime.local().toUTC().toSQL(),
-        },
-      })
+      value => change_room_pricing(this.graph, { pricing_factor: value || 1.0 }),
     )
 
     reaction(
       () => this.model.room_discount_day,
-      value => this.client.mutate({ mutation: gql`
-        mutation (
-          $created_at: timestamp!,
-          $updated_at: timestamp!,
-          $day_of_week: Int!,
-        ) {
-          insert_room_discount_day_events(objects: {
-            day_of_week: $day_of_week,
-            created_at: $created_at,
-            updated_at: $created_at,
-          }) { affected_rows }
-        }
-        `,
-        variables: {
-          day_of_week: value || 0,
-          created_at: DateTime.local().toUTC().toSQL(),
-          updated_at: DateTime.local().toUTC().toSQL(),
-        },
-      })
+      value => change_room_discount_day(this.graph, { day_of_week: value || 0 })
     )
 
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription { extras(order_by: {id: asc}, where: {active: {_eq: true}}) {
-        id
-        name
-        image_url
-        extra_type
-        price
-      } }
-    ` }).subscribe({
-      next: result => this.model.set_extras(result.data.extras),
-      error: (err) => console.error('err', err),
+    Object.keys(subscriptions).forEach(subscribe => {
+      let follow = subscriptions[subscribe]
+
+      this.graph.subscribe({ query: gql(subscribe) }).subscribe({
+        next: follow(this.model),
+        error: err => console.error("err", err),
+      })
     })
-
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription { orders(where: {closed_at: {_is_null: true}}) {
-          id
-          service_id
-          closed_at
-          start_time
-          end_time
-          order_extras {
-            id
-            extra_id
-            quantity
-            extra {
-              name
-              price
-      } } } }
-    ` }).subscribe({
-      next: result => this.model.set_active_orders(result.data.orders.map(o => Order.create(o))),
-      error: (err) => console.error('err', err),
-    });
-
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription { services(order_by: {service_type: asc, position: asc}) {
-        id
-        hourly_rate
-        name
-        position
-        service_type
-      } }
-    ` }).subscribe({
-      next: result => this.model.set_services(result.data.services),
-      error: (err) => console.error('err', err),
-    });
-
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription {
-        room_discount_day_events(order_by: {created_at: desc}, limit: 1) {
-          day_of_week
-      } }
-    ` }).subscribe({
-      next: result => this.model.set_room_discount_day((
-        result.data.room_discount_day_events[0] ||
-        { day_of_week: 0 }
-      ).day_of_week),
-
-      error: (err) => console.error('err', err),
-    });
-
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription {
-        room_pricing_events(order_by: {created_at: desc}, limit: 1) {
-          pricing_factor
-      } }
-    ` }).subscribe({
-      next: result => this.model.set_room_pricing_factor(result.data.room_pricing_events[0].pricing_factor || 1),
-      error: (err) => console.error('err', err),
-    });
-
-    // TODO clean up the subscription when we're done with it.
-    this.client.subscribe({ query: gql`
-      subscription {
-        reservations {
-          id
-          start_time
-          end_time
-          service {
-            name
-            position
-          }
-      } }
-    ` }).subscribe({
-      next: result => this.model.set_reservations(result.data.reservations),
-      error: (err) => console.error('err', err),
-    });
 
     // TODO find a new hook for this. Maybe a reaction to `loaded`?
     // .then(() => {
@@ -329,7 +214,7 @@ class Assembly extends React.Component {
     if(state.start_time) state.start_time = state.start_time.toUTC().toSQL()
     if(state.end_time) state.end_time = state.end_time.toUTC().toSQL()
 
-    this.client.mutate({ mutation: gql`
+    this.graph.mutate({ mutation: gql`
       mutation (
         $order_id: bigint!,
         $state: orders_set_input,
@@ -355,7 +240,7 @@ class Assembly extends React.Component {
 
     // Make sure the order_extra exists
     if(!order_extra)
-      this.client.mutate({ mutation: gql`
+      this.graph.mutate({ mutation: gql`
         mutation (
           $order_id: bigint!,
           $extra_id: bigint!,
@@ -374,7 +259,7 @@ class Assembly extends React.Component {
 
     // set the quantity
     if(quantity > 0) {
-      this.client.mutate({ mutation: gql`
+      this.graph.mutate({ mutation: gql`
         mutation (
           $order_id: bigint!,
           $extra_id: bigint!,
@@ -397,7 +282,7 @@ class Assembly extends React.Component {
       })
     } else {
       // quantity is 0; remove the record.
-      this.client.mutate({ mutation: gql`
+      this.graph.mutate({ mutation: gql`
         mutation (
           $order_id: bigint!,
           $extra_id: bigint!,
@@ -422,7 +307,7 @@ class Assembly extends React.Component {
     this.set_visible_order(service_name.toLowerCase(), position)
 
     if(!this.visible_order) {
-      this.client.mutate({ mutation: gql`
+      this.graph.mutate({ mutation: gql`
         mutation (
           $service_id: bigint!,
           $start_time: timestamp,
@@ -444,7 +329,7 @@ class Assembly extends React.Component {
   }
 
   create_reservation() {
-    this.client.mutate({ mutation: gql`
+    this.graph.mutate({ mutation: gql`
       mutation (
         $created_at: timestamp!,
         $updated_at: timestamp!,
@@ -475,7 +360,7 @@ class Assembly extends React.Component {
   }
 
   remove_reservation(id) {
-    this.client.mutate({ mutation: gql`
+    this.graph.mutate({ mutation: gql`
       mutation ($id: bigint!) {
         delete_reservations(where: { id: { _eq: $id }} ) {
           affected_rows
@@ -492,7 +377,7 @@ class Assembly extends React.Component {
   }
 
   cancelVisibleOrder = () => {
-    this.client.mutate({ mutation: gql`
+    this.graph.mutate({ mutation: gql`
       mutation ($id: bigint!) {
         delete_order_extras(where: { order_id: { _eq: $id }} ){
           affected_rows
