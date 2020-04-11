@@ -39,6 +39,6 @@
     "react-app-rewired": "^1.5.2"
   },
   "engines": {
-    "node": "12.13.0"
+    "node": "13.6.0"
   }
 }

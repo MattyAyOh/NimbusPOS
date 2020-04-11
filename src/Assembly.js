@@ -52,6 +52,12 @@ const Model = types.model({
   set_room_pricing_factor(factor) { self.room_pricing_factor = factor },
   set_room_discount_day(day) { self.room_discount_day = day },
   set_active_orders(orders) { self.active_orders = orders },
+
+  set_visible_order(service, position) {
+    self.set_visible_service_type(service)
+    self.set_visible_position(position)
+    self.set_visible_tab("snacks")
+  },
 }))
 
 class Assembly {
@@ -237,7 +243,7 @@ class Assembly {
   }
 
   ensureCurrentOrder(service_name, position) {
-    this.set_visible_order(service_name.toLowerCase(), position)
+    this.model.set_visible_order(service_name.toLowerCase(), position)
 
     if(!this.visible_order) {
       this.graph.mutate({ mutation: gql`
@@ -303,12 +309,6 @@ class Assembly {
     })
   }
 
-  set_visible_order(service, position) {
-    this.model.set_visible_service_type(service)
-    this.model.set_visible_position(position)
-    this.model.set_visible_tab("snacks")
-  }
-
   cancelVisibleOrder = () => {
     this.graph.mutate({ mutation: gql`
       mutation ($id: bigint!) {
@@ -323,7 +323,7 @@ class Assembly {
       variables: { id: this.visible_order.id },
     })
 
-    this.set_visible_order(null, null)
+    this.model.set_visible_order(null, null)
   }
 }
 
