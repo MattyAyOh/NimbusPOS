@@ -12,7 +12,6 @@ import Admin from "./components/Admin"
 const base = document.getElementById('root')
 
 window.graph = graph
-window.Assembly = Assembly
 window.assembly = new Assembly(graph)
 
 Aviator.setRoutes({

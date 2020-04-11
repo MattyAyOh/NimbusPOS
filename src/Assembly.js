@@ -31,7 +31,6 @@ const Model = types.model({
   visible_service_type: types.maybeNull(types.string),
   visible_position: types.maybeNull(types.integer),
 
-  scroll: 0,
   reservations: types.array(Reservation),
   services: types.array(Service),
   extras: types.array(Extra),
@@ -45,7 +44,6 @@ const Model = types.model({
   set_visible_tab(visible_tab) { self.visible_tab = visible_tab },
   set_visible_service_type(visible_service_type) { self.visible_service_type = visible_service_type },
   set_visible_position(visible_position) { self.visible_position = visible_position },
-  set_scroll(scroll) { self.scroll = scroll },
   set_reservations(reservations) { self.reservations = reservations },
   set_services(services) { self.services = services },
   set_extras(extras) { self.extras = extras },
@@ -87,19 +85,11 @@ class Assembly {
         error: err => console.error("err", err),
       })
     })
-
-    // TODO find a new hook for this. Maybe a reaction to `loaded`?
-    // .then(() => {
-    //   if(this.model.scroll !== 0)
-    //     document.querySelector(".orderLayout").scroll(0, this.model.scroll)
-    //   this.model.set_scroll(0);
-    // })
   }
 
   @computed get visible_tab() { return this.model.visible_tab }
   @computed get visible_service_type() { return this.model.visible_service_type }
   @computed get visible_position() { return this.model.visible_position }
-  @computed get scroll() { return this.model.scroll }
   @computed get reservations() { return this.model.reservations }
   @computed get services() { return this.model.services }
   @computed get extras() { return this.model.extras }
