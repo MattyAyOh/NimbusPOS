@@ -21,7 +21,7 @@
     "react": "^16.3.2",
     "react-app-rewire-mobx": "^1.0.8",
     "react-calendar": "^2.19.0",
-    "react-dom": "^16.3.2",
+    "react-dom": "^16.3.3",
     "react-scripts": "1.1.4",
     "react-select": "^1.2.1",
     "react-twemoji": "^0.1.0",
