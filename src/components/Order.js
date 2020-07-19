@@ -29,7 +29,7 @@ class Order extends React.Component {
               Cancel Order
             </StyledLink>
 
-            <StyledLink onClick={() => this.props.assembly.set_visible_order(null, null)} >
+            <StyledLink onClick={() => this.props.assembly.model.set_visible_order(null, null)} >
               Close
             </StyledLink>
           </Links>
