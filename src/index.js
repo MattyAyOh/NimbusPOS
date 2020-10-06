@@ -18,6 +18,7 @@ Aviator.setRoutes({
   "/":          () => ReactDOM.render(<Lobby assembly={window.assembly} />, base),
   "/admin":     () => ReactDOM.render(<Admin assembly={window.assembly} />, base),
   "/bigscreen": () => ReactDOM.render(<BigScreen assembly={window.assembly} />, base),
+  "/checkout":  () => ReactDOM.render(<Checkout assembly={window.assembly} />, base),
 })
 
 Aviator.dispatch()
