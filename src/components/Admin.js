@@ -61,7 +61,7 @@ class Admin extends React.Component {
             <Table>
               <tbody>
               {["KTV", "Pool", "Mahjong"].map(name => {
-                let service_ids = this.props.assembly.services
+                let service_ids = this.props.assembly.model.services
                   .filter(s => s.name === name)
                   .map(s => s.id)
 
@@ -118,7 +118,7 @@ class Admin extends React.Component {
         <Layout.Right>
           <p>Room Pricing:</p>
           <Selection
-            update={() => this.props.assembly.room_pricing_factor}
+            update={() => this.props.assembly.model.room_pricing_factor}
             options={[0.5, 0.6, 0.75, 0.8, 0.9, 1]}
             render ={option => option * 100 + "%"}
             onChange={(selection) => this.props.assembly.model.set_room_pricing_factor(selection)}
@@ -126,7 +126,7 @@ class Admin extends React.Component {
 
           <p>Applied on:</p>
           <Selection
-            update={() => this.props.assembly.room_discount_day}
+            update={() => this.props.assembly.model.room_discount_day}
             options={[1, 2, 3, 4, 5, 6, 7, 0]}
             render ={option => option ? DateTime.fromObject({weekday: option}).toLocaleString({ weekday: "short" }) : "Any Day"}
             onChange={(selection) => this.props.assembly.model.set_room_discount_day(selection)}
@@ -144,7 +144,7 @@ class Admin extends React.Component {
   }
 
   @computed get selected_extras() {
-    return this.props.assembly.extras
+    return this.props.assembly.model.extras
   }
 
   amount_spent_on(extra, orders) {
