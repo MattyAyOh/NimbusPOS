@@ -6,6 +6,26 @@ import { observable, computed } from "mobx"
 import Selection from "../principals/Selection"
 import gql from "graphql-tag"
 import OrderData from "../data/Order"
+import { Line, HorizontalBar } from "react-chartjs-2"
+
+var colors = [
+  "#b58900",
+  "#cb4b16",
+  "#dc322f",
+  "#d33682",
+  "#6c71c4",
+  "#268bd2",
+  "#2aa198",
+  "#859900",
+  "#b58900",
+  "#cb4b16",
+  "#dc322f",
+  "#d33682",
+  "#6c71c4",
+  "#268bd2",
+  "#2aa198",
+  "#859900",
+]
 
 @observer
 class Admin extends React.Component {
@@ -55,8 +75,7 @@ class Admin extends React.Component {
             &nbsp;to&nbsp;
             {this.selected_timeframe_end.toLocaleString()}
           </Timeframe>
-
-          Time spent by service:
+Time spent by service:
           <Observer>{() =>
             <Table>
               <tbody>
@@ -131,6 +150,9 @@ class Admin extends React.Component {
             render ={option => option ? DateTime.fromObject({weekday: option}).toLocaleString({ weekday: "short" }) : "Any Day"}
             onChange={(selection) => this.props.assembly.model.set_room_discount_day(selection)}
           />
+
+          <p>Progress Map</p>
+          <Line data={ chronological_earnings } options={options} />
         </Layout.Right>
       </Layout>
     );
@@ -176,10 +198,83 @@ class Admin extends React.Component {
   }
 }
 
+var chronological_earnings = parse_simple_serie(
+)
+
+
+var options = {
+  legend: {
+    position: 'right',
+    labels: { fontColor: '#d0d0d0' },
+  },
+  scales: {
+    xAxes: [{
+      ticks: {
+        fontColor: '#d0d0d0',
+      },
+    }],
+    yAxes: [{
+      ticks: {
+        fontColor: '#d0d0d0',
+        callback: (val, index, values) => (val.toExponential())
+      },
+    }],
+  },
+}
+
+var bar_options = {
+  scales: {
+    yAxes: [{
+      ticks: {
+        beginAtZero: true,
+        fontColor: '#d0d0d0',
+      },
+    }],
+    xAxes: [{
+      ticks: {
+        fontColor: '#d0d0d0',
+        callback: (val, index, values) => val.toExponential()
+      },
+    }],
+  },
+}
+
+
+var parse_authorities_and_outlays = (serie) => (
+  {
+    labels: Object.keys(serie[Object.keys(serie)[0]]),
+    datasets:
+      Object.keys(serie).map((label, i) => ({
+        label,
+        data: Object.keys(serie[label]).map(bin => (
+          serie[label][bin]
+        )),
+        fill: false,
+        backgroundColor: `${colors[i % colors.length]}`,
+        borderColor: `${colors[i % colors.length]}4a`,
+      }))
+  }
+)
+
+var parse_simple_serie = (serie) => (
+  {
+    labels: Object.keys(
+      serie[ Object.keys(serie)[0] ]
+    ),
+    datasets: Object.keys(serie).map((l, i) => ({
+      label: l,
+      data: Object.keys(serie[l]).map(y => ( serie[l][y])),
+      fill: false,
+      backgroundColor: `${colors[i]}`,
+      borderColor: `${colors[i]}4a`,
+    }))
+  }
+)
+
 const Layout = styled.div`
   display: grid;
   grid-row-gap: 2rem;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 20% 80%;
   grid-template-rows: 4rem 1fr;
   height: 100vh;
 `
