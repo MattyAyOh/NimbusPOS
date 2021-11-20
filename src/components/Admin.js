@@ -31,11 +31,7 @@ class Admin extends React.Component {
       } }
     ` }).subscribe({
       next: result => {
-        runInAction(() => {
-          this.orders = result.data.orders.map(o => OrderData.create(o))
-          console.log(this.orders)
-          window.orders = this.orders
-        })
+        this.orders = result.data.orders.map(o => OrderData.create(o))
       },
       error: (err) => console.error('err', err),
     });
@@ -44,15 +40,6 @@ class Admin extends React.Component {
 
 
   render () {
-    var primaryAxis = {
-      getValue: datum => datum.date,
-    }
-    var secondaryAxes = [
-      {
-        getValue: datum => datum.price,
-      }
-    ]
-
     return (
       <Layout>
         <Layout.Left>
@@ -200,7 +187,7 @@ Time spent by service:
 }
 
 var parse_simple_series = (series) => {
-  var days_in_series = series
+  var orders_by_day = series
   .map(order => ({
     day: new Date(order.end_time).setHours(0,0,0,0),
     price: (
@@ -213,7 +200,7 @@ var parse_simple_series = (series) => {
       .reduce((a,b) =>  a + b, 0)
     )
   }))
-  console.log(days_in_series)
+  console.log(orders_by_day)
 
   const groupByDay = arr => {
     const map = {};
@@ -226,10 +213,10 @@ var parse_simple_series = (series) => {
     return map;
   }
 
-  console.log(groupByDay(days_in_series))
+  console.log(groupByDay(orders_by_day))
 
   return (
-    groupByDay(days_in_series)
+    groupByDay(orders_by_day)
   )
 }
 window.parse_simple_series = parse_simple_series
