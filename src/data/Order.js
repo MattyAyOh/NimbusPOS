@@ -15,7 +15,8 @@ import Time from "./Time"
 //   start_time: 2018-07-06T21:26:37.894Z
 
 // TODO change id => a types.identifier parameter
-const Order = types.model({
+const Order = types.model('Order',
+  {
   closed_at: types.maybeNull(types.string),
   order_extras: types.array(OrderExtra),
   id: types.integer,

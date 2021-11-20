@@ -7,9 +7,8 @@ import LineItem from "./LineItem"
 
 const blue = "#4a90e2"
 
-@observer
 class Checkout extends React.Component {
-  @observable num_people = 1
+  num_people = observable.box(1)
 
   get order() {
     return this.props.assembly.visible_order
@@ -63,8 +62,8 @@ class Checkout extends React.Component {
               {
                 [1,2,3,4,5,6,7,8].map(num => (
                   <Button
-                    active={this.num_people === num}
-                    onClick={() => this.num_people = num }
+                    active={this.num_people.get() === num}
+                    onClick={() => this.num_people.set(num) }
                   >
                     {num}
                   </Button>
@@ -72,7 +71,7 @@ class Checkout extends React.Component {
               }
               </div>
             }
-            amount={(total_price / this.num_people).toFixed(2)}
+            amount={(total_price / this.num_people.get()).toFixed(2)}
           />
         </Bill>
 
@@ -119,4 +118,4 @@ const Blue = styled.strong`
   color: ${blue};
 `
 
-export default Checkout
+export default observer(Checkout)

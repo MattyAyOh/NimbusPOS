@@ -16,9 +16,8 @@ const scrollNodeIntoView = (boolean) => (node) =>
  * `hourOptions`: a list of allowed values for the hour
  * `minuteOptions`: a list of allowed values for the minute
  */
-@observer
 class Timepicker extends React.Component {
-  @observable open = false
+  open = observable.box(false)
 
   hourOptions() {
     return this.props.hourOptions ||
@@ -30,11 +29,11 @@ class Timepicker extends React.Component {
       Array.apply(null, {length: 60}).map(Number.call, Number)
   }
 
-  @computed get time() {
+  get time() {
     return this.props.value || DateTime.local()
   }
 
-  @computed get displayText() {
+  get displayText() {
     return this.props.value
       ? this.props.value.toLocaleString(DateTime.TIME_24_SIMPLE)
       : "--:--"
@@ -48,10 +47,10 @@ class Timepicker extends React.Component {
       <Wrapper>
         <TimeInput onClick={() => this.toggleOpen()} >
           {this.displayText}
-          { this.open && <Right>X</Right> }
+          { this.open.get() && <Right>X</Right> }
         </TimeInput>
 
-        { this.open &&
+        { this.open.get() &&
           <TouchInput>
             <Scroll>
               {this.hourOptions().map((hour) => (
@@ -80,12 +79,12 @@ class Timepicker extends React.Component {
     )
   }
 
-  @action timeChanged(timeComponents) {
+  timeChanged(timeComponents) {
     this.props.onChange(this.time.set(timeComponents))
   }
 
-  @action toggleOpen() {
-    this.open = !this.open
+  toggleOpen() {
+    this.open.set(!this.open.get())
   }
 }
 
@@ -130,4 +129,4 @@ const TimeOption = styled.div`
   ${({selected}) => selected && `background-color: ${blue}; color: white;`}
 `
 
-export default Timepicker
+export default observer(Timepicker)

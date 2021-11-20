@@ -1,7 +1,7 @@
 import React from "react"
 import { observer } from "mobx-react"
 import { DateTime } from "luxon"
-import { computed, observable, reaction } from "mobx"
+import { observable, reaction } from "mobx"
 import { types } from "mobx-state-tree"
 
 import Extra from "./data/Extra"
@@ -87,19 +87,19 @@ class Assembly {
     })
   }
 
-  @computed get visible_tab() { return this.model.visible_tab }
-  @computed get visible_service_type() { return this.model.visible_service_type }
-  @computed get visible_position() { return this.model.visible_position }
-  @computed get reservations() { return this.model.reservations }
-  @computed get services() { return this.model.services }
-  @computed get extras() { return this.model.extras }
-  @computed get room_pricing_factor() { return this.model.room_pricing_factor }
-  @computed get room_discount_day() { return this.model.room_discount_day }
-  @computed get active_orders() { return this.model.active_orders }
-  @computed get new_reservation() { return this.model.new_reservation || {} }
-  @computed get reservation_date() { return this.model.reservation_date }
+  get visible_tab() { return this.model.visible_tab }
+  get visible_service_type() { return this.model.visible_service_type }
+  get visible_position() { return this.model.visible_position }
+  get reservations() { return this.model.reservations }
+  get services() { return this.model.services }
+  get extras() { return this.model.extras }
+  get room_pricing_factor() { return this.model.room_pricing_factor }
+  get room_discount_day() { return this.model.room_discount_day }
+  get active_orders() { return this.model.active_orders }
+  get new_reservation() { return this.model.new_reservation || {} }
+  get reservation_date() { return this.model.reservation_date }
 
-  @computed get loaded() {
+  get loaded() {
     return (
       this.services &&
       this.extras &&
@@ -109,7 +109,7 @@ class Assembly {
       : false
   }
 
-  @computed get visible_order() {
+  get visible_order() {
     return (
       this.visible_service
       ? this.active_orders.filter(o => o.service_id === this.visible_service.id)[0]
@@ -117,22 +117,22 @@ class Assembly {
     )
   }
 
-  @computed get visible_service() {
+  get visible_service() {
     return this.services.filter(s =>
       s.name.toLowerCase() === this.visible_service_type &&
       s.position === this.visible_position
     )[0]
   }
 
-  @computed get snacks() {
+  get snacks() {
     return this.extras.filter(s => s.extra_type === 0)
   }
 
-  @computed get drinks() {
+  get drinks() {
     return this.extras.filter(s => s.extra_type === 1)
   }
 
-  @computed get others() {
+  get others() {
     return this.extras.filter(s => s.extra_type === 2)
   }
 
