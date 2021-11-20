@@ -6,7 +6,6 @@ import { observable, computed } from "mobx"
 import Selection from "../principals/Selection"
 import gql from "graphql-tag"
 import OrderData from "../data/Order"
-import { Chart } from "react-charts"
 import LineGraph from "../LineGraph"
 
 var colors = [
@@ -30,7 +29,7 @@ var colors = [
 
 class Admin extends React.Component {
   timeframe = observable.box("All time")
-  order_archive = observable.array([])
+  orders = observable.array([])
 
   componentDidMount() {
     // TODO clean up the subscription when we're done with it.
@@ -49,10 +48,12 @@ class Admin extends React.Component {
           }
       } }
     ` }).subscribe({
-      next: result => this.order_archive =
+      next: result => this.orders =
         result.data.orders.map(o => OrderData.create(o)),
       error: (err) => console.error('err', err),
     });
+
+    window.orders = this.orders
   }
 
 
@@ -173,7 +174,7 @@ Time spent by service:
       }
 
   get orders_within_timeframe() {
-    return this.order_archive.filter(order =>
+    return this.orders.filter(order =>
       DateTime.fromISO(order.closed_at) >= this.selected_timeframe_start &&
       DateTime.fromISO(order.closed_at) < this.selected_timeframe_end
     )
@@ -205,14 +206,12 @@ Time spent by service:
       "Rolling Week":   [DateTime.local().minus({ week: 1 }), DateTime.local()],
       "Rolling 30-day": [DateTime.local().minus({ day: 30 }), DateTime.local()],
       "All time": [
-        this.order_archive.map(order => DateTime.fromISO(order.closed_at)).sort()[0] || DateTime.local(),
+        this.orders.map(order => DateTime.fromISO(order.closed_at)).sort()[0] || DateTime.local(),
         DateTime.local(),
       ],
     }
   }
 }
-
-
 
 var parse_simple_series = (series) => {
   var days_in_series = series
@@ -224,27 +223,25 @@ var parse_simple_series = (series) => {
     ) + (
       order
       .order_extras
-      .map(add_on => add_on.price)
+      .map(extra => extra.extra.price)
       .reduce((a,b) =>  a + b, 0)
     )
   }))
+  console.log(days_in_series)
 
-  var query = `
-      subscription { orders(where: {closed_at: {_is_null: false}}) {
-          id
-          service_id
-          closed_at
-          start_time
-          end_time
-          service { hourly_rate name }
-          order_extras {
-            extra { price name }
-          }
-      } }
-`
+  const groupByDay = arr => {
+    const map = {};
+    arr.forEach(record => {
+      if (!map[record.day]) {
+        map[record.day] = 0
+      };
+      map[record.day] += record.price
+    });
+    return map;
+  }
 
+  console.log(groupByDay(days_in_series))
 
-  debugger
   return (
     Object.keys(
       days_in_series
@@ -255,24 +252,8 @@ var parse_simple_series = (series) => {
     ).map((day, i) => ({
     }))
   )
-
-
-  return (
-    Object.keys(series).map((label, i) => ({
-      label,
-      data: [
-        {
-          date: new Date(series[label].end_time),
-          price: series[label].orderExtras.reduce((a,b) => {
-            return a + b
-          }, 0),
-        }
-      ],
-      backgroundColor: `${colors[i]}`,
-      borderColor: `${colors[i]}4a`,
-    }))
-  )
 }
+window.parse_simple_series = parse_simple_series
 
 const data = [
   { label: "S", x: 0, y: 0 },
