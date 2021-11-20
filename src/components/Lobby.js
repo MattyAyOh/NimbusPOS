@@ -10,9 +10,8 @@ import Loading from "./Loading"
 import Order from "./Order"
 import Reservations from "./Reservations"
 
-@observer
 class Lobby extends React.Component {
-  @observable current_time = DateTime.local()
+  current_time = observable.box(DateTime.local())
 
   constructor(props) {
     super(props)
@@ -21,7 +20,10 @@ class Lobby extends React.Component {
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => this.current_time = DateTime.local(), 1000)
+    this.timer = setInterval(
+      () => this.current_time.set(DateTime.local()),
+      1000,
+    )
   }
 
   componentWillUnmount() {
@@ -45,7 +47,7 @@ class Lobby extends React.Component {
                       .filter(s => s.name.toLowerCase() === service_name)
                       .map((service) => (
                         <Table
-                          current_time={this.current_time}
+                          current_time={this.current_time.get()}
                           key={service.id}
                           service={service}
                           assembly={this.props.assembly}
@@ -115,4 +117,4 @@ const Tables = styled.div`
   margin-top: 2rem;
 `
 
-export default Lobby
+export default observer(Lobby)
