@@ -1,7 +1,8 @@
 import Extra from "./Extra"
 import { types } from "mobx-state-tree"
 
-const OrderExtra = types.model({
+const OrderExtra = types.model('OrderExtra',
+  {
   id: types.integer,
   extra_id: types.integer,
   quantity: types.maybeNull(types.integer),

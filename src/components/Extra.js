@@ -1,9 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { observer } from "mobx-react"
-import { computed } from "mobx"
 
-@observer
 class Extra extends React.Component {
   render () {
     return (
@@ -24,7 +22,7 @@ class Extra extends React.Component {
     );
   }
 
-  @computed get quantity() {
+  get quantity() {
     const extra = this.props.assembly.visible_order.order_extras
       .filter((x) => x.extra.name === this.props.name)[0]
     return (extra && extra.quantity) || 0
@@ -65,4 +63,4 @@ const Decrement = styled.div`
   cursor: pointer;
 `
 
-export default Extra
+export default observer(Extra)

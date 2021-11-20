@@ -2,9 +2,7 @@ import React from "react"
 import styled from "styled-components"
 import { primary as blue } from "colors"
 import { observer, Observer } from "mobx-react"
-import { computed } from "mobx"
 
-@observer
 class TabView extends React.Component {
   render() {
     return (
@@ -28,7 +26,6 @@ class TabView extends React.Component {
     )
   }
 
-  @computed
   get visible_tab() {
     let tab_name =
       this.props.assembly.visible_tab ||
@@ -54,4 +51,4 @@ const Tab = styled.span`
   text-decoration: underline;
 `
 
-export default TabView;
+export default observer(TabView)

@@ -7,7 +7,6 @@ import { computed } from "mobx"
 const blue = "#4a90e2"
 const grey = "#afb5bd"
 
-@observer
 class Table extends React.Component {
   render() {
     return (
@@ -37,7 +36,7 @@ class Table extends React.Component {
     )
   }
 
-  @computed get order() {
+  get order() {
     return (
       this.props.assembly.active_orders
       .filter(o => o.service_id === this.props.service.id)[0]
@@ -75,4 +74,4 @@ const Price = styled.span`
   text-align: left;
 `
 
-export default Table
+export default observer(Table)

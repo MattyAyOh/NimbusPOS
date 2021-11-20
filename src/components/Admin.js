@@ -6,7 +6,8 @@ import { observable, computed } from "mobx"
 import Selection from "../principals/Selection"
 import gql from "graphql-tag"
 import OrderData from "../data/Order"
-import { Line, HorizontalBar } from "react-chartjs-2"
+import { Chart } from "react-charts"
+import LineGraph from "../LineGraph"
 
 var colors = [
   "#b58900",
@@ -27,10 +28,9 @@ var colors = [
   "#859900",
 ]
 
-@observer
 class Admin extends React.Component {
-  @observable timeframe = "All time"
-  @observable order_archive = []
+  timeframe = observable.box("All time")
+  order_archive = observable.array([])
 
   componentDidMount() {
     // TODO clean up the subscription when we're done with it.
@@ -41,22 +41,31 @@ class Admin extends React.Component {
           closed_at
           start_time
           end_time
+          service { hourly_rate name }
           order_extras {
             id
             extra_id
-            quantity
-            extra {
-              name
-              price
-      } } } }
+            extra { price name }
+          }
+      } }
     ` }).subscribe({
-      next: result => this.order_archive = result.data.orders.map(o => OrderData.create(o)),
+      next: result => this.order_archive =
+        result.data.orders.map(o => OrderData.create(o)),
       error: (err) => console.error('err', err),
     });
   }
 
 
   render () {
+    var primaryAxis = {
+      getValue: datum => datum.date,
+    }
+    var secondaryAxes = [
+      {
+        getValue: datum => datum.price,
+      }
+    ]
+
     return (
       <Layout>
         <Layout.Left>
@@ -64,9 +73,9 @@ class Admin extends React.Component {
 
           <Timeframe>
             <Selection
-              update={() => this.timeframe}
+              update={() => this.timeframe.get()}
               options={Object.keys(this.timeframes)}
-              onChange={(selection) => this.timeframe  = selection}
+              onChange={(selection) => this.timeframe.set(selection)}
             />
           </Timeframe>
 
@@ -152,20 +161,25 @@ Time spent by service:
           />
 
           <p>Progress Map</p>
-          <Line data={ chronological_earnings } options={options} />
-        </Layout.Right>
-      </Layout>
-    );
-  }
+          <LineGraph
+            data={data}
+            horizontalGuides={5}
+            precision={0}
+            verticalGuides={6}
+            />
+          </Layout.Right>
+        </Layout>
+      );
+      }
 
-  @computed get orders_within_timeframe() {
+  get orders_within_timeframe() {
     return this.order_archive.filter(order =>
       DateTime.fromISO(order.closed_at) >= this.selected_timeframe_start &&
       DateTime.fromISO(order.closed_at) < this.selected_timeframe_end
     )
   }
 
-  @computed get selected_extras() {
+  get selected_extras() {
     return this.props.assembly.extras
   }
 
@@ -176,15 +190,15 @@ Time spent by service:
       .reduce((a,b) => a + b, 0) * extra.price
   }
 
-  @computed get selected_timeframe_start() {
+  get selected_timeframe_start() {
     return this.timeframes[this.timeframe][0]
   }
 
-  @computed get selected_timeframe_end() {
+  get selected_timeframe_end() {
     return this.timeframes[this.timeframe][1]
   }
 
-  @computed get timeframes() {
+  get timeframes() {
     return {
       "Week to date":   [DateTime.fromObject({ weekDay: 1 }), DateTime.local()],
       "Month to date":  [DateTime.fromObject({ day: 1 }), DateTime.local()],
@@ -198,78 +212,77 @@ Time spent by service:
   }
 }
 
-var chronological_earnings = parse_simple_serie(
-)
 
 
-var options = {
-  legend: {
-    position: 'right',
-    labels: { fontColor: '#d0d0d0' },
-  },
-  scales: {
-    xAxes: [{
-      ticks: {
-        fontColor: '#d0d0d0',
-      },
-    }],
-    yAxes: [{
-      ticks: {
-        fontColor: '#d0d0d0',
-        callback: (val, index, values) => (val.toExponential())
-      },
-    }],
-  },
-}
+var parse_simple_series = (series) => {
+  var days_in_series = series
+  .map(order => ({
+    day: new Date(order.end_time).setHours(0,0,0,0),
+    price: (
+      (new Date(order.end_time) - new Date(order.start_time))
+      * order.service.hourly_rate
+    ) + (
+      order
+      .order_extras
+      .map(add_on => add_on.price)
+      .reduce((a,b) =>  a + b, 0)
+    )
+  }))
 
-var bar_options = {
-  scales: {
-    yAxes: [{
-      ticks: {
-        beginAtZero: true,
-        fontColor: '#d0d0d0',
-      },
-    }],
-    xAxes: [{
-      ticks: {
-        fontColor: '#d0d0d0',
-        callback: (val, index, values) => val.toExponential()
-      },
-    }],
-  },
-}
+  var query = `
+      subscription { orders(where: {closed_at: {_is_null: false}}) {
+          id
+          service_id
+          closed_at
+          start_time
+          end_time
+          service { hourly_rate name }
+          order_extras {
+            extra { price name }
+          }
+      } }
+`
 
 
-var parse_authorities_and_outlays = (serie) => (
-  {
-    labels: Object.keys(serie[Object.keys(serie)[0]]),
-    datasets:
-      Object.keys(serie).map((label, i) => ({
-        label,
-        data: Object.keys(serie[label]).map(bin => (
-          serie[label][bin]
-        )),
-        fill: false,
-        backgroundColor: `${colors[i % colors.length]}`,
-        borderColor: `${colors[i % colors.length]}4a`,
-      }))
-  }
-)
+  debugger
+  return (
+    Object.keys(
+      days_in_series
+      .reduce((a, b) => {
+        debugger
+        return {}
+      }, {})
+    ).map((day, i) => ({
+    }))
+  )
 
-var parse_simple_serie = (serie) => (
-  {
-    labels: Object.keys(
-      serie[ Object.keys(serie)[0] ]
-    ),
-    datasets: Object.keys(serie).map((l, i) => ({
-      label: l,
-      data: Object.keys(serie[l]).map(y => ( serie[l][y])),
-      fill: false,
+
+  return (
+    Object.keys(series).map((label, i) => ({
+      label,
+      data: [
+        {
+          date: new Date(series[label].end_time),
+          price: series[label].orderExtras.reduce((a,b) => {
+            return a + b
+          }, 0),
+        }
+      ],
       backgroundColor: `${colors[i]}`,
       borderColor: `${colors[i]}4a`,
     }))
-  }
-)
+  )
+}
+
+const data = [
+  { label: "S", x: 0, y: 0 },
+  { label: "M", x: 1, y: 400 },
+  { label: "T", x: 2, y: 300 },
+  { label: "W", x: 3, y: 100 },
+  { label: "TH", x: 4, y: 400 },
+  { label: "F", x: 5, y: 500 },
+  { label: "S", x: 6, y: 400 }
+];
 
 const Layout = styled.div`
   display: grid;
@@ -311,4 +324,4 @@ const TotalRow = styled.tr`
   outline: 1px solid #444444;
 `
 
-export default Admin
+export default observer(Admin)

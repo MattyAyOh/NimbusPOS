@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { DateTime } from "luxon"
-import { observable, computed } from "mobx"
+import { observable } from "mobx"
 import { observer } from "mobx-react"
 
 import Checkout from "./Checkout"
@@ -9,12 +9,8 @@ import Extras from "./Extras"
 import TabView from "./TabView"
 import Loading from "./Loading"
 
-@observer
 class Order extends React.Component {
-  @observable start_time = null
-  @observable end_time = null
-
-  @computed get order() {
+  get order() {
     return this.props.assembly.visible_order
   }
 
@@ -117,4 +113,4 @@ const Links = styled.div`
   justify-content: space-between;
 `
 
-export default Order
+export default observer(Order)

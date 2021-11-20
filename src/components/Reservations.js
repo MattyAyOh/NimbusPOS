@@ -7,7 +7,6 @@ import 'react-select/dist/react-select.css'
 import Reservation from "./Reservation"
 import { DateTime } from "luxon"
 
-@observer
 class Reservations extends React.Component {
   componentDidMount() {
     window.DateTime = DateTime
@@ -129,4 +128,4 @@ Array.prototype.unique = function() {
   return unique;
 };
 
-export default Reservations
+export default observer(Reservations)
