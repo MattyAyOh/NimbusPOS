@@ -2,30 +2,11 @@ import React from "react"
 import styled from "styled-components"
 import { observer, Observer } from "mobx-react"
 import { DateTime } from "luxon"
-import { observable, computed } from "mobx"
+import { observable, runInAction } from "mobx"
 import Selection from "../principals/Selection"
 import gql from "graphql-tag"
 import OrderData from "../data/Order"
 import LineGraph from "../LineGraph"
-
-var colors = [
-  "#b58900",
-  "#cb4b16",
-  "#dc322f",
-  "#d33682",
-  "#6c71c4",
-  "#268bd2",
-  "#2aa198",
-  "#859900",
-  "#b58900",
-  "#cb4b16",
-  "#dc322f",
-  "#d33682",
-  "#6c71c4",
-  "#268bd2",
-  "#2aa198",
-  "#859900",
-]
 
 class Admin extends React.Component {
   timeframe = observable.box("All time")
@@ -34,7 +15,8 @@ class Admin extends React.Component {
   componentDidMount() {
     // TODO clean up the subscription when we're done with it.
     this.props.assembly.graph.subscribe({ query: gql`
-      subscription { orders(where: {closed_at: {_is_null: false}}) {
+      subscription {
+        orders(where: {closed_at: {_is_null: false}}) {
           id
           service_id
           closed_at
@@ -48,12 +30,16 @@ class Admin extends React.Component {
           }
       } }
     ` }).subscribe({
-      next: result => this.orders =
-        result.data.orders.map(o => OrderData.create(o)),
+      next: result => {
+        runInAction(() => {
+          this.orders = result.data.orders.map(o => OrderData.create(o))
+          console.log(this.orders)
+          window.orders = this.orders
+        })
+      },
       error: (err) => console.error('err', err),
     });
 
-    window.orders = this.orders
   }
 
 
@@ -243,14 +229,7 @@ var parse_simple_series = (series) => {
   console.log(groupByDay(days_in_series))
 
   return (
-    Object.keys(
-      days_in_series
-      .reduce((a, b) => {
-        debugger
-        return {}
-      }, {})
-    ).map((day, i) => ({
-    }))
+    groupByDay(days_in_series)
   )
 }
 window.parse_simple_series = parse_simple_series
